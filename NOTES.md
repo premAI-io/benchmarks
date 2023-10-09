@@ -47,9 +47,10 @@ Notes on the paper below, in the papers section.
 #### Platform: x86 & GPU
 
 No CPU support.
-No AMD or non CUDA platform support.
+No GPU platform supported, except Nvidia.
 
 CUDA performance is hard to judge with no competing implementations.
+But it provides significant CUDA .
 
 #### Platform: M1 & Apple
 
