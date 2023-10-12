@@ -7,8 +7,8 @@ python3 -m pip install -r /tmp/llama2-burn/llama-py/requirements.txt
 cd /tmp/llama2-burn/llama-py
 # test the model
 # python3 test.py /tmp/llama-2-7b /tmp/llama-2-7b/tokenizer.model
+# python3 test_tokenizer.py
 python3 dump_model.py /tmp/llama-2-7b /tmp/llama-2-7b/tokenizer.model
-python3 test_tokenizer.py
 
 cargo run --bin convert params llama2-7b-burn
 # test the model weights in rust

@@ -14,6 +14,6 @@ else
 fi
 
 python3 convert.py models/llama-2-7b/
-./quantize ./models/llama-2-7b/ggml-model-f16.gguf ./models/llama-2-7b/ggml-model-q4_0.gguf q4_0
+./quantize ./models/llama-2-7b/ggml-model-f16.gguf ./models/llama-2-7b/ggml-model-q8_0.gguf q8_0
 
 make -j

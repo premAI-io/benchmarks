@@ -3,45 +3,44 @@ MLOps Engines, Frameworks, and Languages benchmarks over main stream AI Models.
 
 ## ML Engines: Feature Table
 
-| Features                    | pytorch | burn | ggml | candle | tinygrad | onnxruntime | CTranslate2 |
-| --------------------------- | ------- | ---- | ---- | ------ | -------- | ----------- | ----------- |
-| Inference support           | ✅      | ✅   | ✅   | ✅     | ✅       | ✅          | ✅          |
-| 16-bit quantization support | ✅      | ✅   | ✅   | ✅     | ✅       | ✅          | ✅          |
-| 8-bit quantization support  | ✅      | ✅   | ✅   | ✅     | ✅       | ✅          | ✅          |
-| 4-bit quantization support  | ✅      | ✅   | ✅   | ❌     | ❌       | ❌          | ❌          |
-| CUDA support                | ✅      | ✅   | ✅   | ✅     | ✅       | ✅          | ✅          |
-| ROCM support                | ✅      | ✅   | ✅   | ✅     | ✅       | ❌          | ❌          |
-| Intel OneAPI/SYCL support   | ✅**    | ✅   | ✅   | ✅     | ✅       | ❌          | ❌          |
-| Mac M1/M2 support           | ✅      | ✅   | ✅   | ✅     | ✅       | ✅          | ✅          |
-| BLAS support(CPU)           | ✅      | ✅   | ✅   | ✅     | ❌       | ✅          | ✅          |
-| Model Parallel support      | ✅      | ✅   | ❌   | ❌     | ❌       | ❌          | ✅          |
-| Tensor Parallel support     | ✅      | ✅   | ❌   | ✅     | ❌       | ❌          | ✅          |
-| Onnx Format support         | ✅      | ✅   | ✅   | ✅     | ❌       | ✅          | ✅          |
-| Training support            | ✅      | ✅   | ❌*  | ✅     | ❌       | ✅          | ✅          |
+| Features                    | pytorch | burn | llama.cpp | candle | tinygrad | onnxruntime | CTranslate2 |
+| --------------------------- | ------- | ---- | --------- | ------ | -------- | ----------- | ----------- |
+| Inference support           | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
+| 16-bit quantization support | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
+| 8-bit quantization support  | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
+| 4-bit quantization support  | ✅      | ✅   | ✅        | ✅     | ❌       | ❌          | ❌          |
+| CUDA support                | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
+| ROCM support                | ✅      | ✅   | ✅        | ✅     | ✅       | ❌          | ❌          |
+| Intel OneAPI/SYCL support   | ✅**    | ✅   | ✅        | ✅     | ✅       | ❌          | ❌          |
+| Mac M1/M2 support           | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
+| BLAS support(CPU)           | ✅      | ✅   | ✅        | ✅     | ❌       | ✅          | ✅          |
+| Model Parallel support      | ✅      | ✅   | ❌        | ✅     | ❌       | ❌          | ✅          |
+| Tensor Parallel support     | ✅      | ✅   | ❌        | ✅     | ❌       | ❌          | ✅          |
+| Onnx Format support         | ✅      | ✅   | ✅        | ✅     | ❌       | ✅          | ✅          |
+| backwards-op support        | ✅      | ✅   | ❌*       | ✅     | ❌       | ✅          | ✅          |
 
 ## Benchmarking ML Engines
 
 ### Consumer Hardware Inference:
-#### M1 Pro Mac(assuming 16GB of memory as a better baseline)
-#### LLAMA-7B (16GB memory would require quantization to atleast 8-bit)
+#### M1 Pro Mac 16GB Variant
+#### LLAMA2-7B q8 (quantized to 8-bit)
+#### mean of runs: 24 (with outliers removed)
 
-| engines      | cpu(tokens/sec) | gpu(tokens/sec) |
-| ------------ | --------------- | --------------- |
-| pytorch      |                 |                 |
-| burn(ndarray)|                 | N/A             |
-| burn(wgpu)   | N/A             |                 |
-| burn(torch)  |                 |                 |
-| ggml(c++)    |                 | N/A             |
-| ggml(coreml) |                 |                 |
-| candle       |                 |                 |
-| tinygrad     |                 |                 |
-| onnxruntime  |                 |                 |
-| CTranslate2  |                 |                 |
+| engines      | (cpu)tokens/sec                 | (metal/gpu) tokens/sec     |
+| ------------ | ----------                      | ----------------------     |
+| pytorch      | -                               | -                          |
+| burn(torch)  | quantization not-supported      | quantization not-supported |
+| llama.cpp    | 13.2                            | 21.5                       |
+| candle       | 9.2                             | metal not supported yet!   |
+| onnxruntime  |                                 |                            |
+| CTranslate2  |                                 | metal not supported yet!   |
+| tinygrad     | quantization not-supported      | quantization not-supported |
 
-*(data updated: )
+*(data updated: 12th October 2023)
 
+<!-- TODO(swarnim)
 ### A100 Inference:
-#### LLAMA-34B
+#### LLAMA-B
 
 | engines                    | performance |
 | -------------------------- | ----------- |
@@ -57,6 +56,7 @@ MLOps Engines, Frameworks, and Languages benchmarks over main stream AI Models.
 | CTranslate2                |             |
 
 *(data updated: )
+-->
 
 ### TODO: Operator-based performance benchmarking
 
