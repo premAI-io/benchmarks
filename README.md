@@ -46,7 +46,15 @@ MODEL_NAME="llama-2-7b-burn" MODEL_TOKENIZER="<model-dir>/tokenizer.model" PROMP
 
 ### candle
 
+The code for candle is largely inspired from huggingface libraries itself, it should automatically download and run the correct model.
+Only CPU is supported on M1 atm.
+(this is wip, I might break some stuff behind the scenes am working it still, should be stable in a day or two)
+
 ```sh
+cd ./src/custom/llama_candle
+# n tokens and etc can be passed as flags as well,
+# use --help to know more
+cargo run --features accelerate --release -- --which 7bq8 --prompt "prompt"
 ```
 
 ## ML Engines: Feature Table
