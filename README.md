@@ -41,25 +41,32 @@ MODEL_NAME="llama-2-7b-burn" MODEL_TOKENIZER="<model-dir>/tokenizer.model" PROMP
 
 ### llama.cpp
 
+```sh
+```
 
+### candle
+
+```sh
+```
 
 ## ML Engines: Feature Table
 
 | Features                    | pytorch | burn | llama.cpp | candle | tinygrad | onnxruntime | CTranslate2 |
 | --------------------------- | ------- | ---- | --------- | ------ | -------- | ----------- | ----------- |
 | Inference support           | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
-| 16-bit quantization support | ✅      | x   | ✅        | ✅     | ✅       | ✅          | ✅          |
-| 8-bit quantization support  | ✅      | x   | ✅        | ✅     | ✅       | ✅          | ✅          |
-| 4-bit quantization support  | ✅      | x   | ✅        | ✅     | ❌       | ❌          | ❌          |
+| 16-bit quantization support | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
+| 8-bit quantization support  | ✅      | ❌   | ✅        | ✅     | ✅       | ✅          | ✅          |
+| 4-bit quantization support  | ✅      | ❌   | ✅        | ✅     | ❌       | ❌          | ❌          |
+| 2/3bit quantization support | ✅      | ❌   | ✅        | ✅     | ❌       | ❌          | ❌          |
 | CUDA support                | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
 | ROCM support                | ✅      | ✅   | ✅        | ✅     | ✅       | ❌          | ❌          |
-| Intel OneAPI/SYCL support   | ✅**    | ✅   | ✅        | ✅     | ✅       | ❌          | ❌          |
-| Mac M1/M2 support           | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
+| Intel OneAPI/SYCL support   | ✅**    | ❌   | ✅        | ✅     | ✅       | ❌          | ❌          |
+| Mac M1/M2 support           | ✅      | ✅   | ✅        | ✅***  | ✅       | ✅          | ✅          |
 | BLAS support(CPU)           | ✅      | ✅   | ✅        | ✅     | ❌       | ✅          | ✅          |
-| Model Parallel support      | ✅      | ✅   | ❌        | ✅     | ❌       | ❌          | ✅          |
-| Tensor Parallel support     | ✅      | ✅   | ❌        | ✅     | ❌       | ❌          | ✅          |
+| Model Parallel support      | ✅      | ❌   | ❌        | ✅     | ❌       | ❌          | ✅          |
+| Tensor Parallel support     | ✅      | ❌   | ❌        | ✅     | ❌       | ❌          | ✅          |
 | Onnx Format support         | ✅      | ✅   | ✅        | ✅     | ❌       | ✅          | ✅          |
-| training support            | ✅      | ✅   | ❌*       | ✅     | ❌       | ✅          | ✅          |
+| Training support            | ✅      | ✅   | ❌*       | ✅     | ❌       | ❌          | ✅          |
 
 ## Benchmarking ML Engines
 
