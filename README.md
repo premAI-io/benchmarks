@@ -83,17 +83,14 @@ cargo run --features accelerate --release -- --which 7bq8 --prompt "prompt"
 #### LLAMA2-7B
 #### mean of runs: 24 (with outliers removed)
 
-| engines             | (cpu) tokens/sec                | (metal/gpu) tokens/sec     |
-| -------             | ----------------                | ----------------------     |
-| pytorch(8bit)       |                                 |                            |
-| pytorch(4bit)       |                                 |                            |
-| burn(torch)(16bit)  | quantization not-supported      | quantization not-supported |
-| llama.cpp(8bit)     | 13.2                            | 21.5                       |
-| llama.cpp(4bit)     |                                 |                            |
-| candle(8bit)        | 9.2                             | metal not supported yet!   |
-| candle(4bit)        |                                 | metal not supported yet!   |
-| CTranslate2(8bit)   | 12.3                            | metal not supported yet!   |
-| tinygrad(8bit)      | 0.75                            | 7.8                        |
+| engines             | (cpu) tokens/sec (8bit) | (metal/gpu) tokens/sec (16bit) | (metal/gpu) tokens/sec (8bit) | (metal/gpu) tokens/sec (6bit) | (metal/gpu) tokens/sec (4bit) | (metal/gpu) tokens/sec (2bit) |
+| -------             | ----------------------- | ------------------------------ |
+| pytorch             |                         |                                |                            
+| burn(torch)         |                         |                                |
+| llama.cpp           | 13.2                    | 21.5                           |
+| candle              |                         | metal not supported yet!       |
+| CTranslate2         | 12.3                    | metal not supported yet!       |
+| tinygrad            | 0.75                    | 7.8                            |
 
 *(data updated: 12th October 2023)
 
