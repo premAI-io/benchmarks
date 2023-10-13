@@ -10,6 +10,10 @@ the runscripts are now going to be outdated I am still keeping them around as th
 We provide custom script to run inference, and require providing path to MODEL_DIR to ensure correct handling of model setup.
 The script should report average time in tokens/sec.
 
+Note: doesn't require a quantized model it just performs dynamic quantization to when loading weights.
+
+Also: All scripts may require a `chmod +x` if they are being executed, after cloning.
+
 ```sh
 source ./src/setup/tinygrad.sh
 # set QUANTIZE=0 to not use int8 quantization
@@ -20,7 +24,24 @@ QUANTIZE=1 MODEL_DIR="<path/to/llama2-7b-model>" ./src/run/tinygrad.sh "prompt"
 
 ### burn
 
+Doesn't support quantization, and can be a bit buggy with backends other than torch.
+This is the least properly tested pipeline atm. (lmk of any bugs)
+
+```sh
+./src/setup/burn.sh # clone llama2-burn into /tmp/llama2-burn
+# converts the model to burn model
+# provide the model dir and model tokenizer to be converted
+# eg: https://huggingface.co/meta-llama/Llama-2-7b
+# and also a model name for specifying what converted model binary name
+BASE_MODEL_DIR="<model-dir>" BASE_MODEL_TOKENIZER="<model-dir>/tokenizer.model" MODEL_NAME="llama-2-7b-burn" ./src/convert/burn.sh
+# run the actual model
+# n_toks is 100 by default
+MODEL_NAME="llama-2-7b-burn" MODEL_TOKENIZER="<model-dir>/tokenizer.model" PROMPT="prompt" DEVICE_TYPE="cpu" ./src/run/burn.sh
+```
+
 ### llama.cpp
+
+
 
 ## ML Engines: Feature Table
 
