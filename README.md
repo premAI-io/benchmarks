@@ -81,9 +81,9 @@ MODEL_NAME="llama-2-7b-burn" MODEL_TOKENIZER="<model-dir>/tokenizer.model" PROMP
 | pytorch(4bit)       |                                 |                            |
 | burn(torch)(16bit)  | quantization not-supported      | quantization not-supported |
 | llama.cpp(8bit)     | 13.2                            | 21.5                       |
-| llama.cpp(4bit)     | 13.2                            | 21.5                       |
+| llama.cpp(4bit)     |                                 |                            |
 | candle(8bit)        | 9.2                             | metal not supported yet!   |
-| candle(4bit)        | 9.2                             | metal not supported yet!   |
+| candle(4bit)        |                                 | metal not supported yet!   |
 | CTranslate2(8bit)   | 12.3                            | metal not supported yet!   |
 | tinygrad(8bit)      | 0.75                            | 7.8                        |
 
