@@ -1,6 +1,11 @@
 # benchmarks
 MLOps Engines, Frameworks, and Languages benchmarks over main stream AI Models.
 
+## Usage for running scripts to get performance info
+
+
+
+
 ## ML Engines: Feature Table
 
 | Features                    | pytorch | burn | llama.cpp | candle | tinygrad | onnxruntime | CTranslate2 |
@@ -26,8 +31,6 @@ MLOps Engines, Frameworks, and Languages benchmarks over main stream AI Models.
 #### LLAMA2-7B
 #### mean of runs: 24 (with outliers removed)
 
-#### [prompt variants]()
-
 | engines             | (cpu) tokens/sec                | (metal/gpu) tokens/sec     |
 | -------             | ----------------                | ----------------------     |
 | pytorch(8bit)       |                                 |                            |
@@ -38,7 +41,7 @@ MLOps Engines, Frameworks, and Languages benchmarks over main stream AI Models.
 | candle(8bit)        | 9.2                             | metal not supported yet!   |
 | candle(4bit)        | 9.2                             | metal not supported yet!   |
 | CTranslate2(8bit)   | 12.3                            | metal not supported yet!   |
-| tinygrad            | quantization not-supported      | quantization not-supported |
+| tinygrad            | 0.75                            | 7.8                        |
 
 *(data updated: 12th October 2023)
 
