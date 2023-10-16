@@ -42,6 +42,7 @@ MODEL_NAME="llama-2-7b-burn" MODEL_TOKENIZER="<model-dir>/tokenizer.model" PROMP
 ### llama.cpp
 
 ```sh
+./src/run/llama.cpp.sh --prompt "prompt" -n 100
 ```
 
 ### candle
@@ -51,10 +52,7 @@ Only CPU is supported on M1 atm.
 (this is wip, I might break some stuff behind the scenes am working it still, should be stable in a day or two)
 
 ```sh
-cd ./src/custom/llama_candle
-# n tokens and etc can be passed as flags as well,
-# use --help to know more
-cargo run --features accelerate --release -- --which 7bq8 --prompt "prompt"
+QUANTIZE="q8" PROMPT="prompt" ./src/run/candle.sh
 ```
 
 ## ML Engines: Feature Table
@@ -68,13 +66,16 @@ cargo run --features accelerate --release -- --which 7bq8 --prompt "prompt"
 | 2/3bit quantization support | ✅      | ❌   | ✅        | ✅     | ❌       | ❌          | ❌          |
 | CUDA support                | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
 | ROCM support                | ✅      | ✅   | ✅        | ✅     | ✅       | ❌          | ❌          |
-| Intel OneAPI/SYCL support   | ✅**    | ❌   | ✅        | ✅     | ✅       | ❌          | ❌          |
-| Mac M1/M2 support           | ✅      | ✅   | ✅        | ✅***  | ✅       | ✅          | ✅          |
+| Intel OneAPI/SYCL support   | ✅**    | ✅   | ✅        | ✅     | ✅       | ❌          | ❌          |
+| Mac M1/M2 support           | ✅      | ✅   | ✅        | ⭐     | ✅       | ✅          | ⭐          |
 | BLAS support(CPU)           | ✅      | ✅   | ✅        | ✅     | ❌       | ✅          | ✅          |
 | Model Parallel support      | ✅      | ❌   | ❌        | ✅     | ❌       | ❌          | ✅          |
 | Tensor Parallel support     | ✅      | ❌   | ❌        | ✅     | ❌       | ❌          | ✅          |
-| Onnx Format support         | ✅      | ✅   | ✅        | ✅     | ❌       | ✅          | ✅          |
-| Training support            | ✅      | ✅   | ❌*       | ✅     | ❌       | ❌          | ✅          |
+| Onnx Format support         | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ❌          |
+| Training support            | ✅      | 🌟   | ❌        | 🌟     | ❌       | ❌          | ❌          |
+
+⭐ = No Metal Support
+🌟 = Partial Support for Training (Finetuning already works, but training from scratch may not work)
 
 ## Benchmarking ML Engines
 
