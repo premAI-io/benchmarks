@@ -84,17 +84,14 @@ QUANTIZE="q8" PROMPT="prompt" ./src/run/candle.sh
 #### LLAMA2-7B
 #### mean of runs: 24 (with outliers removed)
 
-| engines             | (cpu) tokens/sec                | (metal/gpu) tokens/sec     |
-| -------             | ----------------                | ----------------------     |
-| pytorch(8bit)       |                                 |                            |
-| pytorch(4bit)       |                                 |                            |
-| burn(torch)(16bit)  | quantization not-supported      | quantization not-supported |
-| llama.cpp(8bit)     | 13.2                            | 21.5                       |
-| llama.cpp(4bit)     |                                 |                            |
-| candle(8bit)        | 9.2                             | metal not supported yet!   |
-| candle(4bit)        |                                 | metal not supported yet!   |
-| CTranslate2(8bit)   | 12.3                            | metal not supported yet!   |
-| tinygrad(8bit)      | 0.75                            | 7.8                        |
+| engines       | (cpu) (8-bit) tokens/sec   | (metal) (8-bit) tokens/sec |
+| -------       | ------------------------   | -------------------------- |
+| pytorch       |                            |                            |
+| burn(torch)   | quantization not-supported | quantization not-supported |
+| llama.cpp     | 13.2                       | 21.5                       |
+| candle        | 9.2                        | metal not supported yet!   |
+| CTranslate2   | 12.3                       | metal not supported yet!   |
+| tinygrad      | 0.75                       | 7.8                        |
 
 *(data updated: 12th October 2023)
 
