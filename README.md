@@ -42,6 +42,7 @@ MODEL_NAME="llama-2-7b-burn" MODEL_TOKENIZER="<model-dir>/tokenizer.model" PROMP
 ### llama.cpp
 
 ```sh
+./src/run/llama.cpp.sh --prompt "prompt" -n 100
 ```
 
 ### candle
@@ -51,10 +52,7 @@ Only CPU is supported on M1 atm.
 (this is wip, I might break some stuff behind the scenes am working it still, should be stable in a day or two)
 
 ```sh
-cd ./src/custom/llama_candle
-# n tokens and etc can be passed as flags as well,
-# use --help to know more
-cargo run --features accelerate --release -- --which 7bq8 --prompt "prompt"
+QUANTIZE="q8" PROMPT="prompt" ./src/run/candle.sh
 ```
 
 ## ML Engines: Feature Table
@@ -68,13 +66,16 @@ cargo run --features accelerate --release -- --which 7bq8 --prompt "prompt"
 | 2/3bit quantization support | ✅      | ❌   | ✅        | ✅     | ❌       | ❌          | ❌          |
 | CUDA support                | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
 | ROCM support                | ✅      | ✅   | ✅        | ✅     | ✅       | ❌          | ❌          |
-| Intel OneAPI/SYCL support   | ✅**    | ❌   | ✅        | ✅     | ✅       | ❌          | ❌          |
-| Mac M1/M2 support           | ✅      | ✅   | ✅        | ✅***  | ✅       | ✅          | ✅          |
+| Intel OneAPI/SYCL support   | ✅**    | ✅   | ✅        | ✅     | ✅       | ❌          | ❌          |
+| Mac M1/M2 support           | ✅      | ✅   | ✅        | ⭐     | ✅       | ✅          | ⭐          |
 | BLAS support(CPU)           | ✅      | ✅   | ✅        | ✅     | ❌       | ✅          | ✅          |
 | Model Parallel support      | ✅      | ❌   | ❌        | ✅     | ❌       | ❌          | ✅          |
 | Tensor Parallel support     | ✅      | ❌   | ❌        | ✅     | ❌       | ❌          | ✅          |
-| Onnx Format support         | ✅      | ✅   | ✅        | ✅     | ❌       | ✅          | ✅          |
-| Training support            | ✅      | ✅   | ❌*       | ✅     | ❌       | ❌          | ✅          |
+| Onnx Format support         | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ❌          |
+| Training support            | ✅      | 🌟   | ❌        | 🌟     | ❌       | ❌          | ❌          |
+
+⭐ = No Metal Support
+🌟 = Partial Support for Training (Finetuning already works, but training from scratch may not work)
 
 ## Benchmarking ML Engines
 
@@ -83,17 +84,14 @@ cargo run --features accelerate --release -- --which 7bq8 --prompt "prompt"
 #### LLAMA2-7B
 #### mean of runs: 24 (with outliers removed)
 
-| engines             | (cpu) tokens/sec                | (metal/gpu) tokens/sec     |
-| -------             | ----------------                | ----------------------     |
-| pytorch(8bit)       |                                 |                            |
-| pytorch(4bit)       |                                 |                            |
-| burn(torch)(16bit)  | quantization not-supported      | quantization not-supported |
-| llama.cpp(8bit)     | 13.2                            | 21.5                       |
-| llama.cpp(4bit)     |                                 |                            |
-| candle(8bit)        | 9.2                             | metal not supported yet!   |
-| candle(4bit)        |                                 | metal not supported yet!   |
-| CTranslate2(8bit)   | 12.3                            | metal not supported yet!   |
-| tinygrad(8bit)      | 0.75                            | 7.8                        |
+| engines       | (cpu) (8-bit) tokens/sec   | (metal) (8-bit) tokens/sec |
+| -------       | ------------------------   | -------------------------- |
+| pytorch       |                            |                            |
+| burn(torch)   | quantization not-supported | quantization not-supported |
+| llama.cpp     | 13.2                       | 21.5                       |
+| candle        | 9.2                        | metal not supported yet!   |
+| CTranslate2   | 12.3                       | metal not supported yet!   |
+| tinygrad      | 0.75                       | 7.8                        |
 
 *(data updated: 12th October 2023)
 
