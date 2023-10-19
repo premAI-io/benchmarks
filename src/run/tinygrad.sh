@@ -1,6 +1,6 @@
-NOT_QUANTIZE=${NOT_QUANTIZE:-0}
+QUANTIZE=${QUANTIZE:-1}
 
-if [ $NOT_QUANTIZE ] ; then
+if [ ${QUANTIZE} -eq 1 ] ; then
 	Q="--quantize"
 else
 	Q=""
@@ -19,14 +19,25 @@ fi
 
 mkdir -p /tmp/llama-2
 
-if [ `ls $MODEL_DIR` ]; then
+LS_MODEL_DIR=`ls $MODEL_DIR &>/dev/null`
+LS_MODEL_RET=$?
+
+echo "LS_MODEL_RET = $LS_MODEL_RET"
+
+if [ $LS_MODEL_RET -eq 0 ]; then
+	rm -rf /tmp/llama-2/7b
 	ln -s $MODEL_DIR /tmp/llama-2/7b
 else
 	echo "$MODEL_DIR doesn't point to a valid path"
 	exit -1
 fi
 
-if [ `ls $MODEL_DIR/../tokenizer.model` ]; then
+LS_TOK=`ls $MODEL_DIR/../tokenizer.model`
+LS_TOK_RET=$?
+
+echo "LS_TOK_RET = $LS_TOK_RET"
+
+if [ $LS_TOK_RET -eq 0 ]; then
 	cp $MODEL_DIR/../tokenizer.model /tmp/llama-2/tokenizer.model
 else
 	cp $MODEL_DIR/tokenizer.model /tmp/llama-2/tokenizer.model
