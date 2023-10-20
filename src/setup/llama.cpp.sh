@@ -33,6 +33,7 @@ if [ $LS_RET -eq 0 ]; then
 		python3 -m pip install -r requirements.txt
 		python3 convert.py models/llama-2-7b/
 		./quantize ./models/llama-2-7b/ggml-model-f16.gguf ./models/llama-2-7b/ggml-model-q8_0.gguf q8_0
+		deactivate
 	fi
 else
 	echo "Failed to create a link at \`/tmp/llama.cpp/models/llama-2-7b\`"

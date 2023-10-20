@@ -73,6 +73,8 @@ deactivate
 echo "Benching llama.cpp with llama 7B quantized model"
 echo "DEVICE $DEVICE"
 
+# doesn't require deactivate
+# handled within the script
 MODEL_DIR="$LLAMACPP_MODEL_DIR" source ./src/setup/llama.cpp.sh
 if ! [ $DEVICE = "GPU" ]; then
   ## TODO(swarnim): run the below in a loop with different prompts and store the perf metrics
@@ -82,6 +84,5 @@ else
   ## TODO(swarnim): run the below in a loop with different prompts and store the perf metrics
   ./src/run/llama.cpp.sh "write a note about distributed machine learning"
 fi
-deactivate
 
 
