@@ -84,14 +84,15 @@ QUANTIZE="q8" PROMPT="prompt" ./src/run/candle.sh
 #### LLAMA2-7B
 #### mean of runs: 24 (with outliers removed)
 
-| engines       | (cpu) (8-bit) tokens/sec   | (metal) (8-bit) tokens/sec |
-| -------       | ------------------------   | -------------------------- |
-| pytorch       |                            |                            |
-| burn(torch)   | quantization not-supported | quantization not-supported |
-| llama.cpp     | 13.2                       | 21.5                       |
-| candle        | 9.2                        | metal not supported yet!   |
-| CTranslate2   | 12.3                       | metal not supported yet!   |
-| tinygrad      | 0.75                       | 7.8                        |
+| engines     | (cpu) (16bit) tokens/sec | (cpu) (8bit) tokens/sec    | (cpu) (4bit) tokens/sec | (metal) (16bit) tokens/sec | (metal) (8bit) tokens/sec  | (metal/gpu) tokens/sec (4bit) | (metal/gpu) tokens/sec (2bit) |
+| ----------- | ------------------------ | -------------------------- | ----------------------- | -------------------------- | -------------------------- | ----------------------------- | ----------------------------- |
+| pytorch     |                          |                            |                         |                            |                            |                               |                               |
+| burn(torch) |                          | quantization not-supported |                         |                            | quantization not-supported |                               |                               |
+| llama.cpp   |                          | 13.2                       |                         |                            | 21.5                       |                               |                               |
+| candle      |                          | 9.2                        |                         |                            | metal not supported yet!   |                               |                               |
+| CTranslate2 |                          | 12.3                       |                         |                            | metal not supported yet!   |                               |                               |
+| tinygrad    |                          | 0.75                       |                         |                            | 7.8                        |                               |                               |
+
 
 *(data updated: 12th October 2023)
 
