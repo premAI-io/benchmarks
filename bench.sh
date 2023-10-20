@@ -58,34 +58,30 @@ echo "==================="
 echo "Benching tinygrad with llama 7B dynamically quantized"
 echo "DEVICE $DEVICE"
 
+source ./src/setup/tinygrad.sh
 if ! [ $DEVICE = "GPU" ]; then
-  source ./src/setup/tinygrad.sh
   ## TODO(swarnim): run the below in a loop with different prompts and store the perf metrics
-  CPU=1 ./src/run/tinygrad.sh "write a note about distributed machine learning"
-  deactivate
+  MODEL_DIR="$TINYGRAD_MODEL_DIR" CPU=1 ./src/run/tinygrad.sh "write a note about distributed machine learning"
 else
-  source ./src/setup/tinygrad.sh
   ## defaults to METAL/GPU
   ## TODO(swarnim): run the below in a loop with different prompts and store the perf metrics
-  ./src/run/tinygrad.sh "write a note about distributed machine learning"
-  deactivate
+  MODEL_DIR="$TINYGRAD_MODEL_DIR" ./src/run/tinygrad.sh "write a note about distributed machine learning"
 fi
+deactivate
 
 
 echo "Benching llama.cpp with llama 7B quantized model"
 echo "DEVICE $DEVICE"
 
+MODEL_DIR="$LLAMACPP_MODEL_DIR" source ./src/setup/llama.cpp.sh
 if ! [ $DEVICE = "GPU" ]; then
-  source ./src/setup/llama.cpp.sh
   ## TODO(swarnim): run the below in a loop with different prompts and store the perf metrics
   ./src/run/llama.cpp.sh "write a note about distributed machine learning" -ngl 0
-  deactivate
 else
-  source ./src/setup/llama.cpp.sh
   ## defaults to METAL/GPU
   ## TODO(swarnim): run the below in a loop with different prompts and store the perf metrics
   ./src/run/llama.cpp.sh "write a note about distributed machine learning"
-  deactivate
 fi
+deactivate
 
 
