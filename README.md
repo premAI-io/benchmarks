@@ -96,24 +96,69 @@ QUANTIZE="q8" PROMPT="prompt" ./src/run/candle.sh
 
 *(data updated: 12th October 2023)
 
-<!-- TODO(swarnim)
-### A100 Inference:
-#### LLAMA-B
+### A100 80GB Inference Bench #1:
 
-| engines                    | performance |
-| -------------------------- | ----------- |
-| pytorch                    |             |
-| fastertransformer          |             |
-| pytorch(tensor-rt)         |             |
-| pytorch(LLM.int8 CUDA only)|             |
-| burn(wgpu)                 |             |
-| burn(torch)                |             |
-| ggml(cuda)                 |             |
-| candle                     |             |
-| tinygrad                   |             |
-| CTranslate2                |             |
+#### Model: LLAMA-2-7B
+#### CUDA Version: 12.0
 
-*(data updated: )
+| engines                       | version | tokens/sec  |
+| --------------------------    | ------- | ----------- |
+| pytorch(better-transformer)   | v2.1.0  | 50.8        |
+| pytorch(fa2 + bf16)           | v2.1.0  | 47.4        |
+| pytorch(bf16)                 | v2.1.0  | 45.1        |
+| pytorch(f16)                  | v2.1.0  | 43.2        |
+| pytorch(8bit)                 | v2.1.0  | 38.6        |
+| pytorch(4bit)                 | v2.1.0  | 29.8        |
+| candle(bf16)                  | main    | 32.2        |
+| candle(f16)                   | main    | 31.4        |
+| candle(f32)                   | main    | 28.1        |
+| llama.cpp(4bit)               | master  | 140.1       |
+| llama.cpp(8bit)               | master  | 97.8        |
+| llama.cpp(f16)                | master  | 77.2        |
+| tinygrad(8bit)                | master  | 3.8         |
+| tinygrad(f16)[no bf16]        | master  | 21.2        |
+
+fa2 = Flash Attention2
+bf16 = bfloat16
+
+No usage of custom kernels or serving strategies/batching.
+Stuff like triton, tensor-rt should provide order of magnitude better performance, especially with batching. 
+No usage of torchscript to tinkering with default model weights of hf models. (this could provide a 10-20% perf bump)
+
+Candle was benched without flash attention. And quantization as qmatmul on it doesn't support GPU (yet!). 
+
+Note: the perf degradation of quantized models on pytorch for bitsandbytes is expected especially for smaller models like 7B.
+Even larger models generally have 15-20% perf degradation, assuming the model could be loaded a single gpu/cluster.
+
+With llama.cpp it is much faster to run quantized models as it isn't as strict about loss of performance(evaluation/quality of output).
+
+*(data updated: 22nd October 2023)
+
+<!--
+### A100 80GB Inference Bench #2:
+
+#### Model: LLAMA-2-7B
+#### CUDA Version: 12.0
+
+| engines                       | version | tokens/sec  |
+| --------------------------    | ------- | ----------- |
+| pytorch(f16)                  | v2.1.0  | 43.2        |
+| pytorch(bf16)                 | v2.1.0  | 45.1        |
+| pytorch(fa2 + bf16)           | v2.1.0  | 47.4        |
+| pytorch(better-transformer)   | v2.1.0  | 50.8        |
+| pytorch(8bit)                 | v2.1.0  | 38.6        |
+| pytorch(4bit)                 | v2.1.0  | 29.8        |
+
+fa2 = Flash Attention2
+bf16 = bfloat16
+
+No usage of custom kernels or serving strategies/batching.
+No usage of torchscript to tinkering with default model weights of hf models.
+
+Note: the perf degradation of quantized models via bitsandbytes is expected especially for smaller models like 7B.
+Even larger models generally have 15-20% perf degradation, assuming the model could be loaded a single gpu/cluster.
+
+*(data updated: 22nd October 2023)
 -->
 
 ### TODO: Operator-based performance benchmarking
