@@ -1,0 +1,27 @@
+[
+    {
+        "url": "https://huggingface.co/TheBloke/Llama-2-7B-GGUF/resolve/main/llama-2-7b.Q8_0.gguf",
+        "file": "llama-2-7b.Q8_0.gguf",
+        "folder": "./models/Llama-2-7B-GGUF"
+    },
+    {
+        "url": "https://huggingface.co/ctranslate2-4you/Llama-2-7b-chat-hf-ct2-int8/resolve/main/model.bin",
+        "file": "model.bin",
+        "folder": "./models/Llama-2-7b-chat-hf-ct2-int8"
+    },
+    {
+        "url": "https://huggingface.co/ctranslate2-4you/Llama-2-7b-chat-hf-ct2-int8/resolve/main/tokenizer.model",
+        "file": "tokenizer.model",
+        "folder": "./models/Llama-2-7b-chat-hf-ct2-int8"
+    },
+    {
+        "url": "https://huggingface.co/ctranslate2-4you/Llama-2-7b-chat-hf-ct2-int8/resolve/main/config.json",
+        "file": "config.json",
+        "folder": "./models/Llama-2-7b-chat-hf-ct2-int8"
+    },
+    {
+        "url": "https://huggingface.co/ctranslate2-4you/Llama-2-7b-chat-hf-ct2-int8/resolve/main/vocabulary.json",
+        "file": "vocabulary.json",
+        "folder": "./models/Llama-2-7b-chat-hf-ct2-int8"
+    }
+] 

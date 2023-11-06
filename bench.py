@@ -21,13 +21,13 @@ if __name__ == '__main__':
 
     LOGGER.info(f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} repetitions={args.repetitions}")
     LOGGER.info("Loading llama-cpp benchmark model")
-    llamacpp_bench = LlamaCPPBenchmark("./model/llama-2-7b.Q8_0.gguf").load_model()
+    llamacpp_bench = LlamaCPPBenchmark("./models/Llama-2-7B-GGUF/llama-2-7b.Q8_0.gguf").load_model()
     LOGGER.info(f"Running llama-cpp benchmark")
     result = llamacpp_bench.benchmark(max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions)
     LOGGER.info(f"llama-cpp ended with {result:.2f} token/s")
     
     LOGGER.info("Loading ctranslate benchmark model")
-    ctranslate_bench = CTranslateBenchmark("./model/Llama-2-7b-chat-hf-ct2-int8").load_model()
+    ctranslate_bench = CTranslateBenchmark("./models/Llama-2-7b-chat-hf-ct2-int8").load_model()
     LOGGER.info(f"Running ctranslate benchmark")
     result = ctranslate_bench.benchmark(max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions)
     LOGGER.info(f"ctranslate ended with {result:.2f} token/s")
