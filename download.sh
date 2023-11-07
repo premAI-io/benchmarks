@@ -37,7 +37,7 @@ unzip_file() {
  unzip -o $file -d $dir
 
  # Move the unzipped files to the parent directory
- find $dir -mindepth 2 -type f -exec mv {} $dir/.. \;
+ find $dir -mindepth 2 -type f -exec mv {} $dir \;
 }
 
 # Function to remove a file
