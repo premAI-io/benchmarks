@@ -34,7 +34,7 @@ if __name__ == '__main__':
     LOGGER.info(f"ctranslate ended with {result:.2f} token/s")    
 
     LOGGER.info("Loading tinygrad benchmark model")
-    tinygrad_bench = TinyGradBenchmark("./models/Llama-2-7b-chat-hf-ct2-int8", quantize=False).load_model()
+    tinygrad_bench = TinyGradBenchmark("./models/llama-2-7b-hf", quantize=False).load_model()
     LOGGER.info(f"Running tinygrad benchmark")
     result = tinygrad_bench.benchmark(max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions)
     LOGGER.info(f"tinygrad ended with {result:.2f} token/s")

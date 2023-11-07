@@ -341,6 +341,7 @@ class Transformer:
                 self.kv_caches[i] = (cache_k, cache_v)
             return self.postprocess(h, temperature)
 
+
 MODEL_PARAMS = {
     "1": {
         "7B": {
@@ -549,6 +550,7 @@ MODEL_PARAMS = {
     },
 }
 
+
 def concat_weights(models):
     def convert(name) -> Tensor:
         disk_tensors = [model[name] for model in models]
@@ -575,7 +577,8 @@ def load(fn: str):
         with open(fn) as fp:
             weight_map = json.load(fp)["weight_map"]
         parts = {
-            n: load(Path(fn).parent / Path(n).name) for n in set(weight_map.values())
+            n: load(str(Path(fn).parent / Path(n).name))
+            for n in set(weight_map.values())
         }
         return {k: parts[n][k] for k, n in weight_map.items()}
     elif fn.endswith(".safetensors"):
@@ -687,43 +690,38 @@ class LLaMa:
 
 
 class TinyGradBenchmark(Benchmark):
-   def __init__(
-           self, 
-           model_path,
-           quantize, 
-           gen="2",
-           temperature=0.7,
-           model_size="7B"
-    ):
-       super().__init__(model_path)
-       self.model = None
-       self.quantize = quantize
-       self.model_gen = gen
-       self.temperature = temperature
-       self.model_size = model_size
+    def __init__(self, model_path, quantize, gen="2", temperature=0.7, model_size="7B"):
+        super().__init__(model_path)
+        self.model = None
+        self.quantize = quantize
+        self.model_gen = gen
+        self.temperature = temperature
+        self.model_size = model_size
 
-   def load_model(self) -> Benchmark:
-       self.model = LLaMa.build(
-           Path(os.path.join(self.model_path, "model.bin")),
-           Path(os.path.join(self.model_path, "tokenizer.model")),
-           model_gen=self.model_gen,
-           model_size=self.model_size,
-           quantize=self.quantize,
-       )
-       return self
+    def load_model(self) -> Benchmark:
+        self.model = LLaMa.build(
+            Path(os.path.join(self.model_path, "pytorch_model.bin.index.json")),
+            Path(os.path.join(self.model_path, "tokenizer.model")),
+            model_gen=self.model_gen,
+            model_size=self.model_size,
+            quantize=self.quantize,
+        )
+        return self
 
-   def run_model(self, prompt, max_tokens) -> float:
-       toks = [self.model.tokenizer.bos_id()] + self.model.tokenizer.encode(prompt)
-       start_pos = 0
-       times = []
-       for _ in range(max_tokens):
-           time_start = time.time()
-           probs = self.model.model(
-               Tensor([toks[start_pos:]]), start_pos, self.temperature
-           ).realize()
-           probs_np = probs.numpy()
-           tok = int(np.random.choice(len(probs_np), p=probs_np))
-           times.append(time.time() - time_start)
-           start_pos = len(toks)
-           toks.append(tok)
-       return sum(times) / len(times)
+    def run_model(self, prompt, max_tokens) -> float:
+        Tensor.no_grad = True
+        print(f"using {Device.DEFAULT} backend")
+        toks = [self.model.tokenizer.bos_id()] + self.model.tokenizer.encode(prompt)
+        start_pos = 0
+        times = []
+        for _ in range(max_tokens):
+            time_start = time.time()
+            probs = self.model.model(
+                Tensor([toks[start_pos:]]), start_pos, self.temperature
+            ).realize()
+            probs_np = probs.numpy()
+            tok = int(np.random.choice(len(probs_np), p=probs_np))
+            times.append(time.time() - time_start)
+            start_pos = len(toks)
+            toks.append(tok)
+        return sum(times) / len(times)
