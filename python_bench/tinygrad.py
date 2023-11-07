@@ -13,7 +13,7 @@ import time
 import numpy as np
 from pathlib import Path
 
-from benchmarking.benchmark import Benchmark
+from python_bench.benchmark import Benchmark
 
 np.set_printoptions(linewidth=200)
 
@@ -710,18 +710,25 @@ class TinyGradBenchmark(Benchmark):
 
     def run_model(self, prompt, max_tokens) -> float:
         Tensor.no_grad = True
-        print(f"using {Device.DEFAULT} backend")
         toks = [self.model.tokenizer.bos_id()] + self.model.tokenizer.encode(prompt)
         start_pos = 0
-        times = []
+        outputted = self.model.tokenizer.decode(toks)
+
+        new_toks = [self.model.tokenizer.bos_id()] + self.model.tokenizer.encode(
+            outputted
+        )
+        assert toks == new_toks[: len(toks)]
+        toks = new_toks
+        assert outputted == self.model.tokenizer.decode(toks)
+        start = time.time()
         for _ in range(max_tokens):
-            time_start = time.time()
             probs = self.model.model(
-                Tensor([toks[start_pos:]]), start_pos, self.temperature
+                Tensor([toks[start_pos:]]), start_pos, 0.7
             ).realize()
             probs_np = probs.numpy()
             tok = int(np.random.choice(len(probs_np), p=probs_np))
-            times.append(time.time() - time_start)
             start_pos = len(toks)
             toks.append(tok)
-        return sum(times) / len(times)
+            cur = self.model.tokenizer.decode(toks)
+            outputted = cur
+        return max_tokens / (time.time() - start)

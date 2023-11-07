@@ -28,6 +28,26 @@ download_file() {
  wget -N $url -O $dir/$file
 }
 
+# Function to unzip a file
+unzip_file() {
+ local file=$1
+ local dir=$2
+
+ # Unzip the file
+ unzip -o $file -d $dir
+
+ # Move the unzipped files to the parent directory
+ find $dir -mindepth 2 -type f -exec mv {} $dir/.. \;
+}
+
+# Function to remove a file
+remove_file() {
+ local file=$1
+
+ # Remove the file
+ rm $file
+}
+
 # Check if the JSON filename was provided
 if [ -z "$1" ]; then
   echo "Usage: $0 <json_file>"
@@ -59,5 +79,11 @@ echo $json | jq -r '.[] | @base64' | while read i; do
   download_file $url $file $folder
  else
   echo "File already exists at $folder/$file"
+ fi
+ if [[ $file == *.zip ]]; then
+  echo "Unzipping: $folder/$file to $folder"
+  unzip_file $folder/$file $folder
+  echo "Removing: $folder/$file"
+  remove_file $folder/$file
  fi
 done
