@@ -55,7 +55,7 @@ if __name__ == "__main__":
     for compute_type in ("float16", "int8"):
         logging.info(f"Running ctranslate benchmark with {compute_type}")
         ctranslate_bench = CTranslateBenchmark(
-            "./models/llama-2-7b-hf-float16", gpu=True, compute_type="int8"
+            "./models/llama-2-7b-hf-float16", gpu=True, compute_type=compute_type
         ).load_model()
         ctranslate_bench.benchmark(
             max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
