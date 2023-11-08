@@ -73,17 +73,26 @@ echo $json | jq -r '.[] | @base64' | while read i; do
  file=$(_jq '.file')
  folder=$(_jq '.folder')
 
- # Check if the file already exists
- if [ ! -f "$folder/$file" ]; then
-  echo "Downloading: $url to $dir/$file"
-  download_file $url $file $folder
- else
-  echo "File already exists at $folder/$file"
- fi
+
+ # Check if the file is a zip file
  if [[ $file == *.zip ]]; then
-  echo "Unzipping: $folder/$file to $folder"
-  unzip_file $folder/$file $folder
-  echo "Removing: $folder/$file"
-  remove_file $folder/$file
+  # Check if the folder exists
+  if [ ! -d "$folder" ]; then
+   echo "Folder does not exist, downloading and unzipping: $url to $folder"
+   download_file $url $file $folder
+   unzip_file $folder/$file $folder
+   echo "Removing: $folder/$file"
+   remove_file $folder/$file
+  else
+   echo "Folder already exists, skipping download and unzip: $folder"
+  fi
+ else
+  # Check if the file exists
+  if [ ! -f "$folder/$file" ]; then
+   echo "Downloading: $url to $dir/$file"
+   download_file $url $file $folder
+  else
+   echo "File already exists at $folder/$file"
+  fi
  fi
 done

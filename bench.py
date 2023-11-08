@@ -72,7 +72,7 @@ if __name__ == "__main__":
     tinygrad_bench.benchmark(
         max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
     )
-    report["tinygrad"]["f16"] = {
+    report["tinygrad"]["float16"] = {
         "mean": np.mean(tinygrad_bench.results),
         "std": np.std(tinygrad_bench.results),
     }
