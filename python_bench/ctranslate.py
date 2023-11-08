@@ -1,4 +1,7 @@
 import os
+
+os.environ["CT2_VERBOSE"] = "2"
+
 import time
 
 import ctranslate2
@@ -11,11 +14,14 @@ B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
 
 
 class CTranslateBenchmark(Benchmark):
-    def __init__(self, model_path):
+    def __init__(self, model_path, gpu):
         super().__init__(model_path)
+        self.gpu = gpu
 
     def load_model(self) -> Benchmark:
-        self.generator = ctranslate2.Generator(self.model_path)
+        self.generator = ctranslate2.Generator(
+            self.model_path, device="cuda" if self.gpu else "cpu"
+        )
         self.sp = spm.SentencePieceProcessor(
             os.path.join(self.model_path, "tokenizer.model")
         )

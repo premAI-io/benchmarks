@@ -690,13 +690,16 @@ class LLaMa:
 
 
 class TinyGradBenchmark(Benchmark):
-    def __init__(self, model_path, quantize, gen="2", temperature=0.7, model_size="7B"):
+    def __init__(
+        self, model_path, quantize, gpu, gen="2", temperature=0.7, model_size="7B"
+    ):
         super().__init__(model_path)
         self.model = None
         self.quantize = quantize
         self.model_gen = gen
         self.temperature = temperature
         self.model_size = model_size
+        self.gpu = gpu
 
     def load_model(self) -> Benchmark:
         self.model = LLaMa.build(
@@ -710,6 +713,11 @@ class TinyGradBenchmark(Benchmark):
 
     def run_model(self, prompt, max_tokens) -> float:
         Tensor.no_grad = True
+        if self.gpu:
+            Device.DEFAULT = "GPU"
+        else:
+            Device.DEFAULT = "CPU"
+        print(f"Running with {Device.DEFAULT}")
         toks = [self.model.tokenizer.bos_id()] + self.model.tokenizer.encode(prompt)
         start_pos = 0
         outputted = self.model.tokenizer.decode(toks)

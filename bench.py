@@ -37,7 +37,7 @@ if __name__ == "__main__":
     )
     LOGGER.info(f"Running llama-cpp benchmark")
     llamacpp_bench = LlamaCPPBenchmark(
-        "./models/Llama-2-7B-GGUF/llama-2-7b.Q8_0.gguf"
+        "./models/Llama-2-7B-GGUF/llama-2-7b.Q8_0.gguf", gpu=True
     ).load_model()
     llamacpp_result = llamacpp_bench.benchmark(
         max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
     LOGGER.info(f"Running ctranslate benchmark")
     ctranslate_bench = CTranslateBenchmark(
-        "./models/Llama-2-7b-chat-hf-ct2-int8"
+        "./models/Llama-2-7b-chat-hf-ct2-int8", gpu=True
     ).load_model()
     ctranslate_result = ctranslate_bench.benchmark(
         max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     LOGGER.info(f"Running tinygrad benchmark")
     tinygrad_bench = TinyGradBenchmark(
-        "./models/llama-2-7b-hf", quantize=False
+        "./models/llama-2-7b-hf", quantize=False, gpu=True
     ).load_model()
     tinygrad_result = tinygrad_bench.benchmark(
         max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions

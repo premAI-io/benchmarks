@@ -4,11 +4,14 @@ from llama_cpp import Llama
 
 
 class LlamaCPPBenchmark(Benchmark):
-    def __init__(self, model_path):
+    def __init__(self, model_path, gpu):
         super().__init__(model_path)
+        self.gpu = gpu
 
     def load_model(self) -> Benchmark:
-        self.model = Llama(model_path=self.model_path)
+        self.model = Llama(
+            model_path=self.model_path, n_gpu_layers=-1 if self.gpu else 0
+        )
         return self
 
     def run_model(self, prompt, max_tokens):
