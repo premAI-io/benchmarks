@@ -10,28 +10,8 @@
         "folder": "./models/Llama-2-7B-GGUF"
     },
     {
-        "url": "https://huggingface.co/ctranslate2-4you/Llama-2-7b-chat-hf-ct2-int8/resolve/main/model.bin",
-        "file": "model.bin",
-        "folder": "./models/Llama-2-7b-chat-hf-ct2-int8"
-    },
-    {
-        "url": "https://huggingface.co/ctranslate2-4you/Llama-2-7b-chat-hf-ct2-int8/resolve/main/tokenizer.model",
+        "url": "https://huggingface.co/michaelfeil/ct2fast-Llama-2-13b-chat-hf/resolve/main/tokenizer.model",
         "file": "tokenizer.model",
-        "folder": "./models/Llama-2-7b-chat-hf-ct2-int8"
-    },
-    {
-        "url": "https://huggingface.co/ctranslate2-4you/Llama-2-7b-chat-hf-ct2-int8/resolve/main/config.json",
-        "file": "config.json",
-        "folder": "./models/Llama-2-7b-chat-hf-ct2-int8"
-    },
-    {
-        "url": "https://huggingface.co/ctranslate2-4you/Llama-2-7b-chat-hf-ct2-int8/resolve/main/vocabulary.json",
-        "file": "vocabulary.json",
-        "folder": "./models/Llama-2-7b-chat-hf-ct2-int8"
-    },
-    {
-        "url": "https://prem-models.s3.eu-central-1.amazonaws.com/llama-v2/llama-2-7b-hf.zip",
-        "file": "llama-2-7b-hf.zip",
-        "folder": "./models/llama-2-7b-hf"
+        "folder": "./models/ct2fast-Llama-2-13b-chat-hf"
     }
 ] 

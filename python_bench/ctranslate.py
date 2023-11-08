@@ -14,13 +14,14 @@ B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
 
 
 class CTranslateBenchmark(Benchmark):
-    def __init__(self, model_path, gpu):
+    def __init__(self, model_path, gpu, compute_type):
         super().__init__(model_path)
         self.gpu = gpu
+        self.compute_type=compute_type
 
     def load_model(self) -> Benchmark:
         self.generator = ctranslate2.Generator(
-            self.model_path, device="cuda" if self.gpu else "cpu"
+            self.model_path, device="cuda" if self.gpu else "cpu", compute_type=self.compute_type
         )
         self.sp = spm.SentencePieceProcessor(
             os.path.join(self.model_path, "tokenizer.model")

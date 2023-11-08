@@ -717,7 +717,6 @@ class TinyGradBenchmark(Benchmark):
             Device.DEFAULT = "GPU"
         else:
             Device.DEFAULT = "CPU"
-        print(f"Running with {Device.DEFAULT}")
         toks = [self.model.tokenizer.bos_id()] + self.model.tokenizer.encode(prompt)
         start_pos = 0
         outputted = self.model.tokenizer.decode(toks)

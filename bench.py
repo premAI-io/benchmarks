@@ -27,7 +27,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--repetitions",
         type=int,
-        default=1,
+        default=10,
         help="The number of repetitions for the benchmark.",
     )
     args = parser.parse_args()
@@ -35,19 +35,20 @@ if __name__ == "__main__":
     LOGGER.info(
         f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} repetitions={args.repetitions}"
     )
+
+    LOGGER.info(f"Running ctranslate benchmark")
+    ctranslate_bench = CTranslateBenchmark(
+        "./models/llama-2-7b-hf-float16", gpu=True, compute_type="int8"
+    ).load_model()
+    ctranslate_result = ctranslate_bench.benchmark(
+        max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
+    )
+
     LOGGER.info(f"Running llama-cpp benchmark")
     llamacpp_bench = LlamaCPPBenchmark(
         "./models/Llama-2-7B-GGUF/llama-2-7b.Q8_0.gguf", gpu=True
     ).load_model()
     llamacpp_result = llamacpp_bench.benchmark(
-        max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
-    )
-
-    LOGGER.info(f"Running ctranslate benchmark")
-    ctranslate_bench = CTranslateBenchmark(
-        "./models/Llama-2-7b-chat-hf-ct2-int8", gpu=True
-    ).load_model()
-    ctranslate_result = ctranslate_bench.benchmark(
         max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
     )
 
