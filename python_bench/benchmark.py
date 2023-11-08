@@ -1,5 +1,8 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Benchmark(ABC):
@@ -23,6 +26,7 @@ class Benchmark(ABC):
 
     def __init__(self, model_path):
         self.model_path = model_path
+        self.results = []
 
     @abstractmethod
     def load_model(self) -> Benchmark:
@@ -32,9 +36,10 @@ class Benchmark(ABC):
     def run_model(self, prompt, max_tokens) -> float:
         pass
 
-    def benchmark(self, prompt, max_tokens, repetitions) -> float:
-        results = []
-        for _ in range(repetitions):
+    def benchmark(self, prompt, max_tokens, repetitions):
+        for i in range(repetitions):
+            logger.info(
+                f"Running repetition [{str(i+1).zfill(len(str(repetitions)))}/{repetitions}]"
+            )
             tokens_per_second = self.run_model(prompt, max_tokens)
-            results.append(tokens_per_second)
-        return sum(results) / len(results)
+            self.results.append(tokens_per_second)

@@ -12,9 +12,11 @@ import json
 import time
 import numpy as np
 from pathlib import Path
+import logging
 
 from python_bench.benchmark import Benchmark
 
+logging.getLogger("tinygrad").setLevel(logging.ERROR)
 np.set_printoptions(linewidth=200)
 
 

@@ -1,6 +1,9 @@
 import time
+import logging
 from python_bench.benchmark import Benchmark
 from llama_cpp import Llama
+
+logging.getLogger("llama_cpp").setLevel(logging.ERROR)
 
 
 class LlamaCPPBenchmark(Benchmark):
@@ -10,7 +13,9 @@ class LlamaCPPBenchmark(Benchmark):
 
     def load_model(self) -> Benchmark:
         self.model = Llama(
-            model_path=self.model_path, n_gpu_layers=-1 if self.gpu else 0
+            model_path=self.model_path,
+            n_gpu_layers=-1 if self.gpu else 0,
+            verbose=False,
         )
         return self
 
