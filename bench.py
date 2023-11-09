@@ -38,7 +38,7 @@ if __name__ == "__main__":
         f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} repetitions={args.repetitions}"
     )
     report = defaultdict(lambda: defaultdict(float))
-    for quantize in ("Q8_0", "Q4_K_M"):
+    for quantize in ("Q8_0", "Q4_0"):
         logging.info(f"Running llama-cpp benchmark with {quantize}")
         llamacpp_bench = LlamaCPPBenchmark(
             f"./models/Llama-2-7B-GGUF/llama-2-7b.{quantize}.gguf", gpu=True
