@@ -18,3 +18,14 @@ if [ ! -d "./models/llama-2-7b-hf-float16" ]; then
 else
  echo "Model llama-2-7b-hf-bfloat16 already exists!."
 fi
+
+ST_FOLDER=./models/llama-2-7b-st
+if [ ! -d "$ST_FOLDER" ]; then
+  source venv/bin/activate
+  echo "Storing llama-2-7b-hf in safetensors format!."
+  python convert_to_safetensors.py \
+  --input_dir ./models/llama-2-7b-hf \
+  --output_dir $ST_FOLDER
+else
+ echo "Model llama-2-7b-hf in safetensors format already exists!."
+fi

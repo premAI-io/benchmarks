@@ -38,6 +38,16 @@ check_python() {
     fi
 }
 
+# Function to check if rust is installed
+check_rust() {
+    if which cargo &>/dev/null ; then
+        echo "Rust is installed. Using $(which cargo)"
+    else
+        echo "Rust is not installed. Please install Rust before proceeding."
+        exit 1  # Error exit code
+    fi
+}
+
 # Function to check if jq is installed
 check_jq() {
     if ! command -v jq &> /dev/null
@@ -61,14 +71,28 @@ setup() {
 
 # Function to run python benchmarks
 run_benchmarks() {
+
+    PROMPT="Explain what is a transformer"
+    REPETITIONS=2
+    DIR=$(pwd)
+    cd ./rust_bench/llama_candle
+    
+    echo -e "Running rust benchmarks...\n"
+    cargo run --release --features cuda \
+        -- --local-weights "$DIR/models/llama-2-7b-st/" \
+        --repetitions "$REPETITIONS" \
+        --prompt "$PROMPT"
+
+    cd $DIR
     echo -e "Running python benchmarks...\n"
     source ./venv/bin/activate
-    python ./bench.py
+    python ./bench.py --prompt "$PROMPT" --repetitions "$REPETITIONS"
     deactivate
 }
 
 check_platform
 check_python
+check_rust
 check_jq
 download_models
 setup
