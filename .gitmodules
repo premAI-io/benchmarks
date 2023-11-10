@@ -1,3 +1,0 @@
-[submodule "rust_bench/llama2-burn"]
-	path = rust_bench/llama2-burn
-	url = https://github.com/Gadersd/llama2-burn.git
