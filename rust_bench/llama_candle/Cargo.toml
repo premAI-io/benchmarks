@@ -6,47 +6,24 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-candle = { git = "https://github.com/huggingface/candle.git", package= "candle-core" }
-candle-transformers = { git = "https://github.com/huggingface/candle.git", package= "candle-transformers" }
-candle-examples = { git = "https://github.com/huggingface/candle.git", package= "candle-examples" }
+accelerate-src = { version = "0.3.2", optional = true }
 anyhow = { version = "1", features = ["backtrace"] }
-byteorder = "1.4.3"
+candle = { git = "https://github.com/huggingface/candle.git", package = "candle-core" }
+candle-examples = { git = "https://github.com/huggingface/candle.git", package = "candle-examples" }
+candle-nn = { git = "https://github.com/huggingface/candle.git", package = "candle-nn" }
+candle-transformers = { git = "https://github.com/huggingface/candle.git", package = "candle-transformers" }
 clap = { version = "4.2.4", features = ["derive"] }
-gemm = { version = "0.16.0", features = ["wasm-simd128-enable"] }
-hf-hub = "0.3.0"
-half = { version = "2.3.1", features = ["num-traits", "use-intrinsics", "rand_distr"] }
-image = { version = "0.24.7", default-features = false, features = ["jpeg", "png"] }
+env_logger = "0.10.0"
 imageproc = { version = "0.23.0", default-features = false }
 intel-mkl-src = { version = "0.8.1", features = ["mkl-static-lp64-iomp"] }
-libc = { version = "0.2.147" }
 log = "0.4"
-memmap2 = { version = "0.7.1", features = ["stable_deref_trait"] }
-num_cpus = "1.15.0"
-num-traits = "0.2.15"
-parquet = { version = "45.0.0" }
 rand = "0.8.5"
-rand_distr = "0.4.3"
-rayon = "1.7.0"
 rusttype = { version = "0.9", default-features = false }
-safetensors = "0.3.1"
-serde = { version = "1.0.171", features = ["derive"] }
 serde_json = "1.0.99"
-thiserror = "1"
-tokenizers = { version = "0.13.4", features = ["onig"]}
-tracing = "0.1.37"
+tokenizers = { version = "0.13.4", features = ["onig"] }
 tracing-chrome = "0.7.1"
 tracing-subscriber = "0.3.7"
-wav = "1.0.0"
-yoke = { version = "0.7.2", features = ["derive"] }
-zip = { version = "0.6.6", default-features = false }
-accelerate-src = { version = "0.3.2", optional = true }
-candle-flash-attn = {  git = "https://github.com/huggingface/candle.git", version = "0.3.0", optional = true }
-candle-nn = {  git = "https://github.com/huggingface/candle.git", package= "candle-nn" }
-cudarc = { version = "0.9.14", features = ["f16"], optional = true }
-env_logger = "0.10.0"
 
 [features]
 accelerate = ["dep:accelerate-src", "candle/accelerate", "candle-nn/accelerate", "candle-transformers/accelerate"]
 cuda = ["candle/cuda", "candle-nn/cuda", "candle-transformers/cuda"]
-cudnn = ["candle/cudnn"]
-flash-attn = ["cuda", "candle-transformers/flash-attn", "dep:candle-flash-attn"]

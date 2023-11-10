@@ -18,6 +18,7 @@ use clap::Parser;
 use candle::{DType, Tensor, Device};
 use candle_nn::VarBuilder;
 use candle_transformers::generation::LogitsProcessor;
+use rand::Rng;
 use std::{path::PathBuf, fs, env};
 use env_logger::Env;
 use log::info;
@@ -42,10 +43,6 @@ struct Args {
     /// Nucleus sampling probability cutoff.
     #[arg(long)]
     top_p: Option<f64>,
-
-    /// The seed to use when generating random samples.
-    #[arg(long, default_value_t = 299792458)]
-    seed: u64,
 
     /// The length of the sample to generate (in tokens).
     #[arg(long, default_value_t = 100)]
@@ -141,6 +138,10 @@ fn load_llama_model(
     Ok((Llama::load(vb, &cache, &config)?, tokenizer_filename, cache))
 }
 
+fn generate_random_numbers(n: usize) -> Vec<u64> {
+    let mut rng = rand::thread_rng();
+    (0..n).map(|_| rng.gen()).collect()
+}
 fn main() -> Result<()> {
     use tokenizers::Tokenizer;
     use tracing_chrome::ChromeLayerBuilder;
@@ -169,11 +170,12 @@ fn main() -> Result<()> {
 
     let repetitions = args.repetitions;
     let mut tokens_per_second = Vec::with_capacity(repetitions);
+    let seeds = generate_random_numbers(repetitions);
     info!("Running candle benchmark");
 
     for r in 0..repetitions {
         let width = repetitions.to_string().len();
-        let message = format!("Running repetition [{:0width$}/{}]", r + 1, repetitions);
+        let message = format!("Running repetition with seed {} [{:0width$}/{}]", seeds[r], r + 1, repetitions);
         info!("{}", message);
         let (llama, tokenizer_filename, cache) = load_llama_model(
             &args.local_weights,
@@ -189,7 +191,7 @@ fn main() -> Result<()> {
             .map_err(E::msg)?
             .get_ids()
             .to_vec();
-        let mut logits_processor = LogitsProcessor::new(args.seed, args.temperature, args.top_p);
+        let mut logits_processor = LogitsProcessor::new(seeds[r], args.temperature, args.top_p);
         let start_gen = std::time::Instant::now();
         let mut index_pos = 0;
         let mut token_generated: f64 = 0.0;
