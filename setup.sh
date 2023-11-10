@@ -29,3 +29,36 @@ if [ ! -d "$ST_FOLDER" ]; then
 else
  echo "Model llama-2-7b-hf in safetensors format already exists!."
 fi
+
+BURN_MODEL_INPUT_DIR=$(pwd)/models/llama-2-7b-raw
+BURN_FOLDER=$(pwd)/rust_bench/llama2-burn
+BURN_MODEL_FOLDER=$(pwd)/models/llama-2-7b-burn
+BURN_MODEL_NAME=llama-2-7b-burn
+
+if [ ! -e "$BURN_MODEL_FOLDER/$BURN_MODEL_NAME.cfg" ]; then
+  mkdir -p "$BURN_MODEL_FOLDER"
+  if [ ! -d "$BURN_MODEL_FOLDER/params" ]; then
+    source venv/bin/activate 
+    echo "Installing requirements for dumping"
+    python -m pip install \
+      -r "$BURN_FOLDER/llama-py/requirements.txt" > /dev/null
+    echo "Dumping model from $BURN_MODEL_INPUT_DIR to $BURN_MODEL_FOLDER"
+    python "$BURN_FOLDER/llama-py/dump_model.py" \
+      --model-dir "$BURN_MODEL_INPUT_DIR" \
+      --output-dir "$BURN_MODEL_FOLDER"
+    deactivate
+  else
+    echo "Model already dumped at $BURN_MODEL_FOLDER/params."
+  fi
+  echo "Converting dumped model to burn"
+  cargo run \
+    --manifest-path="$BURN_FOLDER/Cargo.toml" \
+    --bin convert \
+    -- \
+    "$BURN_MODEL_FOLDER/params" \
+    "$BURN_MODEL_NAME"  \
+    "$BURN_MODEL_FOLDER"
+  cp "$BURN_MODEL_INPUT_DIR/tokenizer.model" "$BURN_MODEL_FOLDER"
+else
+  echo "Model llama-2-7b-burn already exists!."
+fi

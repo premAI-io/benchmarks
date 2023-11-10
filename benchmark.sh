@@ -74,19 +74,34 @@ run_benchmarks() {
 
     PROMPT="Explain what is a transformer"
     REPETITIONS=2
+    MAX_TOKENS=100
     DIR=$(pwd)
-    cd ./rust_bench/llama_candle
     
     echo -e "Running rust benchmarks...\n"
+
+    cargo run --release --bin sample \
+        --manifest-path="$DIR/rust_bench/llama2-burn/Cargo.toml" \
+        "$DIR/models/llama-2-7b-burn/llama-2-7b-burn" \
+        "$DIR/models/llama-2-7b-burn/tokenizer.model" \
+        "$PROMPT" \
+        $MAX_TOKENS \
+        gpu \
+        $REPETITIONS
+
     cargo run --release --features cuda \
+        --manifest-path="$DIR/rust_bench/llama_candle/Cargo.toml" \
         -- --local-weights "$DIR/models/llama-2-7b-st/" \
         --repetitions "$REPETITIONS" \
-        --prompt "$PROMPT"
+        --prompt "$PROMPT" \
+        --sample-len $MAX_TOKENS
 
     cd $DIR
     echo -e "Running python benchmarks...\n"
     source ./venv/bin/activate
-    python ./bench.py --prompt "$PROMPT" --repetitions "$REPETITIONS"
+    python ./bench.py \
+        --prompt "$PROMPT" \
+        --repetitions "$REPETITIONS" \
+        --max_tokens $MAX_TOKENS
     deactivate
 }
 

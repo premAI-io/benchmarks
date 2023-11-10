@@ -15,13 +15,13 @@ extern crate intel_mkl_src;
 use anyhow::{bail, Error as E, Result};
 use clap::Parser;
 
-use candle::{DType, Tensor, Device};
+use candle::{DType, Device, Tensor};
 use candle_nn::VarBuilder;
 use candle_transformers::generation::LogitsProcessor;
-use rand::Rng;
-use std::{path::PathBuf, fs, env};
 use env_logger::Env;
 use log::info;
+use rand::Rng;
+use std::{env, fs, path::PathBuf};
 
 use candle_transformers::models::llama as model;
 use model::{Llama, LlamaConfig};
@@ -98,7 +98,10 @@ fn init_logger() {
 }
 
 // Function to get all files with a specific extension in a directory
-fn get_files_with_extension(directory: &str, extension: &str) -> Result<Vec<String>, std::io::Error> {
+fn get_files_with_extension(
+    directory: &str,
+    extension: &str,
+) -> Result<Vec<String>, std::io::Error> {
     let entries = fs::read_dir(directory)?;
 
     let filenames: Vec<String> = entries
@@ -175,7 +178,7 @@ fn main() -> Result<()> {
 
     for r in 0..repetitions {
         let width = repetitions.to_string().len();
-        let message = format!("Running repetition with seed {} [{:0width$}/{}]", seeds[r], r + 1, repetitions);
+        let message = format!("Running repetition [{:0width$}/{}]", r + 1, repetitions);
         info!("{}", message);
         let (llama, tokenizer_filename, cache) = load_llama_model(
             &args.local_weights,
@@ -220,7 +223,7 @@ fn main() -> Result<()> {
             let next_token = logits_processor.sample(&logits)?;
             token_generated += 1.0;
             tokens.push(next_token);
-            
+
             if Some(next_token) == eos_token_id {
                 break;
             }
@@ -229,21 +232,22 @@ fn main() -> Result<()> {
         tokens_per_second.push(token_generated / dt.as_secs_f64());
     }
 
-    
     let average_tokens_per_second = tokens_per_second.iter().sum::<f64>() / repetitions as f64;
-    
+
     let standard_deviation = if repetitions > 1 {
         let mean = tokens_per_second.iter().sum::<f64>() / repetitions as f64;
-        let variance = tokens_per_second.iter().map(|&x| (x - mean).powi(2)).sum::<f64>() / repetitions as f64;
+        let variance = tokens_per_second
+            .iter()
+            .map(|&x| (x - mean).powi(2))
+            .sum::<f64>()
+            / repetitions as f64;
         variance.sqrt()
     } else {
         0.0
     };
     info!(
         "candle, {:?} : {:.2} ± {:.2}",
-        dtype,
-        average_tokens_per_second,
-        standard_deviation
+        dtype, average_tokens_per_second, standard_deviation
     );
     Ok(())
 }
