@@ -78,7 +78,9 @@ run_benchmarks() {
     DIR=$(pwd)
     
     echo -e "Running rust benchmarks...\n"
+    source ./venv/bin/activate
 
+    export TORCH_CUDA_VERSION=cu117 && \
     cargo run --release --bin sample \
         --manifest-path="$DIR/rust_bench/llama2-burn/Cargo.toml" \
         "$DIR/models/llama-2-7b-burn/llama-2-7b-burn" \
@@ -87,9 +89,10 @@ run_benchmarks() {
         $MAX_TOKENS \
         gpu \
         $REPETITIONS
+    unset TORCH_CUDA_VERSION
 
     cargo run --release --features cuda \
-        --manifest-path="$DIR/rust_bench/llama_candle/Cargo.toml" \
+        --manifest-path="$DIR/rust_bench/llama2-candle/Cargo.toml" \
         -- --local-weights "$DIR/models/llama-2-7b-st/" \
         --repetitions "$REPETITIONS" \
         --prompt "$PROMPT" \
@@ -97,7 +100,6 @@ run_benchmarks() {
 
     cd $DIR
     echo -e "Running python benchmarks...\n"
-    source ./venv/bin/activate
     python ./bench.py \
         --prompt "$PROMPT" \
         --repetitions "$REPETITIONS" \
