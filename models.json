@@ -2,12 +2,12 @@
     {
         "url": "https://huggingface.co/TheBloke/Llama-2-7B-GGUF/resolve/main/llama-2-7b.Q8_0.gguf",
         "file": "llama-2-7b.Q8_0.gguf",
-        "folder": "./models/Llama-2-7B-GGUF"
+        "folder": "./models/llama-2-7b-gguf"
     },
     {
         "url": "https://huggingface.co/TheBloke/Llama-2-7B-GGUF/resolve/main/llama-2-7b.Q4_0.gguf",
         "file": "llama-2-7b.Q4_0.gguf",
-        "folder": "./models/Llama-2-7B-GGUF"
+        "folder": "./models/llama-2-7b-gguf"
     },
     {
         "url": "https://prem-models.s3.eu-central-1.amazonaws.com/llama-v2/llama-2-7b-hf.zip",

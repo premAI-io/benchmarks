@@ -41,7 +41,7 @@ if __name__ == "__main__":
     for quantize in ("Q8_0", "Q4_0"):
         logging.info(f"Running llama-cpp benchmark with {quantize}")
         llamacpp_bench = LlamaCPPBenchmark(
-            f"./models/Llama-2-7B-GGUF/llama-2-7b.{quantize}.gguf", gpu=True
+            f"./models/llama-2-7b-gguf/llama-2-7b.{quantize}.gguf", gpu=True
         ).load_model()
         llamacpp_bench.benchmark(
             max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
