@@ -32,16 +32,18 @@ if __name__ == "__main__":
         default=10,
         help="The number of repetitions for the benchmark.",
     )
+    parser.add_argument(
+        "--gpu",
+        action="store_true",
+        help="Flag to indicate whether to use GPU for the benchmark.",
+    )
     args = parser.parse_args()
 
-    logging.info(
-        f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} repetitions={args.repetitions}"
-    )
     report = defaultdict(lambda: defaultdict(float))
     for quantize in ("Q8_0", "Q4_0"):
         logging.info(f"Running llama-cpp benchmark with {quantize}")
         llamacpp_bench = LlamaCPPBenchmark(
-            f"./models/llama-2-7b-gguf/llama-2-7b.{quantize}.gguf", gpu=True
+            f"./models/llama-2-7b-gguf/llama-2-7b.{quantize}.gguf", gpu=args.gpu
         ).load_model()
         llamacpp_bench.benchmark(
             max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
@@ -55,7 +57,9 @@ if __name__ == "__main__":
     for compute_type in ("float16", "int8"):
         logging.info(f"Running ctranslate benchmark with {compute_type}")
         ctranslate_bench = CTranslateBenchmark(
-            "./models/llama-2-7b-hf-float16", gpu=True, compute_type=compute_type
+            f"./models/llama-2-7b-hf-{compute_type}",
+            gpu=args.gpu,
+            compute_type=compute_type,
         ).load_model()
         ctranslate_bench.benchmark(
             max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
@@ -65,17 +69,17 @@ if __name__ == "__main__":
             "std": np.std(ctranslate_bench.results),
         }
 
-    logging.info(f"Running tinygrad benchmark")
-    tinygrad_bench = TinyGradBenchmark(
-        "./models/llama-2-7b-hf", quantize=False, gpu=True
-    ).load_model()
-    tinygrad_bench.benchmark(
-        max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
-    )
-    report["tinygrad"]["float16"] = {
-        "mean": np.mean(tinygrad_bench.results),
-        "std": np.std(tinygrad_bench.results),
-    }
+    # logging.info(f"Running tinygrad benchmark")
+    # tinygrad_bench = TinyGradBenchmark(
+    #     "./models/llama-2-7b-hf", quantize=False, gpu=args.gpu
+    # ).load_model()
+    # tinygrad_bench.benchmark(
+    #     max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
+    # )
+    # report["tinygrad"]["float16"] = {
+    #     "mean": np.mean(tinygrad_bench.results),
+    #     "std": np.std(tinygrad_bench.results),
+    # }
 
     logging.info("Benchmark report")
     for framework, quantizations in report.items():

@@ -1,5 +1,33 @@
 #!/bin/bash
+
+##############################################################################################
+# Script: run_benchmarks.sh
+# Description: This script runs benchmarks for a transformer model using both 
+# Rust and Python implementations. It provides options to customize the 
+# benchmarks, such as the prompt, repetitions, maximum tokens, and device.
+#
+# Usage: ./run_benchmarks.sh [OPTIONS]
+# OPTIONS:
+#   -p, --prompt      Prompt for benchmarks (default: 'Explain what is a transformer')
+#   -r, --repetitions Number of repetitions for benchmarks (default: 2)
+#   -m, --max_tokens  Maximum number of tokens for benchmarks (default: 100)
+#   -d, --device      Device for benchmarks (possible values: 'gpu' or 'cpu', default: 'gpu')
+#   -h, --help        Show this help message
+##############################################################################################
+
 set -euo pipefail
+
+# Function to print script usage
+print_usage() {
+    echo "Usage: $0 [OPTIONS]"
+    echo "OPTIONS:"
+    echo "  -p, --prompt      Prompt for benchmarks (default: 'Explain what is a transformer')"
+    echo "  -r, --repetitions Number of repetitions for benchmarks (default: 2)"
+    echo "  -m, --max_tokens  Maximum number of tokens for benchmarks (default: 100)"
+    echo "  -d, --device      Device for benchmarks (possible values: 'gpu' or 'cpu', default: 'cpu')"
+    echo "  -h, --help        Show this help message"
+    exit 1
+}
 
 # Function to check the platform
 check_platform() {
@@ -19,10 +47,10 @@ check_platform() {
 check_cuda() {
     if command -v nvcc &> /dev/null
     then
-        echo -e "Using CUDA\n"
+        echo -e "\nUsing CUDA"
         nvcc --version
     else
-        echo "CUDA is not available."
+        echo -e "\nCUDA is not available."
         exit 1
     fi
 }
@@ -31,9 +59,9 @@ check_cuda() {
 check_python() {
     if command -v python &> /dev/null
     then
-        echo "Using $(python --version)."
+        echo -e "\nUsing $(python --version)."
     else
-        echo "Python does not exist."
+        echo -e "\nPython does not exist."
         exit 1
     fi
 }
@@ -41,9 +69,9 @@ check_python() {
 # Function to check if rust is installed
 check_rust() {
     if which cargo &>/dev/null ; then
-        echo "Rust is installed. Using $(which cargo)"
+        echo -e "\nRust is installed. Using $(which cargo)"
     else
-        echo "Rust is not installed. Please install Rust before proceeding."
+        echo -e "\nRust is not installed. Please install Rust before proceeding."
         exit 1  # Error exit code
     fi
 }
@@ -52,60 +80,129 @@ check_rust() {
 check_jq() {
     if ! command -v jq &> /dev/null
     then
-        echo "jq is not installed."
+        echo -e "\njq is not installed."
         exit 1
     fi
 }
 
 # Function to download models
 download_models() {
-    echo -e "Downloading models...\n"
+    echo -e "\nDownloading models..."
     bash ./download.sh ./models.json
 }
 
 # Function to set up
 setup() {
-    echo -e "Setting up...\n"
+    echo -e "\nSetting up..."
     bash ./setup.sh
 }
 
 # Function to run python benchmarks
 run_benchmarks() {
+    local PROMPT="$1"
+    local REPETITIONS="$2"
+    local MAX_TOKENS="$3"
+    local DEVICE="$4"
+    local DIR=$(pwd)
+    local CARGO_CANDLE_FEATURES=""
+    local PYTHON_DEVICE=""
 
-    PROMPT="Explain what is a transformer"
-    REPETITIONS=2
-    MAX_TOKENS=100
-    DIR=$(pwd)
-    
-    echo -e "Running rust benchmarks...\n"
+    echo "Running benchmarks with the following parameters:"
+    echo "  Prompt: $PROMPT"
+    echo "  Repetitions: $REPETITIONS"
+    echo "  Max Tokens: $MAX_TOKENS"
+    echo "  Device: $DEVICE"
+
+    echo "Running rust benchmarks..."
     source ./venv/bin/activate
 
-    export TORCH_CUDA_VERSION=cu117 && \
+    # Run Rust benchmarks
+    if [ "$DEVICE" == "gpu" ]; then
+        export TORCH_CUDA_VERSION=cu117
+    fi
+
     cargo run --release --bin sample \
         --manifest-path="$DIR/rust_bench/llama2-burn/Cargo.toml" \
         "$DIR/models/llama-2-7b-burn/llama-2-7b-burn" \
         "$DIR/models/llama-2-7b-burn/tokenizer.model" \
         "$PROMPT" \
         $MAX_TOKENS \
-        gpu \
+        $DEVICE \
         $REPETITIONS
-    unset TORCH_CUDA_VERSION
 
-    cargo run --release --features cuda \
+    # Unset TORCH_CUDA_VERSION if DEVICE is 'gpu'
+    [ "$DEVICE" == "gpu" ] && unset TORCH_CUDA_VERSION
+
+    # Set features option based on $DEVICE
+    [ "$DEVICE" == "gpu" ] && CARGO_CANDLE_FEATURES="--features cuda"
+
+    cargo run --release $CARGO_CANDLE_FEATURES \
         --manifest-path="$DIR/rust_bench/llama2-candle/Cargo.toml" \
         -- --local-weights "$DIR/models/llama-2-7b-st/" \
         --repetitions "$REPETITIONS" \
         --prompt "$PROMPT" \
         --sample-len $MAX_TOKENS
+    
+    [ "$DEVICE" == "gpu" ] && PYTHON_DEVICE="--gpu"
 
     cd $DIR
-    echo -e "Running python benchmarks...\n"
+    echo "Running python benchmarks..."
     python ./bench.py \
         --prompt "$PROMPT" \
         --repetitions "$REPETITIONS" \
-        --max_tokens $MAX_TOKENS
+        --max_tokens $MAX_TOKENS \
+        $PYTHON_DEVICE
     deactivate
 }
+
+# Default values
+DEFAULT_PROMPT="Explain what is a transformer"
+DEFAULT_REPETITIONS=2
+DEFAULT_MAX_TOKENS=100
+DEFAULT_DEVICE="gpu"
+
+# Parse command-line arguments
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        -p|--prompt)
+            PROMPT="$2"
+            shift 2
+            ;;
+        -r|--repetitions)
+            REPETITIONS="$2"
+            shift 2
+            ;;
+        -m|--max_tokens)
+            MAX_TOKENS="$2"
+            shift 2
+            ;;
+        -d|--device)
+            DEVICE="$2"
+            case "$DEVICE" in
+                "gpu" | "cpu")
+                    ;;
+                *)
+                    echo "Invalid value for --device. Please use 'gpu' or 'cpu'."
+                    print_usage
+                    ;;
+            esac
+            shift 2
+            ;;
+        -h|--help)
+            print_usage
+            ;;
+        *)
+            echo "Unknown option: $1"
+            print_usage
+            ;;
+    esac
+done
+
+# Set default values if not provided
+PROMPT="${PROMPT:-$DEFAULT_PROMPT}"
+REPETITIONS="${REPETITIONS:-$DEFAULT_REPETITIONS}"
+MAX_TOKENS="${MAX_TOKENS:-$DEFAULT_MAX_TOKENS}"
+DEVICE="${DEVICE:-$DEFAULT_DEVICE}"
 
 check_platform
 check_python
@@ -113,4 +210,4 @@ check_rust
 check_jq
 download_models
 setup
-run_benchmarks
+run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE"

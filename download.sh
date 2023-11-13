@@ -1,19 +1,22 @@
 #!/bin/bash
 
-# This script downloads files from a list of URLs specified in a JSON file.
-# The JSON file should contain an array of objects, each with a 'url', 'file', and 'folder' property.
-# The 'url' property is the URL of the file to download, the 'file' property is the name of the file,
-# and the 'folder' property is the directory where the file should be downloaded to.
-# The script checks if the file already exists before downloading it.
+################################################################################
+# Script: download.sh
+# Description: Downloads files from a list of URLs specified in a JSON file. 
+# The JSON file should contain an array of objects, each with a 'url', 'file', 
+# and 'folder' property. The 'url' property is the URL of the file to download, 
+# the 'file' property is the name of the file, and the 'folder' property is the 
+# directory where the file should be downloaded to. The script checks if the file 
+# already exists before downloading it.
+#
 #
 # Usage: ./download.sh <json_file>
 #
 # Example:
 # ./download.sh models.json
-#
-# This script requires the 'jq' tool to parse the JSON file.
-# run brew install jq (MacOS)
-# run apt-get install jq (Linux)
+################################################################################
+
+set -euo pipefail
 
 # Function to download a file
 download_file() {
