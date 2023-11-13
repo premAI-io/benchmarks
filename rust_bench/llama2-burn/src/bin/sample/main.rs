@@ -151,10 +151,10 @@ fn main() {
     let llama = llama.to_device(&device);
 
     let mut tokens_per_second_values = Vec::new();
-    let start_time = Instant::now();
     info!("Running burn benchmark");
 
     for r in 0..repetitions {
+        let start_time = Instant::now();
         let width = repetitions.to_string().len();
         let message = format!("Running repetition [{:0width$}/{}]", r + 1, repetitions);
         info!("{}", message);
