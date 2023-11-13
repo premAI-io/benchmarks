@@ -92,7 +92,7 @@ echo $json | jq -r '.[] | @base64' | while read i; do
  else
   # Check if the file exists
   if [ ! -f "$folder/$file" ]; then
-   echo "Downloading: $url to $dir/$file"
+   echo "Downloading: $url to $folder/$file"
    download_file $url $file $folder
   else
    echo "File already exists at $folder/$file"
