@@ -3,7 +3,7 @@ use llama::token::LlamaTokenizer;
 
 use num_traits::cast::ToPrimitive;
 use std::io::prelude::*;
-use std::{any::type_name, env, error::Error, fs::OpenOptions, io, time::Instant};
+use std::{env, error::Error, fs::OpenOptions, io, time::Instant};
 
 use burn_tch::{TchBackend, TchDevice};
 
@@ -179,12 +179,6 @@ fn main() {
     } else {
         0.0
     };
-    info!(
-        "burn, {} : {:.2} ± {:.2}",
-        type_name::<Elem>(),
-        average_tokens_per_second,
-        standard_deviation
-    );
 
     let file = OpenOptions::new()
         .create(true)
@@ -192,14 +186,21 @@ fn main() {
         .open(log_file)
         .unwrap();
     let mut file_writer = io::BufWriter::new(file);
+    let elem_type = if cfg!(feature = "f16") {
+        "float16"
+    } else {
+        "float32"
+    };
+    info!(
+        "burn, {} : {:.2} ± {:.2}",
+        elem_type, average_tokens_per_second, standard_deviation
+    );
     writeln!(
         file_writer,
         "{}",
         format!(
             "burn, {} : {:.2} ± {:.2}",
-            type_name::<Elem>(),
-            average_tokens_per_second,
-            standard_deviation
+            elem_type, average_tokens_per_second, standard_deviation
         )
     )
     .unwrap();

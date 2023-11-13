@@ -35,6 +35,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--gpu",
         action="store_true",
+        default=True,
         help="Flag to indicate whether to use GPU for the benchmark.",
     )
     parser.add_argument(
@@ -45,6 +46,9 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    logging.info(
+        f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} repetitions={args.repetitions} gpu={args.gpu}"
+    )
     report = defaultdict(lambda: defaultdict(float))
     for quantize in ("Q8_0", "Q4_0"):
         logging.info(f"Running llama-cpp benchmark with {quantize}")
@@ -65,7 +69,7 @@ if __name__ == "__main__":
         ctranslate_bench = CTranslateBenchmark(
             f"./models/llama-2-7b-hf-{compute_type}",
             gpu=args.gpu,
-            compute_type="default",
+            compute_type=compute_type,
         ).load_model()
         ctranslate_bench.benchmark(
             max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions

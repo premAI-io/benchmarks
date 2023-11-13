@@ -50,7 +50,7 @@ else
     echo "Model llama-2-7b-hf-float16 already exists!"
 fi
 
-# Check and create llama-2-7b-hf-float16 model
+# Check and create llama-2-7b-hf-int8 model
 if [ ! -d "$LLAMA_HF_MODEL_DIR-int8" ]; then
     echo "Creating llama-2-7b-hf-int8 model..."
     ct2-transformers-converter --model "$LLAMA_HF_MODEL_DIR/" --quantization int8 --output_dir "$LLAMA_HF_MODEL_DIR-int8" --copy_files tokenizer.model
