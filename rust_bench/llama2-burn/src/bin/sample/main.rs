@@ -2,7 +2,8 @@ use llama::model::*;
 use llama::token::LlamaTokenizer;
 
 use num_traits::cast::ToPrimitive;
-use std::{any::type_name, env, error::Error, time::Instant};
+use std::io::prelude::*;
+use std::{any::type_name, env, error::Error, fs::OpenOptions, io, time::Instant};
 
 use burn_tch::{TchBackend, TchDevice};
 
@@ -89,9 +90,9 @@ fn main() {
     init_logger();
 
     let args: Vec<String> = std::env::args().collect();
-    if args.len() != 7 {
+    if args.len() != 8 {
         error!(
-            "Usage: {} <model_name> <tokenizer_filepath> <prompt> <n_tokens> <device> <repetitions>",
+            "Usage: {} <model_name> <tokenizer_filepath> <prompt> <n_tokens> <device> <repetitions> <log_file>",
             args[0]
         );
         std::process::exit(1);
@@ -123,6 +124,11 @@ fn main() {
 
     let repetitions: usize = args[6].parse().unwrap_or_else(|_| {
         error!("Error: Invalid number of repetitions");
+        std::process::exit(1);
+    });
+
+    let log_file: String = args[7].parse().unwrap_or_else(|_| {
+        error!("Error: Invalid log filename.");
         std::process::exit(1);
     });
 
@@ -179,4 +185,22 @@ fn main() {
         average_tokens_per_second,
         standard_deviation
     );
+
+    let file = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(log_file)
+        .unwrap();
+    let mut file_writer = io::BufWriter::new(file);
+    writeln!(
+        file_writer,
+        "{}",
+        format!(
+            "burn, {} : {:.2} ± {:.2}",
+            type_name::<Elem>(),
+            average_tokens_per_second,
+            standard_deviation
+        )
+    )
+    .unwrap();
 }

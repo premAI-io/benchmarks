@@ -103,6 +103,7 @@ run_benchmarks() {
     local REPETITIONS="$2"
     local MAX_TOKENS="$3"
     local DEVICE="$4"
+    local LOG_FILENAME="$5"
     local DIR=$(pwd)
     local CARGO_CANDLE_FEATURES=""
     local PYTHON_DEVICE=""
@@ -118,20 +119,28 @@ run_benchmarks() {
 
     # Run Rust benchmarks
     if [ "$DEVICE" == "gpu" ]; then
-        export TORCH_CUDA_VERSION=cu117
+        export TORCH_CUDA_VERSION=cu117 && \
+        cargo run --release --bin sample \
+            --manifest-path="$DIR/rust_bench/llama2-burn/Cargo.toml" \
+            "$DIR/models/llama-2-7b-burn/llama-2-7b-burn" \
+            "$DIR/models/llama-2-7b-burn/tokenizer.model" \
+            "$PROMPT" \
+            $MAX_TOKENS \
+            $DEVICE \
+            $REPETITIONS \
+            "$LOG_FILENAME"
+        unset TORCH_CUDA_VERSION
+    else 
+        cargo run --release --bin sample \
+            --manifest-path="$DIR/rust_bench/llama2-burn/Cargo.toml" \
+            "$DIR/models/llama-2-7b-burn/llama-2-7b-burn" \
+            "$DIR/models/llama-2-7b-burn/tokenizer.model" \
+            "$PROMPT" \
+            $MAX_TOKENS \
+            $DEVICE \
+            $REPETITIONS \
+            "$LOG_FILENAME"
     fi
-
-    cargo run --release --bin sample \
-        --manifest-path="$DIR/rust_bench/llama2-burn/Cargo.toml" \
-        "$DIR/models/llama-2-7b-burn/llama-2-7b-burn" \
-        "$DIR/models/llama-2-7b-burn/tokenizer.model" \
-        "$PROMPT" \
-        $MAX_TOKENS \
-        $DEVICE \
-        $REPETITIONS
-
-    # Unset TORCH_CUDA_VERSION if DEVICE is 'gpu'
-    [ "$DEVICE" == "gpu" ] && unset TORCH_CUDA_VERSION
 
     # Set features option based on $DEVICE
     [ "$DEVICE" == "gpu" ] && CARGO_CANDLE_FEATURES="--features cuda"
@@ -141,7 +150,8 @@ run_benchmarks() {
         -- --local-weights "$DIR/models/llama-2-7b-st/" \
         --repetitions "$REPETITIONS" \
         --prompt "$PROMPT" \
-        --sample-len $MAX_TOKENS
+        --sample-len $MAX_TOKENS \
+        --log-file $LOG_FILENAME
     
     [ "$DEVICE" == "gpu" ] && PYTHON_DEVICE="--gpu"
 
@@ -151,6 +161,7 @@ run_benchmarks() {
         --prompt "$PROMPT" \
         --repetitions "$REPETITIONS" \
         --max_tokens $MAX_TOKENS \
+        --log_file "$LOG_FILENAME" \
         $PYTHON_DEVICE
     deactivate
 }
@@ -204,10 +215,13 @@ REPETITIONS="${REPETITIONS:-$DEFAULT_REPETITIONS}"
 MAX_TOKENS="${MAX_TOKENS:-$DEFAULT_MAX_TOKENS}"
 DEVICE="${DEVICE:-$DEFAULT_DEVICE}"
 
+timestamp=$(date +"%Y%m%d%H%M%S")
+log_filename="benchmark_${timestamp}.log"
+
 check_platform
 check_python
 check_rust
 check_jq
 download_models
 setup
-run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE"
+run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$log_filename"

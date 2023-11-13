@@ -21,7 +21,13 @@ use candle_transformers::generation::LogitsProcessor;
 use env_logger::Env;
 use log::info;
 use rand::Rng;
-use std::{env, fs, path::PathBuf};
+use std::io::prelude::*;
+use std::{
+    env,
+    fs::{self, OpenOptions},
+    io,
+    path::PathBuf,
+};
 
 use candle_transformers::models::llama as model;
 use model::{Llama, LlamaConfig};
@@ -86,6 +92,9 @@ struct Args {
     /// Number of repetitions
     #[arg(long, default_value_t = 2)]
     repetitions: usize,
+
+    #[arg(long)]
+    log_file: String,
 }
 
 fn init_logger() {
@@ -249,5 +258,22 @@ fn main() -> Result<()> {
         "candle, {:?} : {:.2} ± {:.2}",
         dtype, average_tokens_per_second, standard_deviation
     );
+
+    let file = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(args.log_file)
+        .unwrap();
+    let mut file_writer = io::BufWriter::new(file);
+    writeln!(
+        file_writer,
+        "{}",
+        format!(
+            "candle, {:?} : {:.2} ± {:.2}",
+            dtype, average_tokens_per_second, standard_deviation
+        )
+    )
+    .unwrap();
+
     Ok(())
 }

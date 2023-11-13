@@ -37,6 +37,12 @@ if __name__ == "__main__":
         action="store_true",
         help="Flag to indicate whether to use GPU for the benchmark.",
     )
+    parser.add_argument(
+        "--log_file",
+        type=str,
+        help="Path to the log file for writing logs (in append mode).",
+        default="benchmark_log.txt",
+    )
     args = parser.parse_args()
 
     report = defaultdict(lambda: defaultdict(float))
@@ -59,7 +65,7 @@ if __name__ == "__main__":
         ctranslate_bench = CTranslateBenchmark(
             f"./models/llama-2-7b-hf-{compute_type}",
             gpu=args.gpu,
-            compute_type=compute_type,
+            compute_type="default",
         ).load_model()
         ctranslate_bench.benchmark(
             max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
@@ -82,8 +88,13 @@ if __name__ == "__main__":
     }
 
     logging.info("Benchmark report")
-    for framework, quantizations in report.items():
-        for quantization, stats in quantizations.items():
-            logging.info(
-                f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}"
-            )
+    with open(args.log_file, "a") as file:
+        for framework, quantizations in report.items():
+            for quantization, stats in quantizations.items():
+                logging.info(
+                    f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}"
+                )
+                print(
+                    f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}",
+                    file=file,
+                )
