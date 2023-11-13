@@ -4,4 +4,4 @@ ctranslate2==3.20.0
 huggingface-hub==0.17.3 
 transformers==4.35.0
 torch==2.1.0
-git+https://github.com/tinygrad/tinygrad.git
+git+https://github.com/tinygrad/tinygrad.git@a72b370066837af5b4d44eeb5c4fb30aebf5c502

@@ -69,17 +69,17 @@ if __name__ == "__main__":
             "std": np.std(ctranslate_bench.results),
         }
 
-    # logging.info(f"Running tinygrad benchmark")
-    # tinygrad_bench = TinyGradBenchmark(
-    #     "./models/llama-2-7b-hf", quantize=False, gpu=args.gpu
-    # ).load_model()
-    # tinygrad_bench.benchmark(
-    #     max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
-    # )
-    # report["tinygrad"]["float16"] = {
-    #     "mean": np.mean(tinygrad_bench.results),
-    #     "std": np.std(tinygrad_bench.results),
-    # }
+    logging.info(f"Running tinygrad benchmark")
+    tinygrad_bench = TinyGradBenchmark(
+        "./models/llama-2-7b-hf", quantize=False
+    ).load_model()
+    tinygrad_bench.benchmark(
+        max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
+    )
+    report["tinygrad"]["float16"] = {
+        "mean": np.mean(tinygrad_bench.results),
+        "std": np.std(tinygrad_bench.results),
+    }
 
     logging.info("Benchmark report")
     for framework, quantizations in report.items():
