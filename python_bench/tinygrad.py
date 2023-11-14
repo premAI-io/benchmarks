@@ -645,7 +645,7 @@ class TinyGradBenchmark(Benchmark):
         start = time.time()
         for _ in range(max_tokens):
             probs = self.model.model(
-                Tensor([toks[start_pos:]]), start_pos, 0.7
+                Tensor([toks[start_pos:]]), start_pos, self.temperature
             ).realize()
             probs_np = probs.numpy()
             tok = int(np.random.choice(len(probs_np), p=probs_np))
