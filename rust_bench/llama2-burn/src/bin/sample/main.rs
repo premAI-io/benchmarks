@@ -164,10 +164,9 @@ fn main() {
         tokens_per_second_values.iter().sum::<f64>() / repetitions as f64;
 
     let standard_deviation = if repetitions > 1 {
-        let mean = tokens_per_second_values.iter().sum::<f64>() / repetitions as f64;
         let variance = tokens_per_second_values
             .iter()
-            .map(|&x| (x - mean).powi(2))
+            .map(|&x| (x - average_tokens_per_second).powi(2))
             .sum::<f64>()
             / repetitions as f64;
         variance.sqrt()
