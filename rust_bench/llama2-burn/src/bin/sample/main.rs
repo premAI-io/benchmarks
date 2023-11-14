@@ -91,11 +91,10 @@ fn main() {
 
     let args: Vec<String> = std::env::args().collect();
     if args.len() != 8 {
-        error!(
+        panic!(
             "Usage: {} <model_name> <tokenizer_filepath> <prompt> <n_tokens> <device> <repetitions> <log_file>",
             args[0]
         );
-        std::process::exit(1);
     }
 
     let model_name = &args[1];
