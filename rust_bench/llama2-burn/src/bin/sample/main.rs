@@ -141,8 +141,7 @@ fn main() {
     let (llama, _llama_config): (Llama<Backend>, LlamaConfig) = match load_llama(model_name) {
         Ok((llama, llama_config)) => (llama, llama_config),
         Err(e) => {
-            error!("Failed to load llama model: {:?}", e);
-            process::exit(1);
+            panic!("Failed to load llama model: {:?}", e);
         }
     };
 
