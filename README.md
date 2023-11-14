@@ -50,7 +50,7 @@ Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --prompt
 
 | Engine      | float32      | float16      | int8         | int4         |
 |-------------|--------------|--------------|--------------|--------------|
-| burn        | 3.53 ± 2.80  |      -       |      -       |      -       |
+| burn        | 13.28 ± 0.79 |      -       |      -       |      -       |
 | candle      |      -       | 26.30 ± 0.29 |      -       |      -       |
 | llama.cpp   |      -       |      -       | 67.64 ± 22.57| 106.21 ± 2.21|
 | ctranslate  |      -       | 58.54 ± 13.24| 34.22 ± 6.29 |      -       |
