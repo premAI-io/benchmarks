@@ -157,7 +157,7 @@ fn main() {
         let _ = sample_llama(&llama, &tokenizer, prompt, n_tokens);
         let elapsed_time = start_time.elapsed();
         let elapsed_seconds = elapsed_time.as_secs_f64();
-        let tokens_per_second = (n_tokens) as f64 / elapsed_seconds;
+        let tokens_per_second = n_tokens as f64 / elapsed_seconds;
         tokens_per_second_values.push(tokens_per_second);
     }
 
