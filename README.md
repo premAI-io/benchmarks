@@ -58,3 +58,19 @@ Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --prompt
 
 *(data updated: 13th November 2023)
 
+
+### M2 MAX 32GB Inference Bench:
+
+Model: LLAMA-2-7B
+CUDA Version: NA
+Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --prompt 'Explain what is a transformer'`
+
+| Engine      | float32       | float16       | int8         | int4         |
+|-------------|--------------|--------------|--------------|--------------|
+| burn        | 0.30 ± 0.09  |      -       |      -       |      -       |
+| candle      |      -       | 3.43 ± 0.02  |      -       |      -       |
+| llama.cpp   |      -       |      -       | 15.29 ± 1.95 | 22.17 ± 2.25 |
+| ctranslate  |      -       |      -       | 2.05 ± 0.56  |      -       |
+| tinygrad    |      -       | 16.33 ± 1.38 |      -       |      -       |
+
+*(data updated: 14th November 2023)
