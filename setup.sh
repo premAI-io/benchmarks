@@ -50,14 +50,6 @@ else
     echo "Model llama-2-7b-hf-float16 already exists!"
 fi
 
-# Check and create llama-2-7b-hf-int8 model
-if [ ! -d "$LLAMA_HF_MODEL_DIR-int8" ]; then
-    echo "Creating llama-2-7b-hf-int8 model..."
-    ct2-transformers-converter --model "$LLAMA_HF_MODEL_DIR/" --quantization int8 --output_dir "$LLAMA_HF_MODEL_DIR-int8" --copy_files tokenizer.model
-else
-    echo "Model llama-2-7b-hf-int8 already exists!"
-fi
-
 # Check and create llama-2-7b-st model
 if [ ! -d "$LLAMA_ST_MODEL_DIR" ]; then
     echo "Storing llama-2-7b-hf in safetensors format..."
@@ -77,13 +69,15 @@ if [ ! -e "$BURN_MODEL_FOLDER/$BURN_MODEL_NAME.cfg" ]; then
         echo "Dumping model from $BURN_MODEL_INPUT_DIR to $BURN_MODEL_FOLDER"
         python "$BURN_FOLDER/llama-py/dump_model.py" --model-dir "$BURN_MODEL_INPUT_DIR" --output-dir "$BURN_MODEL_FOLDER"
         deactivate
+        cp "$BURN_MODEL_INPUT_DIR/tokenizer.model" "$BURN_MODEL_FOLDER"
+        rm -r $BURN_MODEL_INPUT_DIR
     else
         echo "Model already dumped at $BURN_MODEL_FOLDER/params."
     fi
 
     echo "Converting dumped model to burn"
     cargo run --manifest-path="$BURN_FOLDER/Cargo.toml" --bin convert -- "$BURN_MODEL_FOLDER/params" "$BURN_MODEL_NAME" "$BURN_MODEL_FOLDER"
-    cp "$BURN_MODEL_INPUT_DIR/tokenizer.model" "$BURN_MODEL_FOLDER"
+    rm -r "$BURN_MODEL_FOLDER/params"
 else
     echo "Model llama-2-7b-burn already exists!"
 fi

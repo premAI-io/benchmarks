@@ -4,19 +4,21 @@
 # Script: download.sh
 # Description: Downloads files from a list of URLs specified in a JSON file. 
 # The JSON file should contain an array of objects, each with a 'url', 'file', 
-# and 'folder' property. The 'url' property is the URL of the file to download, 
-# the 'file' property is the name of the file, and the 'folder' property is the 
-# directory where the file should be downloaded to. The script checks if the file 
-# already exists before downloading it.
+# and 'folder' property. The script checks if the file already exists before 
+# downloading it.
 #
-#
-# Usage: ./download.sh <json_file>
+# Usage: ./download.sh --models <json_file> --cache <cache_file> --force-download
 #
 # Example:
-# ./download.sh models.json
+# ./download.sh --models models.json --cache cache.log --force-download
 ################################################################################
 
 set -euo pipefail
+
+# Default values
+models_file="$(pwd)/models.json"
+cache_file="$(pwd)/cache.log"
+force_download=false
 
 # Function to download a file
 download_file() {
@@ -25,10 +27,11 @@ download_file() {
  local dir=$3
 
  # Create the directory if it does not exist
- mkdir -p $dir
+ mkdir -p "$dir"
 
  # Download the file
- wget -N $url -O $dir/$file
+ wget -N "$url" -O "$dir/$file"
+ echo "$url" >> "$cache_file"
 }
 
 # Function to unzip a file
@@ -37,10 +40,10 @@ unzip_file() {
  local dir=$2
 
  # Unzip the file
- unzip -o $file -d $dir
+ unzip -o "$file" -d "$dir"
 
  # Move the unzipped files to the parent directory
- find $dir -mindepth 2 -type f -exec mv {} $dir \;
+ find "$dir" -mindepth 2 -type f -exec mv {} "$dir" \;
 }
 
 # Function to remove a file
@@ -48,54 +51,78 @@ remove_file() {
  local file=$1
 
  # Remove the file
- rm $file
+ rm "$file"
 }
 
-# Check if the JSON filename was provided
-if [ -z "$1" ]; then
-  echo "Usage: $0 <json_file>"
+# Argument parsing
+while [[ $# -gt 0 ]]; do
+  key="$1"
+
+  case $key in
+    --models)
+      models_file="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    --cache)
+      cache_file="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    --force-download)
+      force_download=true
+      shift # past argument
+      ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
+      ;;
+  esac
+done
+
+# Check if the required arguments are provided
+if [ -z "$models_file" ] || [ -z "$cache_file" ]; then
+  echo "Usage: $0 --models <json_file> --cache <cache_file> [--force-download]"
   exit 1
 fi
 
 # Check if the JSON file exists
-if [ ! -f "$1" ]; then
- echo "Error: JSON file does not exist."
- exit 1
+if [ ! -f "$models_file" ]; then
+  echo "Error: JSON file '$models_file' does not exist."
+  exit 1
+fi
+
+# Check if force download is enabled
+if $force_download; then
+  echo "Force download enabled. Removing all files in the models folder and cache file."
+  rm -rf ./models/*
+  > "$cache_file"
 fi
 
 # Read the JSON file
-json=$(cat $1)
+json=$(cat "$models_file")
 
 # Parse the JSON file and iterate over its elements
-echo $json | jq -r '.[] | @base64' | while read i; do
+echo "$json" | jq -r '.[] | @base64' | while read -r i; do
  _jq() {
-     echo ${i} | base64 --decode | jq -r ${1}
+     echo "${i}" | base64 --decode | jq -r "${1}"
  }
 
  url=$(_jq '.url')
  file=$(_jq '.file')
  folder=$(_jq '.folder')
 
-
- # Check if the file is a zip file
- if [[ $file == *.zip ]]; then
-  # Check if the folder exists
-  if [ ! -d "$folder" ]; then
-   echo "Folder does not exist, downloading and unzipping: $url to $folder"
-   download_file $url $file $folder
-   unzip_file $folder/$file $folder
-   echo "Removing: $folder/$file"
-   remove_file $folder/$file
-  else
-   echo "Folder already exists, skipping download and unzip: $folder"
-  fi
- else
-  # Check if the file exists
-  if [ ! -f "$folder/$file" ]; then
-   echo "Downloading: $url to $folder/$file"
-   download_file $url $file $folder
-  else
-   echo "File already exists at $folder/$file"
-  fi
+ # Check if the URL is in the log file
+ if ! grep -q "$url" "$cache_file"; then
+   if [[ $file == *.zip ]]; then
+     echo "Downloading and unzipping: $url to $folder"
+     download_file "$url" "$file" "$folder"
+     unzip_file "$folder/$file" "$folder"
+     echo "Removing: $folder/$file"
+     remove_file "$folder/$file"
+   else
+     echo "Downloading: $url to $folder/$file"
+     download_file "$url" "$file" "$folder"
+   fi
  fi
 done

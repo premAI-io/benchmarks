@@ -88,7 +88,7 @@ check_jq() {
 # Function to download models
 download_models() {
     echo -e "\nDownloading models..."
-    bash ./download.sh ./models.json
+    bash ./download.sh --models models.json --cache cache.log
 }
 
 # Function to set up
