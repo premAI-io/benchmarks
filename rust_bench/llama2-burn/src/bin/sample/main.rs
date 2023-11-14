@@ -90,7 +90,7 @@ fn main() {
     init_logger();
 
     let args: Vec<String> = std::env::args().collect();
-    if args.len() != 8 {
+    if args.len() >= 8 {
         panic!(
             "Usage: {} <model_name> <tokenizer_filepath> <prompt> <n_tokens> <device> <repetitions> <log_file>",
             args[0]
