@@ -642,15 +642,17 @@ class TinyGradBenchmark(Benchmark):
         assert toks == new_toks[: len(toks)]
         toks = new_toks
         assert outputted == self.model.tokenizer.decode(toks)
-        start = time.time()
+        times = []
         for _ in range(max_tokens):
+            start = time.time()
             probs = self.model.model(
                 Tensor([toks[start_pos:]]), start_pos, self.temperature
             ).realize()
+            times.append(time.time() - start)
             probs_np = probs.numpy()
             tok = int(np.random.choice(len(probs_np), p=probs_np))
             start_pos = len(toks)
             toks.append(tok)
             cur = self.model.tokenizer.decode(toks)
             outputted = cur
-        return max_tokens / (time.time() - start)
+        return len(times) / sum(times)
