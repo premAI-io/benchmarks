@@ -116,18 +116,15 @@ fn main() {
 
         device
     } else {
-        error!("Error: Invalid device parameter (must be 'cpu' or 'gpu')");
-        process::exit(1);
+        panic!("Error: Invalid device parameter (must be 'cpu' or 'gpu')");
     };
 
     let repetitions: usize = args[6].parse().unwrap_or_else(|_| {
-        error!("Error: Invalid number of repetitions");
-        std::process::exit(1);
+        panic!("Error: Invalid number of repetitions");
     });
 
     let log_file: String = args[7].parse().unwrap_or_else(|_| {
-        error!("Error: Invalid log filename.");
-        std::process::exit(1);
+        panic!("Error: Invalid log filename.");
     });
 
     let tokenizer = match LlamaTokenizer::new(tokenizer_filepath) {
