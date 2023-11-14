@@ -153,8 +153,7 @@ fn main() {
     for r in 0..repetitions {
         let start_time = Instant::now();
         let width = repetitions.to_string().len();
-        let message = format!("Running repetition [{:0width$}/{}]", r + 1, repetitions);
-        info!("{}", message);
+        info!("Running repetition [{:0width$}/{}]", r + 1, repetitions);
         let _ = sample_llama(&llama, &tokenizer, prompt, n_tokens);
         let elapsed_time = start_time.elapsed();
         let elapsed_seconds = elapsed_time.as_secs_f64();
