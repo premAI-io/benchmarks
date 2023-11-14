@@ -134,8 +134,7 @@ fn main() {
     let tokenizer = match LlamaTokenizer::new(tokenizer_filepath) {
         Ok(tokenizer) => tokenizer,
         Err(e) => {
-            error!("Failed to load tokenizer: {:?}", e);
-            process::exit(1);
+            panic!("Failed to load tokenizer: {:?}", e);
         }
     };
 
