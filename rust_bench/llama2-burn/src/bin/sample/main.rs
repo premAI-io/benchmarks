@@ -101,8 +101,7 @@ fn main() {
     let tokenizer_filepath = &args[2];
     let prompt = &args[3];
     let n_tokens: usize = args[4].parse().unwrap_or_else(|_| {
-        error!("Error: Invalid number of tokens");
-        process::exit(1);
+        panic!("Error: Invalid number of tokens");
     });
 
     // Specify device based on command line argument
