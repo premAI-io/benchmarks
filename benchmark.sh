@@ -137,7 +137,7 @@ run_benchmarks() {
         $REPETITIONS \
         "$LOG_FILENAME"
 
-    if [ ! \( "$DEVICE" == "gpu" -a "$USE_NVIDIA" = false \) ]; then
+    if [ "$DEVICE" == "cpu" ] || [ "$USE_NVIDIA" == true ]; then
         # Set features option based on $DEVICE
         [ "$DEVICE" == "gpu" ] && CARGO_CANDLE_FEATURES="--features cuda"
         [ "$DEVICE" == "cpu" -a "$PLATFORM" == "Darwin"] && CARGO_CANDLE_FEATURES="--features accelerate"
