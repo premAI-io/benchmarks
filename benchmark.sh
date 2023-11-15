@@ -169,7 +169,7 @@ run_benchmarks() {
 
 # Default values
 DEFAULT_PROMPT="Explain what is a transformer"
-DEFAULT_REPETITIONS=2
+DEFAULT_REPETITIONS=10
 DEFAULT_MAX_TOKENS=100
 DEFAULT_DEVICE="gpu"
 USE_NVIDIA=false
