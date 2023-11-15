@@ -15,7 +15,6 @@ candle-transformers = { git = "https://github.com/huggingface/candle.git", packa
 clap = { version = "4.2.4", features = ["derive"] }
 env_logger = "0.10.0"
 imageproc = { version = "0.23.0", default-features = false }
-intel-mkl-src = { version = "0.8.1", features = ["mkl-static-lp64-iomp"] }
 log = "0.4"
 rand = "0.8.5"
 rusttype = { version = "0.9", default-features = false }

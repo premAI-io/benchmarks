@@ -111,6 +111,7 @@ run_benchmarks() {
     local CARGO_CANDLE_FEATURES=""
     local PYTHON_DEVICE=""
     local PYTHON_NVIDIA=""
+    local PLATFORM=$(uname -s)
 
     echo "Running benchmarks with the following parameters:"
     echo "  Prompt: $PROMPT"
@@ -136,16 +137,19 @@ run_benchmarks() {
         $REPETITIONS \
         "$LOG_FILENAME"
 
-    # Set features option based on $DEVICE
-    [ "$DEVICE" == "gpu" ] && CARGO_CANDLE_FEATURES="--features cuda"
+    if [ ! \( "$DEVICE" == "gpu" -a "$USE_NVIDIA" = false \) ]; then
+        # Set features option based on $DEVICE
+        [ "$DEVICE" == "gpu" ] && CARGO_CANDLE_FEATURES="--features cuda"
+        [ "$DEVICE" == "cpu" -a "$PLATFORM" == "Darwin"] && CARGO_CANDLE_FEATURES="--features accelerate"
 
-    cargo run --release $CARGO_CANDLE_FEATURES \
-        --manifest-path="$DIR/rust_bench/llama2-candle/Cargo.toml" \
-        -- --local-weights "$DIR/models/llama-2-7b-st/" \
-        --repetitions "$REPETITIONS" \
-        --prompt "$PROMPT" \
-        --sample-len $MAX_TOKENS \
-        --log-file $LOG_FILENAME
+        cargo run --release $CARGO_CANDLE_FEATURES \
+            --manifest-path="$DIR/rust_bench/llama2-candle/Cargo.toml" \
+            -- --local-weights "$DIR/models/llama-2-7b-st/" \
+            --repetitions "$REPETITIONS" \
+            --prompt "$PROMPT" \
+            --sample-len $MAX_TOKENS \
+            --log-file $LOG_FILENAME
+    fi 
     
     # Set options based on $DEVICE and $USE_NVIDIA
     [ "$DEVICE" == "gpu" ] && PYTHON_DEVICE="--gpu"
