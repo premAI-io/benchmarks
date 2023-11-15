@@ -1,0 +1,28 @@
+[package]
+name = "llama2-candle"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+accelerate-src = { version = "0.3.2", optional = true }
+anyhow = { version = "1", features = ["backtrace"] }
+candle = { git = "https://github.com/huggingface/candle.git", package = "candle-core" }
+candle-examples = { git = "https://github.com/huggingface/candle.git", package = "candle-examples" }
+candle-nn = { git = "https://github.com/huggingface/candle.git", package = "candle-nn" }
+candle-transformers = { git = "https://github.com/huggingface/candle.git", package = "candle-transformers" }
+clap = { version = "4.2.4", features = ["derive"] }
+env_logger = "0.10.0"
+imageproc = { version = "0.23.0", default-features = false }
+log = "0.4"
+rand = "0.8.5"
+rusttype = { version = "0.9", default-features = false }
+serde_json = "1.0.99"
+tokenizers = { version = "0.13.4", features = ["onig"] }
+tracing-chrome = "0.7.1"
+tracing-subscriber = "0.3.7"
+
+[features]
+accelerate = ["dep:accelerate-src", "candle/accelerate", "candle-nn/accelerate", "candle-transformers/accelerate"]
+cuda = ["candle/cuda", "candle-nn/cuda", "candle-transformers/cuda"]
