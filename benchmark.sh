@@ -123,19 +123,21 @@ run_benchmarks() {
     echo "Running rust benchmarks..."
     source ./venv/bin/activate
 
-    # Run Rust benchmarks
-    if [ "$DEVICE" == "gpu" ] && [ "$PLATFORM" != "Darwin" ]; then
-        TORCH_CUDA_VERSION=cu117
+    if [ "$DEVICE" == "cpu" ] || [ "$USE_NVIDIA" == true ]; then
+        # Run Rust benchmarks
+        if [ "$DEVICE" == "gpu" ] && [ "$PLATFORM" != "Darwin" ]; then
+            TORCH_CUDA_VERSION=cu117
+        fi
+        cargo run --release --bin sample \
+            --manifest-path="$DIR/rust_bench/llama2-burn/Cargo.toml" \
+            "$DIR/models/llama-2-7b-burn/llama-2-7b-burn" \
+            "$DIR/models/llama-2-7b-burn/tokenizer.model" \
+            "$PROMPT" \
+            $MAX_TOKENS \
+            $DEVICE \
+            $REPETITIONS \
+            "$LOG_FILENAME"
     fi
-    cargo run --release --bin sample \
-        --manifest-path="$DIR/rust_bench/llama2-burn/Cargo.toml" \
-        "$DIR/models/llama-2-7b-burn/llama-2-7b-burn" \
-        "$DIR/models/llama-2-7b-burn/tokenizer.model" \
-        "$PROMPT" \
-        $MAX_TOKENS \
-        $DEVICE \
-        $REPETITIONS \
-        "$LOG_FILENAME"
 
     if [ "$DEVICE" == "cpu" ] || [ "$USE_NVIDIA" == true ]; then
         # Set features option based on $DEVICE
