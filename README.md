@@ -82,7 +82,7 @@ Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --nvidia
 | ctranslate  |      -       | 58.54 ± 13.24| 34.22 ± 6.29 |      -       |
 | tinygrad    |      -       | 20.13 ± 1.35 |      -       |      -       |
 
-*(data updated: 13th November 2023)
+*(data updated: 15th November 2023)
 
 
 ### M2 MAX 32GB Inference Bench:
@@ -115,4 +115,4 @@ Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --prompt
 | ctranslate  |      -       |      -       |      -       |      -       |
 | tinygrad    |      -       | 29.78 ± 1.18 |      -       |      -       |
 
-*(data updated: 14th November 2023)
+*(data updated: 15th November 2023)
