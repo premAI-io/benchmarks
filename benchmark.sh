@@ -119,28 +119,17 @@ run_benchmarks() {
 
     # Run Rust benchmarks
     if [ "$DEVICE" == "gpu" ]; then
-        export TORCH_CUDA_VERSION=cu117 && \
-        cargo run --release --bin sample \
-            --manifest-path="$DIR/rust_bench/llama2-burn/Cargo.toml" \
-            "$DIR/models/llama-2-7b-burn/llama-2-7b-burn" \
-            "$DIR/models/llama-2-7b-burn/tokenizer.model" \
-            "$PROMPT" \
-            $MAX_TOKENS \
-            $DEVICE \
-            $REPETITIONS \
-            "$LOG_FILENAME"
-        unset TORCH_CUDA_VERSION
-    else 
-        cargo run --release --bin sample \
-            --manifest-path="$DIR/rust_bench/llama2-burn/Cargo.toml" \
-            "$DIR/models/llama-2-7b-burn/llama-2-7b-burn" \
-            "$DIR/models/llama-2-7b-burn/tokenizer.model" \
-            "$PROMPT" \
-            $MAX_TOKENS \
-            $DEVICE \
-            $REPETITIONS \
-            "$LOG_FILENAME"
+        TORCH_CUDA_VERSION=cu117
     fi
+    cargo run --release --bin sample \
+        --manifest-path="$DIR/rust_bench/llama2-burn/Cargo.toml" \
+        "$DIR/models/llama-2-7b-burn/llama-2-7b-burn" \
+        "$DIR/models/llama-2-7b-burn/tokenizer.model" \
+        "$PROMPT" \
+        $MAX_TOKENS \
+        $DEVICE \
+        $REPETITIONS \
+        "$LOG_FILENAME"
 
     # Set features option based on $DEVICE
     [ "$DEVICE" == "gpu" ] && CARGO_CANDLE_FEATURES="--features cuda"
