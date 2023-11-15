@@ -69,7 +69,9 @@ Options
 ### A100 80GB Inference Bench:
 
 Model: LLAMA-2-7B
+
 CUDA Version: 11.7
+
 Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --nvidia --prompt 'Explain what is a transformer'`
 
 | Engine      | float32      | float16      | int8         | int4         |
@@ -86,8 +88,11 @@ Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --nvidia
 ### M2 MAX 32GB Inference Bench:
 
 #### CPU
+
 Model: LLAMA-2-7B
+
 CUDA Version: NA
+
 Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cpu --prompt 'Explain what is a transformer'`
 
 | Engine      | float32       | float16       | int8         | int4         |
@@ -99,6 +104,7 @@ Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cpu --prompt
 | tinygrad    |      -       | 4.21 ± 0.38  |      -       |      -       |
 
 #### GPU (Metal)
+
 Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --prompt 'Explain what is a transformer'`
 
 | Engine      | float32       | float16       | int8         | int4         |
