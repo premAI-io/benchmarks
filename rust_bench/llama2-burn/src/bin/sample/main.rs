@@ -13,7 +13,7 @@ use burn::{
     tensor::{backend::Backend, Data, Tensor},
 };
 use env_logger::Env;
-use log::{error, info};
+use log::info;
 
 use burn::record::{self, BinFileRecorder, HalfPrecisionSettings, Recorder};
 
@@ -83,14 +83,12 @@ type Elem = burn::tensor::f16;
 #[cfg(not(feature = "f16"))]
 type Elem = f32;
 
-use std::process;
-
 fn main() {
     type Backend = TchBackend<Elem>;
     init_logger();
 
     let args: Vec<String> = std::env::args().collect();
-    if args.len() >= 8 {
+    if args.len() != 8 {
         panic!(
             "Usage: {} <model_name> <tokenizer_filepath> <prompt> <n_tokens> <device> <repetitions> <log_file>",
             args[0]

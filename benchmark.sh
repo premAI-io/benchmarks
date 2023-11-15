@@ -4,14 +4,15 @@
 # Script: run_benchmarks.sh
 # Description: This script runs benchmarks for a transformer model using both 
 # Rust and Python implementations. It provides options to customize the 
-# benchmarks, such as the prompt, repetitions, maximum tokens, and device.
+# benchmarks, such as the prompt, repetitions, maximum tokens, device, and NVIDIA flag.
 #
 # Usage: ./run_benchmarks.sh [OPTIONS]
 # OPTIONS:
 #   -p, --prompt      Prompt for benchmarks (default: 'Explain what is a transformer')
 #   -r, --repetitions Number of repetitions for benchmarks (default: 2)
 #   -m, --max_tokens  Maximum number of tokens for benchmarks (default: 100)
-#   -d, --device      Device for benchmarks (possible values: 'gpu' or 'cpu', default: 'gpu')
+#   -d, --device      Device for benchmarks (possible values: 'gpu' or 'cpu', default: 'cpu')
+#   --nvidia          Use NVIDIA for benchmarks (default: false)
 #   -h, --help        Show this help message
 ##############################################################################################
 
@@ -25,6 +26,7 @@ print_usage() {
     echo "  -r, --repetitions Number of repetitions for benchmarks (default: 2)"
     echo "  -m, --max_tokens  Maximum number of tokens for benchmarks (default: 100)"
     echo "  -d, --device      Device for benchmarks (possible values: 'gpu' or 'cpu', default: 'cpu')"
+    echo "  --nvidia          Use NVIDIA for benchmarks (default: false)"
     echo "  -h, --help        Show this help message"
     exit 1
 }
@@ -103,16 +105,19 @@ run_benchmarks() {
     local REPETITIONS="$2"
     local MAX_TOKENS="$3"
     local DEVICE="$4"
-    local LOG_FILENAME="$5"
+    local USE_NVIDIA="$5"
+    local LOG_FILENAME="$6"
     local DIR=$(pwd)
     local CARGO_CANDLE_FEATURES=""
     local PYTHON_DEVICE=""
+    local PYTHON_NVIDIA=""
 
     echo "Running benchmarks with the following parameters:"
     echo "  Prompt: $PROMPT"
     echo "  Repetitions: $REPETITIONS"
     echo "  Max Tokens: $MAX_TOKENS"
     echo "  Device: $DEVICE"
+    echo "  NVIDIA: $USE_NVIDIA"
 
     echo "Running rust benchmarks..."
     source ./venv/bin/activate
@@ -142,7 +147,9 @@ run_benchmarks() {
         --sample-len $MAX_TOKENS \
         --log-file $LOG_FILENAME
     
+    # Set options based on $DEVICE and $USE_NVIDIA
     [ "$DEVICE" == "gpu" ] && PYTHON_DEVICE="--gpu"
+    [ "$USE_NVIDIA" == true ] && PYTHON_NVIDIA="--nvidia"
 
     cd $DIR
     echo "Running python benchmarks..."
@@ -151,7 +158,8 @@ run_benchmarks() {
         --repetitions "$REPETITIONS" \
         --max_tokens $MAX_TOKENS \
         --log_file "$LOG_FILENAME" \
-        $PYTHON_DEVICE
+        $PYTHON_DEVICE \
+        $PYTHON_NVIDIA
     deactivate
 }
 
@@ -160,6 +168,7 @@ DEFAULT_PROMPT="Explain what is a transformer"
 DEFAULT_REPETITIONS=2
 DEFAULT_MAX_TOKENS=100
 DEFAULT_DEVICE="gpu"
+USE_NVIDIA=false
 
 # Parse command-line arguments
 while [ "$#" -gt 0 ]; do
@@ -188,6 +197,14 @@ while [ "$#" -gt 0 ]; do
             esac
             shift 2
             ;;
+        --nvidia)
+            USE_NVIDIA=true
+            if [ "$DEVICE" != "gpu" ]; then
+                echo "Error: The '--nvidia' flag can only be used with 'gpu' as the device."
+                print_usage
+            fi
+            shift 1
+            ;;
         -h|--help)
             print_usage
             ;;
@@ -213,4 +230,4 @@ check_rust
 check_jq
 download_models
 setup
-run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$log_filename"
+run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" $USE_NVIDIA "$log_filename"

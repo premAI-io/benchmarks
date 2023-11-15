@@ -13,6 +13,15 @@ B_INST, E_INST = "[INST]", "[/INST]"
 B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
 
 
+def get_compute_types(gpu, nvidia):
+    compute_types = {}
+    if gpu and nvidia:
+        compute_types = set(ctranslate2.get_supported_compute_types("cuda"))
+    elif not gpu:
+        compute_types = set(ctranslate2.get_supported_compute_types("cpu"))
+    return compute_types
+
+
 class CTranslateBenchmark(Benchmark):
     def __init__(self, model_path, gpu, compute_type):
         super().__init__(model_path)

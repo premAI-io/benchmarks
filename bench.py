@@ -6,7 +6,7 @@ import sys
 import numpy as np
 
 from python_bench.llama_cpp import LlamaCPPBenchmark
-from python_bench.ctranslate import CTranslateBenchmark
+from python_bench.ctranslate import CTranslateBenchmark, get_compute_types
 from python_bench.tinygrad import TinyGradBenchmark
 
 logging.basicConfig(
@@ -35,19 +35,25 @@ if __name__ == "__main__":
     parser.add_argument(
         "--gpu",
         action="store_true",
-        default=True,
+        default=False,
         help="Flag to indicate whether to use GPU for the benchmark.",
+    )
+    parser.add_argument(
+        "--nvidia",
+        action="store_true",
+        default=False,
+        help="Flag to indicate whether the system uses NVIDIA",
     )
     parser.add_argument(
         "--log_file",
         type=str,
         help="Path to the log file for writing logs (in append mode).",
-        default="benchmark_log.txt",
+        default="benchmark.log",
     )
     args = parser.parse_args()
 
     logging.info(
-        f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} repetitions={args.repetitions} gpu={args.gpu}"
+        f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} repetitions={args.repetitions} gpu={args.gpu} nvidia={args.gpu}"
     )
     report = defaultdict(lambda: defaultdict(float))
     for quantize in ("Q8_0", "Q4_0"):
@@ -64,7 +70,8 @@ if __name__ == "__main__":
             "std": np.std(llamacpp_bench.results),
         }
 
-    for compute_type in ("float16", "int8"):
+    compute_types = get_compute_types(gpu=args.gpu, nvidia=args.nvidia)
+    for compute_type in compute_types.intersection({"float16", "int8"}):
         logging.info(f"Running ctranslate benchmark with {compute_type}")
         ctranslate_bench = CTranslateBenchmark(
             f"./models/llama-2-7b-hf-float16",
@@ -81,7 +88,9 @@ if __name__ == "__main__":
 
     logging.info(f"Running tinygrad benchmark")
     tinygrad_bench = TinyGradBenchmark(
-        "./models/llama-2-7b-hf", quantize=False
+        "./models/llama-2-7b-hf",
+        quantize=False,
+        device="CPU" if not args.gpu else "GPU" if args.nvidia else "METAL",
     ).load_model()
     tinygrad_bench.benchmark(
         max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions

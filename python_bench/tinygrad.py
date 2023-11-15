@@ -8,9 +8,8 @@ from tinygrad.jit import TinyJit, JIT_SUPPORTED_DEVICE
 from tinygrad.nn.state import safe_load, torch_load, load_state_dict
 from tinygrad.nn import Embedding, Linear
 from tinygrad.tensor import Tensor
-from tinygrad.ops import Device
 from tinygrad.helpers import getenv, dtypes, CI
-from typing import Optional, Tuple, Dict
+from typing import Optional, Tuple
 from pathlib import Path
 import json
 import time
@@ -25,7 +24,6 @@ np.set_printoptions(linewidth=200)
 
 
 MAX_CONTEXT = 1024
-JIT = getenv("JIT", 0 if CI else int(Device.DEFAULT in JIT_SUPPORTED_DEVICE))
 
 
 # https://github.com/facebookresearch/llama/blob/1076b9c51c77ad06e9d7ba8a4c6df775741732bd/llama/model.py#L47
@@ -200,6 +198,7 @@ class Transformer:
         n_layers,
         norm_eps,
         vocab_size,
+        device,
         linear=Linear,
         max_batch_size=32,
         max_seq_len=1024,
@@ -207,6 +206,7 @@ class Transformer:
         n_kv_heads=None,
         rope_theta=10000,
     ):
+        self.JIT = getenv("JIT", 0 if CI else int(device in JIT_SUPPORTED_DEVICE))
         self.layers = [
             TransformerBlock(
                 dim,
@@ -252,7 +252,7 @@ class Transformer:
 
     def __call__(self, tokens: Tensor, start_pos: Variable, temperature: float = 0.0):
         # TODO: better way to handle the first call v.s. the rest?
-        if tokens.shape[0:2] == (1, 1) and JIT:
+        if tokens.shape[0:2] == (1, 1) and self.JIT:
             assert start_pos > 0
             return self.forward_jit(
                 tokens,
@@ -473,11 +473,11 @@ MODEL_PARAMS = {
 
 
 # **** helper functions ****
-def concat_weights(models):
+def concat_weights(models, device):
     def convert(name) -> Tensor:
         disk_tensors = [model[name] for model in models]
         if len(disk_tensors) == 1 or len(disk_tensors[0].shape) == 1:
-            return disk_tensors[0].to(device=Device.DEFAULT)
+            return disk_tensors[0].to(device=device)
         axis = (
             1
             if name.startswith("tok_embeddings.")
@@ -485,7 +485,7 @@ def concat_weights(models):
             or name.endswith(".feed_forward.w2.weight")
             else 0
         )
-        lazy_tensors = [data.to(device=Device.DEFAULT) for data in disk_tensors]
+        lazy_tensors = [data.to(device=device) for data in disk_tensors]
         return lazy_tensors[0].cat(*lazy_tensors[1:], dim=axis)
 
     return {
@@ -566,7 +566,12 @@ class AbsmaxQuantizedLinear:
 class LLaMa:
     @staticmethod
     def build(
-        model_path, tokenizer_path, model_gen="1", model_size="7B", quantize=False
+        model_path,
+        tokenizer_path,
+        device,
+        model_gen="1",
+        model_size="7B",
+        quantize=False,
     ):
         from sentencepiece import SentencePieceProcessor
 
@@ -578,9 +583,9 @@ class LLaMa:
 
         params = MODEL_PARAMS[model_gen][model_size]
         model = (
-            Transformer(**params["args"], linear=AbsmaxQuantizedLinear)
+            Transformer(**params["args"], device=device, linear=AbsmaxQuantizedLinear)
             if quantize
-            else Transformer(**params["args"])
+            else Transformer(**params["args"], device=device)
         )
 
         if model_path.is_dir():
@@ -591,7 +596,8 @@ class LLaMa:
                         f"{model_path}/consolidated.{i:02d}.pth"
                         for i in range(params["files"])
                     ]
-                ]
+                ],
+                device=device,
             )
         else:
             weights = load(str(model_path))
@@ -612,13 +618,16 @@ class LLaMa:
 
 
 class TinyGradBenchmark(Benchmark):
-    def __init__(self, model_path, quantize, gen="2", temperature=0.7, model_size="7B"):
+    def __init__(
+        self, model_path, device, quantize, gen="2", temperature=0.7, model_size="7B"
+    ):
         super().__init__(model_path)
         self.model = None
         self.quantize = quantize
         self.model_gen = gen
         self.temperature = temperature
         self.model_size = model_size
+        self.device = device
 
     def load_model(self) -> Benchmark:
         self.model = LLaMa.build(
@@ -627,6 +636,7 @@ class TinyGradBenchmark(Benchmark):
             model_gen=self.model_gen,
             model_size=self.model_size,
             quantize=self.quantize,
+            device=self.device,
         )
         return self
 
