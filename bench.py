@@ -85,23 +85,6 @@ if __name__ == "__main__":
             "mean": np.mean(ctranslate_bench.results),
             "std": np.std(ctranslate_bench.results),
         }
-    # for compute_type in ("float16", "int8", ):
-    #     logging.info(f"Running ctranslate benchmark with {compute_type}")
-    #     try:
-    #         ctranslate_bench = CTranslateBenchmark(
-    #             f"./models/llama-2-7b-hf-float16",
-    #             gpu=args.gpu,
-    #             compute_type=compute_type,
-    #         ).load_model()
-    #         ctranslate_bench.benchmark(
-    #             max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
-    #         )
-    #         report["ctranslate"][compute_type] = {
-    #             "mean": np.mean(ctranslate_bench.results),
-    #             "std": np.std(ctranslate_bench.results),
-    #         }
-    #     except ValueError as e:
-    #         logging.error(f"{e}\nSkipping ctranslate benchmarking with {compute_type=}...")
 
     logging.info(f"Running tinygrad benchmark")
     tinygrad_bench = TinyGradBenchmark(
