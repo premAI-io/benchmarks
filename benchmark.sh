@@ -124,7 +124,7 @@ run_benchmarks() {
     source ./venv/bin/activate
 
     # Run Rust benchmarks
-    if [ "$DEVICE" == "gpu" ]; then
+    if [ "$DEVICE" == "gpu" ] && [ "$(uname -s)" != "Darwin" ]; then
         TORCH_CUDA_VERSION=cu117
     fi
     cargo run --release --bin sample \
