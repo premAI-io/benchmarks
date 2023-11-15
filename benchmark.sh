@@ -140,7 +140,6 @@ run_benchmarks() {
     if [ "$DEVICE" == "cpu" ] || [ "$USE_NVIDIA" == true ]; then
         # Set features option based on $DEVICE
         [ "$DEVICE" == "gpu" ] && CARGO_CANDLE_FEATURES="--features cuda"
-        [ "$DEVICE" == "cpu" -a "$PLATFORM" == "Darwin"] && CARGO_CANDLE_FEATURES="--features accelerate"
 
         cargo run --release $CARGO_CANDLE_FEATURES \
             --manifest-path="$DIR/rust_bench/llama2-candle/Cargo.toml" \
