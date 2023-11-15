@@ -14,7 +14,7 @@ B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
 
 
 def get_compute_types(gpu, nvidia):
-    compute_types = {}
+    compute_types = set()
     if gpu and nvidia:
         compute_types = set(ctranslate2.get_supported_compute_types("cuda"))
     elif not gpu:
