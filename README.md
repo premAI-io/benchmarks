@@ -1,6 +1,47 @@
 # benchmarks
 MLOps Engines, Frameworks, and Languages benchmarks over main stream AI Models.
 
+## Tool
+
+The benchmarking tool comprises three main scripts:
+- `benchmark.sh` for running the end-to-end benchmarking
+- `download.sh` which is internally used by the benchmark script to download the needed model files based on a configuration
+- `setup.sh` script for setup of dependencies and needed formats conversion
+
+### benchmark
+
+This script runs benchmarks for a transformer model using both Rust and Python implementations. It provides options to customize the benchmarks, such as the prompt, repetitions, maximum tokens, device, and NVIDIA flag.
+
+```bash
+./benchmark.sh [OPTIONS]
+```
+where `OPTIONS`:
+- `-p, --prompt`: Prompt for benchmarks (default: 'Explain what is a transformer')
+- `-r, --repetitions`: Number of repetitions for benchmarks (default: 2)
+- `-m, --max_tokens`: Maximum number of tokens for benchmarks (default: 100)
+- `-d, --device`: Device for benchmarks (possible values: 'gpu' or 'cpu', default: 'cpu')
+- `--nvidia`: Use NVIDIA for benchmarks (default: false)
+
+### download
+
+Downloads files from a list of URLs specified in a JSON file. The JSON file should contain an array of objects, each with a 'url', 'file', and 'folder' property. The script checks if the file already exists before downloading it.
+
+```bash
+./download.sh --models <json_file> --cache <cache_file> --force-download
+```
+Options
+- `--models`: JSON file specifying the models to download (default: models.json)
+- `--cache`: Cache file to keep track of downloaded files (default: cache.log)
+- `--force-download`: Force download of all files, removing existing files and cache
+
+### setup
+1. Creates a python virtual environment `venv` and installs project requirements.
+3. Converts and stores models in different formats.
+
+```bash
+./setup.sh
+```
+
 ## ML Engines: Feature Table
 
 | Features                    | pytorch | burn | llama.cpp | candle | tinygrad | onnxruntime | CTranslate2 |
@@ -25,28 +66,11 @@ MLOps Engines, Frameworks, and Languages benchmarks over main stream AI Models.
 
 ## Benchmarking ML Engines
 
-### Consumer Hardware Inference:
-#### M1 Pro Mac 16GB Variant
-#### LLAMA2-7B
-#### mean of runs: 24 (with outliers removed)
-
-| engines     | (cpu) (16bit) tokens/sec | (cpu) (8bit) tokens/sec    | (cpu) (4bit) tokens/sec | (metal) (16bit) tokens/sec | (metal) (8bit) tokens/sec  | (metal/gpu) tokens/sec (4bit) | (metal/gpu) tokens/sec (2bit) |
-| ----------- | ------------------------ | -------------------------- | ----------------------- | -------------------------- | -------------------------- | ----------------------------- | ----------------------------- |
-| pytorch     |                          |                            |                         |                            |                            |                               |                               |
-| burn(torch) |                          | quantization not-supported |                         |                            | quantization not-supported |                               |                               |
-| llama.cpp   |                          | 13.2                       |                         |                            | 21.5                       |                               |                               |
-| candle      |                          | 9.2                        |                         |                            | metal not supported yet!   |                               |                               |
-| CTranslate2 |                          | 12.3                       |                         |                            | metal not supported yet!   |                               |                               |
-| tinygrad    |                          | 0.75                       |                         |                            | 7.8                        |                               |                               |
-
-
-*(data updated: 12th October 2023)
-
 ### A100 80GB Inference Bench:
 
 Model: LLAMA-2-7B
 CUDA Version: 11.7
-Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --prompt 'Explain what is a transformer'`
+Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --nvidia --prompt 'Explain what is a transformer'`
 
 | Engine      | float32      | float16      | int8         | int4         |
 |-------------|--------------|--------------|--------------|--------------|
