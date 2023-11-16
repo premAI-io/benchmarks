@@ -4,10 +4,12 @@
 # Original LLama code by Facebook AI Research
 # Adapted by Gadersd
 
-from sentencepiece import SentencePieceProcessor
-from typing import List
 import logging
+
+from sentencepiece import SentencePieceProcessor
+
 logger = logging.getLogger(__name__)
+
 
 class Tokenizer:
     def __init__(self, model_path: str):
@@ -19,9 +21,11 @@ class Tokenizer:
         self.eos_id: int = self.sp_model.eos_id()
         self.pad_id: int = self.sp_model.pad_id()
 
-        logger.info(f'#words: {self.n_words} BOS ID: {self.bos_id} EOS ID: {self.eos_id} PAD ID: {self.pad_id}')
+        logger.info(
+            f"#words: {self.n_words} BOS ID: {self.bos_id} EOS ID: {self.eos_id} PAD ID: {self.pad_id}"
+        )
 
-    def encode(self, s: str, bos: bool, eos: bool) -> List[int]:
+    def encode(self, s: str, bos: bool, eos: bool) -> list[int]:
         assert type(s) is str
         t = self.sp_model.encode(s)
         if bos:
@@ -30,5 +34,5 @@ class Tokenizer:
             t = t + [self.eos_id]
         return t
 
-    def decode(self, t: List[int]) -> str:
+    def decode(self, t: list[int]) -> str:
         return self.sp_model.decode(t)

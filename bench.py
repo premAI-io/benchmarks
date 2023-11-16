@@ -1,12 +1,12 @@
 import argparse
-from collections import defaultdict
 import logging
 import sys
+from collections import defaultdict
 
 import numpy as np
 
-from python_bench.llama_cpp import LlamaCPPBenchmark
 from python_bench.ctranslate import CTranslateBenchmark, get_compute_types
+from python_bench.llama_cpp import LlamaCPPBenchmark
 from python_bench.tinygrad import TinyGradBenchmark
 
 logging.basicConfig(
@@ -53,7 +53,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     logging.info(
-        f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} repetitions={args.repetitions} gpu={args.gpu} nvidia={args.gpu}"
+        f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} "
+        + f"repetitions={args.repetitions} gpu={args.gpu} nvidia={args.gpu}"
     )
     report = defaultdict(lambda: defaultdict(float))
     for quantize in ("Q8_0", "Q4_0"):
@@ -74,7 +75,7 @@ if __name__ == "__main__":
     for compute_type in compute_types.intersection({"float16", "int8"}):
         logging.info(f"Running ctranslate benchmark with {compute_type}")
         ctranslate_bench = CTranslateBenchmark(
-            f"./models/llama-2-7b-hf-float16",
+            "./models/llama-2-7b-hf-float16",
             gpu=args.gpu,
             compute_type=compute_type,
         ).load_model()
@@ -86,7 +87,7 @@ if __name__ == "__main__":
             "std": np.std(ctranslate_bench.results),
         }
 
-    logging.info(f"Running tinygrad benchmark")
+    logging.info("Running tinygrad benchmark")
     tinygrad_bench = TinyGradBenchmark(
         "./models/llama-2-7b-hf",
         quantize=False,
