@@ -3,6 +3,7 @@ import logging
 import os
 import time
 from pathlib import Path
+from typing import Optional, Union
 
 import numpy as np
 from tinygrad.helpers import CI, dtypes, getenv
@@ -90,9 +91,9 @@ class Attention:
     def __call__(
         self,
         x: Tensor,
-        start_pos: Variable | int,
+        start_pos: Union[Variable, int],
         freqs_cis: Tensor,
-        mask: Tensor | None,
+        mask: Optional[Tensor],
     ) -> Tensor:
         xq, xk, xv = self.wq(x), self.wk(x), self.wv(x)
         xq = xq.reshape(xq.shape[0], xq.shape[1], self.n_heads, self.head_dim)
@@ -176,9 +177,9 @@ class TransformerBlock:
     def __call__(
         self,
         x: Tensor,
-        start_pos: Variable | int,
+        start_pos: Union[Variable, int],
         freqs_cis: Tensor,
-        mask: Tensor | None,
+        mask: Union[Tensor, None],
     ):
         h = x + self.attention(self.attention_norm(x), start_pos, freqs_cis, mask)
         return (h + self.feed_forward(self.ffn_norm(h))).realize()
@@ -223,7 +224,7 @@ class Transformer:
         self.forward_jit = TinyJit(self.forward)
 
     def forward(
-        self, tokens: Tensor, start_pos: Variable | int, temperature: float = 0.0
+        self, tokens: Tensor, start_pos: Union[Variable, int], temperature: float = 0.0
     ):
         _bsz, seqlen = tokens.shape
         freqs_cis = self.freqs_cis.shrink(
