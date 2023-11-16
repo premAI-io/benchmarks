@@ -1,9 +1,8 @@
 import argparse
-import os
 import logging
-from collections import defaultdict
-from typing import List
+import os
 import shutil
+from collections import defaultdict
 
 import torch
 from safetensors.torch import load_file, save_file
@@ -80,7 +79,7 @@ def convert_file(pt_filename: str, sf_filename: str):
             raise RuntimeError(f"The output tensors do not match for key {k}")
 
 
-def convert_multi(input_dir: str, output_dir: str) -> List[str]:
+def convert_multi(input_dir: str, output_dir: str) -> list[str]:
     if os.path.exists(output_dir):
         logging.warning(f"{output_dir} already exists!")
         return []

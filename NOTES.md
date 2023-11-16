@@ -14,7 +14,7 @@ Currently working on requirement and understanding different project constraints
 ## Early Investigation
 
 The overall investigation assumes PyTorch as the performance base and all relevant understand should be built in context of that,
-the specific benchmark might not be directly comparable to each other but it should provide a rough picture of the state of 
+the specific benchmark might not be directly comparable to each other but it should provide a rough picture of the state of
 open source ML framework performance.
 
 This generally is to port, add and support new things into burn and other platforms.

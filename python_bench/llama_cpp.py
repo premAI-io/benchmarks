@@ -1,7 +1,9 @@
-import time
 import logging
-from python_bench.benchmark import Benchmark
+import time
+
 from llama_cpp import Llama
+
+from python_bench.benchmark import Benchmark
 
 logging.getLogger("llama_cpp").setLevel(logging.ERROR)
 

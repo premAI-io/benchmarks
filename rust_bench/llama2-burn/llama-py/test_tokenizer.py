@@ -1,5 +1,5 @@
 import tokenizer
-    
+
 if __name__ == "__main__":
     tok = tokenizer.Tokenizer("tokenizer.model")
 

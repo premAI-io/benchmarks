@@ -1,7 +1,7 @@
 llama_cpp_python==0.2.15
 sentencepiece==0.1.99
 ctranslate2==3.20.0
-huggingface-hub==0.17.3 
+huggingface-hub==0.17.3
 transformers==4.35.0
 torch==2.1.0
 # Using fixed commit (a72b3700) for tinygrad to ensure stability in benchmarking.

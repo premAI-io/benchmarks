@@ -1,18 +1,16 @@
 # This file is adapted from the LLama project:
 # https://github.com/facebookresearch/llama/blob/main/llama/model.py
 
-# Original LLama code by Facebook AI Research 
+# Original LLama code by Facebook AI Research
 # Adapted by Gadersd
 
 import math
 from dataclasses import dataclass
-from typing import Any, Optional, Tuple
 
 import torch
 import torch.nn.functional as F
 from torch import nn
 from torch.nn import Embedding, Linear
-from torch import Tensor
 
 
 @dataclass
@@ -20,10 +18,10 @@ class ModelArgs:
     dim: int = 4096
     n_layers: int = 32
     n_heads: int = 32
-    n_kv_heads: Optional[int] = None
+    n_kv_heads: int | None = None
     vocab_size: int = -1  # defined later by tokenizer
     multiple_of: int = 256  # make SwiGLU hidden layer size multiple of large power of 2
-    ffn_dim_multiplier: Optional[float] = None
+    ffn_dim_multiplier: float | None = None
     norm_eps: float = 1e-5
 
     max_batch_size: int = 32
@@ -64,7 +62,7 @@ def apply_rotary_emb(
     xq: torch.Tensor,
     xk: torch.Tensor,
     freqs_cis: torch.Tensor,
-) -> Tuple[torch.Tensor, torch.Tensor]:
+) -> tuple[torch.Tensor, torch.Tensor]:
     xq_ = torch.view_as_complex(xq.float().reshape(*xq.shape[:-1], -1, 2))
     xk_ = torch.view_as_complex(xk.float().reshape(*xk.shape[:-1], -1, 2))
     freqs_cis = reshape_for_broadcast(freqs_cis, xq_)
@@ -89,7 +87,7 @@ class Attention(nn.Module):
     def __init__(self, args: ModelArgs):
         super().__init__()
         self.n_kv_heads = args.n_heads if args.n_kv_heads is None else args.n_kv_heads
-        model_parallel_size = 1#fs_init.get_model_parallel_world_size()
+        model_parallel_size = 1  # fs_init.get_model_parallel_world_size()
         self.n_local_heads = args.n_heads // model_parallel_size
         self.n_local_kv_heads = self.n_kv_heads // model_parallel_size
         self.n_rep = self.n_local_heads // self.n_local_kv_heads
@@ -138,7 +136,7 @@ class Attention(nn.Module):
         x: torch.Tensor,
         start_pos: int,
         freqs_cis: torch.Tensor,
-        mask: Optional[torch.Tensor],
+        mask: torch.Tensor | None,
     ):
         bsz, seqlen, _ = x.shape
         xq, xk, xv = self.wq(x), self.wk(x), self.wv(x)
@@ -152,8 +150,8 @@ class Attention(nn.Module):
         self.cache_k = self.cache_k.to(xq)
         self.cache_v = self.cache_v.to(xq)
 
-        self.cache_k[:bsz, start_pos : start_pos + seqlen] = xk
-        self.cache_v[:bsz, start_pos : start_pos + seqlen] = xv
+        self.cache_k[:bsz, start_pos : start_pos + seqlen] = xk  # noqa
+        self.cache_v[:bsz, start_pos : start_pos + seqlen] = xv  # noqa
 
         keys = self.cache_k[:bsz, : start_pos + seqlen]
         values = self.cache_v[:bsz, : start_pos + seqlen]
@@ -180,7 +178,7 @@ class FeedForward(nn.Module):
         dim: int,
         hidden_dim: int,
         multiple_of: int,
-        ffn_dim_multiplier: Optional[float],
+        ffn_dim_multiplier: float | None,
     ):
         super().__init__()
         hidden_dim = int(2 * hidden_dim / 3)
@@ -189,15 +187,9 @@ class FeedForward(nn.Module):
             hidden_dim = int(ffn_dim_multiplier * hidden_dim)
         hidden_dim = multiple_of * ((hidden_dim + multiple_of - 1) // multiple_of)
 
-        self.w1 = Linear(
-            dim, hidden_dim, bias=False
-        )
-        self.w2 = Linear(
-            hidden_dim, dim, bias=False
-        )
-        self.w3 = Linear(
-            dim, hidden_dim, bias=False
-        )
+        self.w1 = Linear(dim, hidden_dim, bias=False)
+        self.w2 = Linear(hidden_dim, dim, bias=False)
+        self.w3 = Linear(dim, hidden_dim, bias=False)
 
     def forward(self, x):
         return self.w2(F.silu(self.w1(x)) * self.w3(x))
@@ -225,7 +217,7 @@ class TransformerBlock(nn.Module):
         x: torch.Tensor,
         start_pos: int,
         freqs_cis: torch.Tensor,
-        mask: Optional[torch.Tensor],
+        mask: torch.Tensor | None,
     ):
         h = x + self.attention.forward(
             self.attention_norm(x), start_pos, freqs_cis, mask
@@ -241,18 +233,14 @@ class Transformer(nn.Module):
         self.vocab_size = params.vocab_size
         self.n_layers = params.n_layers
 
-        self.tok_embeddings = Embedding(
-            params.vocab_size, params.dim
-        )
+        self.tok_embeddings = Embedding(params.vocab_size, params.dim)
 
         self.layers = torch.nn.ModuleList()
         for layer_id in range(params.n_layers):
             self.layers.append(TransformerBlock(layer_id, params))
 
         self.norm = RMSNorm(params.dim, eps=params.norm_eps)
-        self.output = Linear(
-            params.dim, params.vocab_size, bias=False
-        )
+        self.output = Linear(params.dim, params.vocab_size, bias=False)
 
         self.freqs_cis = precompute_freqs_cis(
             self.params.dim // self.params.n_heads, self.params.max_seq_len * 2
@@ -262,10 +250,10 @@ class Transformer(nn.Module):
     def forward(self, tokens: torch.Tensor, start_pos: int):
         _bsz, seqlen = tokens.shape
         h = self.tok_embeddings(tokens)
-        #print(h.numpy())
-        #print(h.shape)
+        # print(h.numpy())
+        # print(h.shape)
         self.freqs_cis = self.freqs_cis.to(h.device)
-        freqs_cis = self.freqs_cis[start_pos : start_pos + seqlen]
+        freqs_cis = self.freqs_cis[start_pos : start_pos + seqlen]  # noqa
 
         mask = None
         if seqlen > 1:
@@ -279,4 +267,3 @@ class Transformer(nn.Module):
         h = self.norm(h)
         output = self.output(h).float()
         return output
-    

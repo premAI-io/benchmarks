@@ -2,9 +2,9 @@
 
 ################################################################################
 # Script: download.sh
-# Description: Downloads files from a list of URLs specified in a JSON file. 
-# The JSON file should contain an array of objects, each with a 'url', 'file', 
-# and 'folder' property. The script checks if the file already exists before 
+# Description: Downloads files from a list of URLs specified in a JSON file.
+# The JSON file should contain an array of objects, each with a 'url', 'file',
+# and 'folder' property. The script checks if the file already exists before
 # downloading it.
 #
 # Usage: ./download.sh --models <json_file> --cache <cache_file> --force-download

@@ -2,7 +2,7 @@
 
 ################################################################################
 # Script: setup_and_convert.sh
-# Description: This script automates the setup of a virtual environment, 
+# Description: This script automates the setup of a virtual environment,
 # installs project requirements, converts and stores models.
 ################################################################################
 
@@ -61,7 +61,7 @@ fi
 # Check and create llama-2-7b-burn model
 if [ ! -e "$BURN_MODEL_FOLDER/$BURN_MODEL_NAME.cfg" ]; then
     check_and_create_directory "$BURN_MODEL_FOLDER"
-    
+
     if [ ! -d "$BURN_MODEL_FOLDER/params" ]; then
         create_and_activate_venv
         echo "Installing requirements for dumping"

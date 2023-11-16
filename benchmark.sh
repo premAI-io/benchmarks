@@ -2,8 +2,8 @@
 
 ##############################################################################################
 # Script: run_benchmarks.sh
-# Description: This script runs benchmarks for a transformer model using both 
-# Rust and Python implementations. It provides options to customize the 
+# Description: This script runs benchmarks for a transformer model using both
+# Rust and Python implementations. It provides options to customize the
 # benchmarks, such as the prompt, repetitions, maximum tokens, device, and NVIDIA flag.
 #
 # Usage: ./run_benchmarks.sh [OPTIONS]
@@ -150,8 +150,8 @@ run_benchmarks() {
             --prompt "$PROMPT" \
             --sample-len $MAX_TOKENS \
             --log-file $LOG_FILENAME
-    fi 
-    
+    fi
+
     # Set options based on $DEVICE and $USE_NVIDIA
     [ "$DEVICE" == "gpu" ] && PYTHON_DEVICE="--gpu"
     [ "$USE_NVIDIA" == true ] && PYTHON_NVIDIA="--nvidia"

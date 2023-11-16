@@ -1,21 +1,17 @@
-import os
-from pathlib import Path
 import json
-import numpy as np
-from typing import Optional, Tuple, Union
-from tinygrad.shape.symbolic import Variable
-from tinygrad.jit import TinyJit, JIT_SUPPORTED_DEVICE
-from tinygrad.nn.state import safe_load, torch_load, load_state_dict
-from tinygrad.nn import Embedding, Linear
-from tinygrad.tensor import Tensor
-from tinygrad.helpers import getenv, dtypes, CI
-from typing import Optional, Tuple
-from pathlib import Path
-import json
-import time
-import numpy as np
-from pathlib import Path
 import logging
+import os
+import time
+from pathlib import Path
+from typing import Optional, Union
+
+import numpy as np
+from tinygrad.helpers import CI, dtypes, getenv
+from tinygrad.jit import JIT_SUPPORTED_DEVICE, TinyJit
+from tinygrad.nn import Embedding, Linear
+from tinygrad.nn.state import load_state_dict, safe_load, torch_load
+from tinygrad.shape.symbolic import Variable
+from tinygrad.tensor import Tensor
 
 from python_bench.benchmark import Benchmark
 
@@ -43,7 +39,7 @@ def complex_mult(A, c, d):
     return ro.cat(co, dim=-1)
 
 
-def apply_rotary_emb(xq, xk, freqs_cis) -> Tuple[Tensor, Tensor]:
+def apply_rotary_emb(xq, xk, freqs_cis) -> tuple[Tensor, Tensor]:
     assert (
         freqs_cis.shape[1] == xq.shape[1] and freqs_cis.shape[1] == xk.shape[1]
     ), f"freqs_cis shape mismatch {freqs_cis.shape} xq:{xq.shape} xk:{xk.shape}"
@@ -183,7 +179,7 @@ class TransformerBlock:
         x: Tensor,
         start_pos: Union[Variable, int],
         freqs_cis: Tensor,
-        mask: Optional[Tensor],
+        mask: Union[Tensor, None],
     ):
         h = x + self.attention(self.attention_norm(x), start_pos, freqs_cis, mask)
         return (h + self.feed_forward(self.ffn_norm(h))).realize()
@@ -513,22 +509,22 @@ def convert_from_huggingface(weights, model):
     keymap = {
         "model.embed_tokens.weight": "tok_embeddings.weight",
         **{
-            f"model.layers.{l}.input_layernorm.weight": f"layers.{l}.attention_norm.weight"
-            for l in range(len(model.layers))
+            f"model.layers.{layer}.input_layernorm.weight": f"layers.{layer}.attention_norm.weight"
+            for layer in range(len(model.layers))
         },
         **{
-            f"model.layers.{l}.self_attn.{x}_proj.weight": f"layers.{l}.attention.w{x}.weight"
+            f"model.layers.{layer}.self_attn.{x}_proj.weight": f"layers.{layer}.attention.w{x}.weight"
             for x in ["q", "k", "v", "o"]
-            for l in range(len(model.layers))
+            for layer in range(len(model.layers))
         },
         **{
-            f"model.layers.{l}.post_attention_layernorm.weight": f"layers.{l}.ffn_norm.weight"
-            for l in range(len(model.layers))
+            f"model.layers.{layer}.post_attention_layernorm.weight": f"layers.{layer}.ffn_norm.weight"
+            for layer in range(len(model.layers))
         },
         **{
-            f"model.layers.{l}.mlp.{x}_proj.weight": f"layers.{l}.feed_forward.w{y}.weight"
+            f"model.layers.{layer}.mlp.{x}_proj.weight": f"layers.{layer}.feed_forward.w{y}.weight"
             for x, y in {"gate": "1", "down": "2", "up": "3"}.items()
-            for l in range(len(model.layers))
+            for layer in range(len(model.layers))
         },
         "model.norm.weight": "norm.weight",
         "lm_head.weight": "output.weight",
@@ -538,7 +534,7 @@ def convert_from_huggingface(weights, model):
 
 class AbsmaxQuantizedLinear:
     def __init__(self, in_features, out_features, bias=False):
-        assert bias == False
+        assert not bias
         self.weight = Tensor.ones(out_features, in_features, dtype=dtypes.int8)
         self.scale = Tensor.ones(out_features, dtype=dtypes.half)
 
