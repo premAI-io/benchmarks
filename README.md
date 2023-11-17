@@ -81,8 +81,9 @@ Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --nvidia
 | llama.cpp   |      -       |      -       | 67.64 ± 22.57| 106.21 ± 2.21|
 | ctranslate  |      -       | 58.54 ± 13.24| 34.22 ± 6.29 |      -       |
 | tinygrad    |      -       | 20.13 ± 1.35 |      -       |      -       |
+| onnx        |      -       | 50.50 ± 3.58 |      -       |      -       |
 
-*(data updated: 15th November 2023)
+*(data updated: 17th November 2023)
 
 
 ### M2 MAX 32GB Inference Bench:

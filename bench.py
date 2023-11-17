@@ -7,6 +7,7 @@ import numpy as np
 
 from python_bench.ctranslate import CTranslateBenchmark, get_compute_types
 from python_bench.llama_cpp import LlamaCPPBenchmark
+from python_bench.onnx_bench import ONNXBenchmark
 from python_bench.tinygrad import TinyGradBenchmark
 
 logging.basicConfig(
@@ -57,6 +58,20 @@ if __name__ == "__main__":
         + f"repetitions={args.repetitions} gpu={args.gpu} nvidia={args.gpu}"
     )
     report = defaultdict(lambda: defaultdict(float))
+
+    logging.info("Running onnx benchmark")
+    onnx_bench = ONNXBenchmark(
+        "./models/llama-2-7b-onnx",
+        device="CPU" if not args.gpu else "GPU",
+    ).load_model()
+    onnx_bench.benchmark(
+        max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
+    )
+    report["onnx"]["float16"] = {
+        "mean": np.mean(onnx_bench.results),
+        "std": np.std(onnx_bench.results),
+    }
+
     for quantize in ("Q8_0", "Q4_0"):
         logging.info(f"Running llama-cpp benchmark with {quantize}")
         llamacpp_bench = LlamaCPPBenchmark(

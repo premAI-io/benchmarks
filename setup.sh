@@ -16,6 +16,7 @@ BURN_MODEL_INPUT_DIR=$(pwd)/models/llama-2-7b-raw
 BURN_FOLDER=$(pwd)/rust_bench/llama2-burn
 BURN_MODEL_FOLDER=$(pwd)/models/llama-2-7b-burn
 BURN_MODEL_NAME="llama-2-7b-burn"
+LLAMA_ONNX_MODEL_DIR="./models/llama-2-7b-onnx"
 
 create_and_activate_venv() {
     if [ ! -d "$VENV_DIR" ]; then
@@ -80,4 +81,22 @@ if [ ! -e "$BURN_MODEL_FOLDER/$BURN_MODEL_NAME.cfg" ]; then
     rm -r "$BURN_MODEL_FOLDER/params"
 else
     echo "Model llama-2-7b-burn already exists!"
+fi
+
+get_device() {
+  if command -v nvidia-smi &> /dev/null; then
+    echo "cuda"
+  else
+    echo "cpu"
+  fi
+}
+
+# Check and create llama-2-7b-st model
+if [ ! -d "$LLAMA_ONNX_MODEL_DIR" ]; then
+    optimum-cli export onnx \
+        --model $LLAMA_HF_MODEL_DIR --task text-generation --framework pt \
+        --opset 17 --sequence_length 1024 --batch_size 1 --device $(get_device) --fp16 \
+        $LLAMA_ONNX_MODEL_DIR > /dev/null
+else
+    echo "Model llama-2-7b-onnx already exists!"
 fi
