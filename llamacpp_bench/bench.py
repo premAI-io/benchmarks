@@ -22,7 +22,11 @@ class LlamaCPPBenchmark:
         self.results = []
 
     def load_model(self):
-        self.model = Llama(model_path=self.model_path, n_gpu_layers=-1, verbose=True)
+        self.model = Llama(
+            model_path=self.model_path,
+            n_gpu_layers=0 if self.device == "cpu" else -1,
+            verbose=True,
+        )
         return self
 
     def run_model(self, prompt, max_tokens):
