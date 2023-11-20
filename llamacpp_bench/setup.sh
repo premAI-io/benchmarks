@@ -8,10 +8,10 @@
 
 set -euo pipefail
 
-# if [ "$#" -ne 1 ]; then
-#     echo "Usage: $0 <DEVICE>"
-#     exit 1
-# fi
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <DEVICE>"
+    exit 1
+fi
 
 
 # Define directory paths
@@ -37,4 +37,4 @@ else
 fi
 
 echo "Installing requirements with CMAKE_ARGS=$CMAKE_ARGS and FORCE_CMAKE=$FORCE_CMAKE"
-pip install -r $SCRIPT_DIR/requirements.txt --no-cache-dir llama-cpp-python
+pip install -r $SCRIPT_DIR/requirements.txt --no-cache-dir --force-reinstall llama-cpp-python > /dev/null
