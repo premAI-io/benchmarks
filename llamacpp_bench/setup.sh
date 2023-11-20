@@ -16,8 +16,8 @@ fi
 
 # Define directory paths
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-VENV_DIR="$SCRIPT_DIR/venv"
 DEVICE="$1"
+VENV_DIR="$SCRIPT_DIR/venv_$DEVICE"
 if [ "$DEVICE" == "cuda" ]; then
     export CMAKE_ARGS=-DLLAMA_CUBLAS=on
 elif [ "$DEVICE" == "metal" ]; then
@@ -37,4 +37,4 @@ else
 fi
 
 echo "Installing requirements with CMAKE_ARGS=$CMAKE_ARGS and FORCE_CMAKE=$FORCE_CMAKE"
-pip install -r $SCRIPT_DIR/requirements.txt --no-cache-dir --force-reinstall llama-cpp-python > /dev/null
+pip install -r $SCRIPT_DIR/requirements.txt --no-cache-dir > /dev/null
