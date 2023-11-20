@@ -1,0 +1,4 @@
+sentencepiece==0.1.99
+ctranslate2==3.20.0
+transformers==4.35.0
+torch==2.1.0
