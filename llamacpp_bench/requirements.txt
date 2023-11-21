@@ -1,2 +1,2 @@
-llama_cpp_python==0.2.15
-sentencepiece==0.1.99
+llama_cpp_python
+sentencepiece

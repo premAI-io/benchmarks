@@ -52,6 +52,11 @@ run_benchmarks() {
     local LOG_FILENAME="$5"
     local MODELS_DIR="$6"
 
+    if [ "$DEVICE" == "cuda" ] || [ "$DEVICE" == "metal" ]; then
+        export LLAMA_CPP_LIB=$SCRIPT_DIR/venv/libllama_$DEVICE.so
+        echo "LLAMA_CPP_LIB=$LLAMA_CPP_LIB"
+    fi
+
     python $SCRIPT_DIR/bench.py \
         --prompt "$PROMPT" \
         --repetitions "$REPETITIONS" \
