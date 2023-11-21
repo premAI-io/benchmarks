@@ -17,6 +17,17 @@ print_usage() {
     exit 1
 }
 
+check_cuda() {
+    if command -v nvcc &> /dev/null
+    then
+        echo -e "\nUsing CUDA"
+        nvcc --version
+    else
+        echo -e "\nCUDA is not available."
+        exit 1
+    fi
+}
+
 check_platform() {
     local platform=$(uname -s)
     if [[ "$platform" == "Linux" ]]; then
@@ -129,6 +140,9 @@ while [ "$#" -gt 0 ]; do
                     print_usage
                     ;;
             esac
+            if [ "$DEVICE" == "cuda"]; then
+                check_cuda
+            fi
             shift 2
             ;;
         -lf|--log_file)

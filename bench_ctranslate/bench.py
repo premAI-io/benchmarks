@@ -119,6 +119,10 @@ if __name__ == "__main__":
         help="Path to the models directory.",
     )
     args = parser.parse_args()
+    if args.device == "metal":
+        logging.info(f"Skipping benchmark with device={args.device}")
+        sys.exit(0)
+
     logging.info(
         f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} "
         + f"repetitions={args.repetitions} device={args.device}"
