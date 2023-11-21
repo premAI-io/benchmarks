@@ -52,9 +52,9 @@ run_llama_experiment() {
     repetitions=$5
     device=$6
 
-    # if [ "$device" != "cuda" ]; then
-    #     export CUDA_VISIBLE_DEVICES=""
-    # fi
+    if [ "$device" != "cuda" ]; then
+        export CUDA_VISIBLE_DEVICES=""
+    fi
 
     declare -a tokens_per_second_array=()
 
@@ -64,6 +64,7 @@ run_llama_experiment() {
             --prompt "$prompt" \
             --count "$max_tokens" \
             --timing \
+            | tee /dev/tty \
             | grep -E 'total [0-9]+[.][0-9]+ ms, [0-9]+[.][0-9]+ tok/sec' \
             | awk -F '[:, ]' '{ sum += $(NF-1); count++ } END { if (count > 0) print sum/count }'
         )

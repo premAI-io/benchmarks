@@ -122,10 +122,8 @@ celerybeat.pid
 # Environments
 .env
 .venv
-.venv_*
 env/
 venv/
-venv_*/
 ENV/
 env.bak/
 venv.bak/
@@ -164,3 +162,6 @@ cython_debug/
 # don't check-in sub folder
 models/*
 !models/.gitkeep
+
+# Repositories
+tinygrad_bench/tinygrad
