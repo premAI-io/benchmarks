@@ -31,6 +31,7 @@ check_and_create_directory() {
 if [ ! -d "$VENV_DIR" ]; then
     python -m venv "$VENV_DIR"
     echo "Virtual environment '$VENV_DIR' created."
+    # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
     pip install --upgrade pip > /dev/null
     if [ -d "$BURN_FOLDER" ]; then

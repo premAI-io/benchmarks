@@ -15,6 +15,7 @@ VENV_DIR="$SCRIPT_DIR/venv"
 if [ ! -d "$VENV_DIR" ]; then
     python -m venv "$VENV_DIR"
     echo "Virtual environment '$VENV_DIR' created."
+    # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
     pip install --upgrade pip > /dev/null
     git clone --depth=1 https://github.com/tinygrad/tinygrad.git "$SCRIPT_DIR"/tinygrad

@@ -44,20 +44,20 @@ clone_and_build_llama() {
     # Remove existing llama.cpp directory if it exists
     if [ -d "$SCRIPT_DIR/llama.cpp" ]; then
         echo "Removing existing llama.cpp directory..."
-        rm -rf $SCRIPT_DIR/llama.cpp
+        rm -rf "$SCRIPT_DIR"/llama.cpp
     fi
 
-    git clone --depth=1 https://github.com/ggerganov/llama.cpp $SCRIPT_DIR/llama.cpp
-    cd $SCRIPT_DIR/llama.cpp
+    git clone --depth=1 https://github.com/ggerganov/llama.cpp "$SCRIPT_DIR"/llama.cpp
+    cd "$SCRIPT_DIR"/llama.cpp
 
     # Build llama.cpp
     make clean > /dev/null
     echo "Building llama.cpp..."
     make libllama.so > /dev/null
     cp libllama.so "$LIBLLAMA_FILE"
-    cd $SCRIPT_DIR
+    cd "$SCRIPT_DIR"
 
-    rm -rf $SCRIPT_DIR/llama.cpp
+    rm -rf "$SCRIPT_DIR"/llama.cpp
 }
 
 # Main script starts here
@@ -76,10 +76,12 @@ LIBLLAMA_FILE="$VENV_DIR/libllama_$DEVICE.so"
 if [ ! -d "$VENV_DIR" ]; then
     python -m venv "$VENV_DIR"
     echo "Virtual environment '$VENV_DIR' created."
+    # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
     pip install --upgrade pip > /dev/null
     pip install -r "$SCRIPT_DIR/requirements.txt" --no-cache-dir > /dev/null
 else
+    # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
 fi
 
