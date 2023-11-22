@@ -6,21 +6,21 @@ MLOps Engines, Frameworks, and Languages benchmarks over main stream AI Models.
 The benchmarking tool comprises three main scripts:
 - `benchmark.sh` for running the end-to-end benchmarking
 - `download.sh` which is internally used by the benchmark script to download the needed model files based on a configuration
-- `setup.sh` script for setup of dependencies and needed formats conversion
 
 ### benchmark
 
-This script runs benchmarks for a transformer model using both Rust and Python implementations. It provides options to customize the benchmarks, such as the prompt, repetitions, maximum tokens, device, and NVIDIA flag.
+This script runs all the defined benchmarks (i.e. `bench_{benchmark_name}`). It provides options to customize the benchmarks, such as the prompt, repetitions, maximum tokens, device.
 
 ```bash
 ./benchmark.sh [OPTIONS]
 ```
 where `OPTIONS`:
-- `-p, --prompt`: Prompt for benchmarks (default: 'Explain what is a transformer')
-- `-r, --repetitions`: Number of repetitions for benchmarks (default: 2)
-- `-m, --max_tokens`: Maximum number of tokens for benchmarks (default: 100)
-- `-d, --device`: Device for benchmarks (possible values: 'gpu' or 'cpu', default: 'cpu')
-- `--nvidia`: Use NVIDIA for benchmarks (default: false)
+- `-p, --prompt`        Prompt for benchmarks (default: 'Explain what is a transformer')
+- `-r, --repetitions`   Number of repetitions for benchmarks (default: 10)
+- `-m, --max_tokens`    Maximum number of tokens for benchmarks (default: 100)
+- `-d, --device`        Device for benchmarks (possible values: 'metal', 'gpu', and 'cpu', default: 'cpu')
+- `-lf, --log_file`     Logging file name.
+- `-md, --models_dir`   Models directory.
 
 ### download
 
@@ -74,13 +74,13 @@ CUDA Version: 11.7
 
 Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --nvidia --prompt 'Explain what is a transformer'`
 
-| Engine      | float32      | float16      | int8         | int4         |
-|-------------|--------------|--------------|--------------|--------------|
-| burn        | 13.28 ± 0.79 |      -       |      -       |      -       |
-| candle      |      -       | 26.30 ± 0.29 |      -       |      -       |
-| llama.cpp   |      -       |      -       | 67.64 ± 22.57| 106.21 ± 2.21|
-| ctranslate  |      -       | 58.54 ± 13.24| 34.22 ± 6.29 |      -       |
-| tinygrad    |      -       | 20.13 ± 1.35 |      -       |      -       |
+| Engine      | float32      | float16       | int8          | int4          |
+|-------------|--------------|---------------|---------------|---------------|
+| burn        | 13.12 ± 0.85 |      -        |      -        |      -        |
+| candle      |      -       | 36.78 ± 2.17  |      -        |      -        |
+| llama.cpp   |      -       |      -        | 84.48 ± 3.76  | 106.76 ± 1.29 |
+| ctranslate  |      -       | 51.38 ± 16.01 | 36.12 ± 11.93 |      -        |
+| tinygrad    |      -       | 20.32 ± 0.06  |      -        |      -        |
 
 *(data updated: <LAST_UPDATE>)
 

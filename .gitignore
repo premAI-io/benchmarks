@@ -162,3 +162,7 @@ cython_debug/
 # don't check-in sub folder
 models/*
 !models/.gitkeep
+
+# Repositories
+bench_tinygrad/tinygrad
+bench_burn/llama2-burn
