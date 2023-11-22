@@ -10,8 +10,8 @@
 #   -r, --repetitions Number of repetitions for benchmarks (default: 2)
 #   -m, --max_tokens  Maximum number of tokens for benchmarks (default: 100)
 #   -d, --device      Device for benchmarks (possible values: 'metal', 'gpu', and 'cpu', default: 'cpu')
-#   -lf, --log_file     Logging file name.
-#   -md, --models_dir   Models directory.
+#   -lf, --log_file   Logging file name.
+#   -md, --models_dir Models directory.
 #   -h, --help        Show this help message
 ########################################################################################################
 
@@ -25,6 +25,7 @@ print_usage() {
     echo "  -p, --prompt        Prompt for benchmarks (default: 'Explain what is a transformer')"
     echo "  -r, --repetitions   Number of repetitions for benchmarks (default: 2)"
     echo "  -m, --max_tokens    Maximum number of tokens for benchmarks (default: 100)"
+    echo "  -d, --device        Device for benchmarks (possible values: 'metal', 'gpu', and 'cpu', default: 'cpu')"
     echo "  -lf, --log_file     Logging file name."
     echo "  -md, --models_dir   Models directory."
     echo "  -h, --help          Show this help message"
