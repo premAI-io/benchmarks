@@ -48,7 +48,6 @@ if [ ! -e "$BURN_MODEL_FOLDER/$BURN_MODEL_NAME.cfg" ]; then
         echo "Dumping model from $BURN_MODEL_INPUT_DIR to $BURN_MODEL_FOLDER"
         python "$BURN_FOLDER/llama-py/dump_model.py" --model-dir "$BURN_MODEL_INPUT_DIR" --output-dir "$BURN_MODEL_FOLDER"
         cp "$BURN_MODEL_INPUT_DIR/tokenizer.model" "$BURN_MODEL_FOLDER"
-        rm -r $BURN_MODEL_INPUT_DIR
     else
         echo "Model already dumped at $BURN_MODEL_FOLDER/params."
     fi

@@ -70,12 +70,11 @@ run_llama_experiment() {
     declare -a tokens_per_second_array=()
 
     for ((i=1; i<=$repetitions; i++)); do
-        tokens_per_second=$(python3 "$script_dir/tinygrad/examples/llama.py" \
-            --model "$models_dir/llama-2-7b-hf/pytorch_model.bin.index.json" \
+        tokens_per_second=$(python "$script_dir/tinygrad/examples/llama.py" \
+            --model "$models_dir/llama-2-7b-raw" \
             --prompt "$prompt" \
             --count "$max_tokens" \
             --timing \
-            | tee /dev/tty \
             | grep -E 'total [0-9]+[.][0-9]+ ms, [0-9]+[.][0-9]+ tok/sec' \
             | awk -F '[:, ]' '{ sum += $(NF-1); count++ } END { if (count > 0) print sum/count }'
         )
@@ -140,7 +139,7 @@ while [ "$#" -gt 0 ]; do
                     print_usage
                     ;;
             esac
-            if [ "$DEVICE" == "cuda"]; then
+            if [ "$DEVICE" == "cuda" ]; then
                 check_cuda
             fi
             shift 2
