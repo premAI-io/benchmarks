@@ -2,7 +2,7 @@
 
 ########################################################################################################
 # Script: bench.sh
-# Description: This script runs benchmarks burn ctranslate benchmark.
+# Description: This script runs benchmarks burn llama benchmark.
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
@@ -29,6 +29,17 @@ print_usage() {
     echo "  -md, --models_dir   Models directory."
     echo "  -h, --help          Show this help message"
     exit 1
+}
+
+check_cuda() {
+    if command -v nvcc &> /dev/null
+    then
+        echo -e "\nUsing CUDA"
+        nvcc --version
+    else
+        echo -e "\nCUDA is not available."
+        exit 1
+    fi
 }
 
 check_platform() {
@@ -66,16 +77,30 @@ run_benchmarks() {
     local LOG_FILENAME="$5"
     local MODELS_DIR="$6"
 
-    python $SCRIPT_DIR/bench.py \
-        --prompt "$PROMPT" \
-        --repetitions "$REPETITIONS" \
-        --max_tokens $MAX_TOKENS \
-        --log_file "$LOG_FILENAME" \
-        --models_dir "$MODELS_DIR" \
-        --device "$DEVICE"
+    cargo clean --manifest-path="$SCRIPT_DIR/llama2-burn/Cargo.toml"
 
+    echo "Building burn"
+    if [ "$DEVICE" == "cuda" ]; then
+        export TORCH_CUDA_VERSION=cu117
+        DEVICE=gpu
+    fi
+    cargo build --release --manifest-path="$SCRIPT_DIR/llama2-burn/Cargo.toml"
+    echo "Running benchmarks"
+
+    benchmark_output=$(
+        cargo run --release --bin benchmark \
+            --manifest-path="$SCRIPT_DIR/llama2-burn/Cargo.toml" \
+            "$MODELS_DIR/llama-2-7b-burn/llama-2-7b-burn" \
+            "$MODELS_DIR/llama-2-7b-burn/tokenizer.model" \
+            "$PROMPT" \
+            $MAX_TOKENS \
+            $DEVICE \
+            $REPETITIONS
+    )
+    mean=$(echo "$benchmark_output" | grep -oP '\d+\.\d+ ± \d+\.\d+' | awk -F ' ± ' '{print $1}')
+    std=$(echo "$benchmark_output" | grep -oP '\d+\.\d+ ± \d+\.\d+' | awk -F ' ± ' '{print $2}')
+    echo "burn, float16 : $(printf "%.2f" $mean) ± $(printf "%.2f" $std)" >> "$LOG_FILENAME"
 }
-
 # Parse command-line arguments
 while [ "$#" -gt 0 ]; do
     case "$1" in
@@ -101,6 +126,13 @@ while [ "$#" -gt 0 ]; do
                     print_usage
                     ;;
             esac
+            if [ "$DEVICE" == "cuda" ]; then
+                check_cuda
+            fi
+            if [ "$DEVICE" == "metal" ]; then
+                echo "Metal not supported!"
+                exit 0
+            fi
             shift 2
             ;;
         -lf|--log_file)
@@ -120,6 +152,7 @@ while [ "$#" -gt 0 ]; do
             ;;
     esac
 done
+
 # Set default values if not provided
 PROMPT="${PROMPT:-"Explain what is a transformer"}"
 REPETITIONS="${REPETITIONS:-10}"

@@ -3,7 +3,7 @@
 ################################################################################
 # Script: setup.sh <MODELS_FOLDER>
 # Description: This script automates the setup of a virtual environment,
-# installs project requirements, converts and stores models.
+# installs project requirements, converts model.
 ################################################################################
 
 set -euo pipefail

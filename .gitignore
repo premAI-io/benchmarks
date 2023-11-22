@@ -165,3 +165,4 @@ models/*
 
 # Repositories
 bench_tinygrad/tinygrad
+bench_burn/llama2-burn

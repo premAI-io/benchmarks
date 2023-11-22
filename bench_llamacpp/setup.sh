@@ -8,13 +8,11 @@
 
 set -euo pipefail
 
-# Function to clone and build llama.cpp
 clone_and_build_llama() {
     local DEVICE="$1"
     local VENV_DIR="$2"
     local SCRIPT_DIR="$3"
 
-    # Check if DEVICE and ENV are provided as arguments
     if [ "$#" -ne 3 ]; then
         echo "Usage: $0 <DEVICE> <ENV> <SCRIPT_DIR>"
         exit 1

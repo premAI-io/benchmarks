@@ -1,10 +1,24 @@
 #!/bin/bash
 
+########################################################################################################
+# Script: bench.sh
+# Description: This script runs benchmarks llama.cpp llama benchmark.
+#
+# Usage: ./bench.sh [OPTIONS]
+# OPTIONS:
+#   -p, --prompt      Prompt for benchmarks (default: 'Explain what is a transformer')
+#   -r, --repetitions Number of repetitions for benchmarks (default: 2)
+#   -m, --max_tokens  Maximum number of tokens for benchmarks (default: 100)
+#   -d, --device      Device for benchmarks (possible values: 'metal', 'gpu', and 'cpu', default: 'cpu')
+#   -lf, --log_file     Logging file name.
+#   -md, --models_dir   Models directory.
+#   -h, --help        Show this help message
+########################################################################################################
+
 set -euo pipefail
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Function to print script usage
 print_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo "OPTIONS:"
@@ -103,7 +117,7 @@ while [ "$#" -gt 0 ]; do
                     print_usage
                     ;;
             esac
-            if [ "$DEVICE" == "cuda"]; then
+            if [ "$DEVICE" == "cuda" ]; then
                 check_cuda
             fi
             shift 2
