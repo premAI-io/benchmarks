@@ -17,9 +17,9 @@ if [ ! -d "$VENV_DIR" ]; then
     echo "Virtual environment '$VENV_DIR' created."
     source "$VENV_DIR/bin/activate"
     pip install --upgrade pip > /dev/null
-    git clone --depth=1 https://github.com/tinygrad/tinygrad.git $SCRIPT_DIR/tinygrad
-    cd $SCRIPT_DIR/tinygrad
-    pip install -e .
-    pip install sentencepiece
+    git clone --depth=1 https://github.com/tinygrad/tinygrad.git "$SCRIPT_DIR"/tinygrad
+    cd "$SCRIPT_DIR"/tinygrad
+    pip install -e . > /dev/null
+    pip install sentencepiece > /dev/null
     cd ..
 fi

@@ -34,10 +34,10 @@ if [ ! -d "$VENV_DIR" ]; then
     source "$VENV_DIR/bin/activate"
     pip install --upgrade pip > /dev/null
     if [ -d "$BURN_FOLDER" ]; then
-        rm -rf $BURN_FOLDER
+        rm -rf "$BURN_FOLDER"
     fi
-    git clone --depth=1 https://github.com/premAI-io/llama2-burn.git $BURN_FOLDER
-    pip install -r $BURN_FOLDER/llama-py/requirements.txt > /dev/null
+    git clone --depth=1 https://github.com/premAI-io/llama2-burn.git "$BURN_FOLDER"
+    pip install -r "$BURN_FOLDER"/llama-py/requirements.txt > /dev/null
 fi
 
 # Check and create llama-2-7b-burn model
@@ -46,14 +46,17 @@ if [ ! -e "$BURN_MODEL_FOLDER/$BURN_MODEL_NAME.cfg" ]; then
 
     if [ ! -d "$BURN_MODEL_FOLDER/params" ]; then
         echo "Dumping model from $BURN_MODEL_INPUT_DIR to $BURN_MODEL_FOLDER"
-        python "$BURN_FOLDER/llama-py/dump_model.py" --model-dir "$BURN_MODEL_INPUT_DIR" --output-dir "$BURN_MODEL_FOLDER"
+        python "$BURN_FOLDER/llama-py/dump_model.py" "$BURN_MODEL_INPUT_DIR" "$BURN_MODEL_INPUT_DIR/tokenizer.model"
+        mv "$(pwd)/params" "$BURN_MODEL_FOLDER"
         cp "$BURN_MODEL_INPUT_DIR/tokenizer.model" "$BURN_MODEL_FOLDER"
     else
         echo "Model already dumped at $BURN_MODEL_FOLDER/params."
     fi
 
     echo "Converting dumped model to burn"
-    cargo run --manifest-path="$BURN_FOLDER/Cargo.toml" --bin convert -- "$BURN_MODEL_FOLDER/params" "$BURN_MODEL_NAME" "$BURN_MODEL_FOLDER"
+    cargo run --manifest-path="$BURN_FOLDER/Cargo.toml" --bin convert -- "$BURN_MODEL_FOLDER/params" "$BURN_MODEL_NAME"
+    mv "$BURN_MODEL_NAME.bin" "$BURN_MODEL_FOLDER"
+    mv "$BURN_MODEL_NAME.cfg" "$BURN_MODEL_FOLDER"
     rm -r "$BURN_MODEL_FOLDER/params"
 else
     echo "Model llama-2-7b-burn already exists!"

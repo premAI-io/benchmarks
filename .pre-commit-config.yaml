@@ -31,6 +31,12 @@ repos:
         args: ["--config=setup.cfg"]
         additional_dependencies: [flake8-isort]
 
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+    hooks:
+    -   id: shellcheck
+        exclude: setup.sh
+
 ci:
   autoupdate_schedule: weekly
   skip: []

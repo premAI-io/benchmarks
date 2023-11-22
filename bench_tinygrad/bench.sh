@@ -29,7 +29,8 @@ check_cuda() {
 }
 
 check_platform() {
-    local platform=$(uname -s)
+    local platform
+    platform=$(uname -s)
     if [[ "$platform" == "Linux" ]]; then
         echo "Running on Linux."
     elif [[ "$platform" == "Darwin" ]]; then
@@ -52,7 +53,7 @@ check_python() {
 
 setup() {
     echo -e "\nSetting up with $SCRIPT_DIR/setup.sh..."
-    bash $SCRIPT_DIR/setup.sh "$1"
+    bash "$SCRIPT_DIR"/setup.sh "$1"
 }
 
 run_llama_experiment() {
@@ -69,7 +70,7 @@ run_llama_experiment() {
 
     declare -a tokens_per_second_array=()
 
-    for ((i=1; i<=$repetitions; i++)); do
+    for ((i=1; i<=repetitions; i++)); do
         tokens_per_second=$(python "$script_dir/tinygrad/examples/llama.py" \
             --model "$models_dir/llama-2-7b-raw" \
             --prompt "$prompt" \
@@ -93,10 +94,12 @@ run_benchmarks() {
     local LOG_FILENAME="$5"
     local MODELS_DIR="$6"
 
+    # shellcheck disable=SC1091
     source "$SCRIPT_DIR/venv/bin/activate"
 
     # Assign the result to an array variable
-    result_array=($(run_llama_experiment "$MODELS_DIR" "$SCRIPT_DIR" "$PROMPT" "$MAX_TOKENS" $REPETITIONS "$DEVICE"))
+    # shellcheck disable=SC2207
+    result_array=($(run_llama_experiment "$MODELS_DIR" "$SCRIPT_DIR" "$PROMPT" "$MAX_TOKENS" "$REPETITIONS" "$DEVICE"))
 
     total=0
     for value in "${result_array[@]}"; do
@@ -111,7 +114,7 @@ run_benchmarks() {
     done
     variance=$(echo "$sum_squared_diff / ${#result_array[@]}" | bc -l)
     std=$(echo "sqrt($variance)" | bc -l)
-    echo "tinygrad, float16 : $(printf "%.2f" $mean) ± $(printf "%.2f" $std)" >> "$LOG_FILENAME"
+    echo "tinygrad, float16 : $(printf "%.2f" "$mean") ± $(printf "%.2f" "$std")" >> "$LOG_FILENAME"
 }
 
 # Parse command-line arguments

@@ -22,13 +22,12 @@ LLAMA_HF_MODEL_DIR="$MODELS_FOLDER/llama-2-7b-hf"
 if [ ! -d "$VENV_DIR" ]; then
     python -m venv "$VENV_DIR"
     echo "Virtual environment '$VENV_DIR' created."
-    source $VENV_DIR/bin/activate
-    $VENV_DIR/bin/pip install --upgrade pip > /dev/null
+    source "$VENV_DIR"/bin/activate
+    pip install --upgrade pip > /dev/null
+    pip install -r "$SCRIPT_DIR"/requirements.txt > /dev/null
 else
-    source $VENV_DIR/bin/activate
+    source "$VENV_DIR"/bin/activate
 fi
-
-$VENV_DIR/bin/pip install -r $SCRIPT_DIR/requirements.txt > /dev/null
 
 if [ ! -d "$LLAMA_HF_MODEL_DIR-float16" ]; then
     echo "Creating llama-2-7b-hf-float16 model..."

@@ -32,7 +32,8 @@ print_usage() {
 }
 
 check_platform() {
-    local platform=$(uname -s)
+    local platform
+    platform=$(uname -s)
     if [[ "$platform" == "Linux" ]]; then
         echo "Running on Linux."
     elif [[ "$platform" == "Darwin" ]]; then
@@ -55,7 +56,7 @@ check_python() {
 
 setup() {
     echo -e "\nSetting up with $SCRIPT_DIR/setup.sh..."
-    bash $SCRIPT_DIR/setup.sh "$1"
+    bash "$SCRIPT_DIR"/setup.sh "$1"
 }
 
 run_benchmarks() {
@@ -66,10 +67,10 @@ run_benchmarks() {
     local LOG_FILENAME="$5"
     local MODELS_DIR="$6"
 
-    python $SCRIPT_DIR/bench.py \
+    python "$SCRIPT_DIR"/bench.py \
         --prompt "$PROMPT" \
         --repetitions "$REPETITIONS" \
-        --max_tokens $MAX_TOKENS \
+        --max_tokens "$MAX_TOKENS" \
         --log_file "$LOG_FILENAME" \
         --models_dir "$MODELS_DIR" \
         --device "$DEVICE"

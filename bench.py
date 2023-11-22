@@ -4,7 +4,6 @@ import sys
 from collections import defaultdict
 
 import numpy as np
-
 from python_bench.ctranslate import CTranslateBenchmark, get_compute_types
 from python_bench.llama_cpp import LlamaCPPBenchmark
 from python_bench.tinygrad import TinyGradBenchmark

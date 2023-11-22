@@ -42,8 +42,18 @@ check_cuda() {
     fi
 }
 
+check_rust() {
+    if which cargo &>/dev/null ; then
+        echo -e "\nRust is installed. Using $(which cargo)"
+    else
+        echo -e "\nRust is not installed. Please install Rust before proceeding."
+        exit 1  # Error exit code
+    fi
+}
+
 check_platform() {
-    local platform=$(uname -s)
+    local platform
+    platform=$(uname -s)
     if [[ "$platform" == "Linux" ]]; then
         echo "Running on Linux."
     elif [[ "$platform" == "Darwin" ]]; then
@@ -66,7 +76,7 @@ check_python() {
 
 setup() {
     echo -e "\nSetting up with $SCRIPT_DIR/setup.sh..."
-    bash $SCRIPT_DIR/setup.sh "$1"
+    bash "$SCRIPT_DIR/setup.sh" "$1"
 }
 
 run_benchmarks() {
@@ -93,13 +103,13 @@ run_benchmarks() {
             "$MODELS_DIR/llama-2-7b-burn/llama-2-7b-burn" \
             "$MODELS_DIR/llama-2-7b-burn/tokenizer.model" \
             "$PROMPT" \
-            $MAX_TOKENS \
-            $DEVICE \
-            $REPETITIONS
+            "$MAX_TOKENS" \
+            "$DEVICE" \
+            "$REPETITIONS"
     )
     mean=$(echo "$benchmark_output" | grep -oP '\d+\.\d+ ± \d+\.\d+' | awk -F ' ± ' '{print $1}')
     std=$(echo "$benchmark_output" | grep -oP '\d+\.\d+ ± \d+\.\d+' | awk -F ' ± ' '{print $2}')
-    echo "burn, float16 : $(printf "%.2f" $mean) ± $(printf "%.2f" $std)" >> "$LOG_FILENAME"
+    echo "burn, float16 : $(printf "%.2f" "$mean") ± $(printf "%.2f" "$std")" >> "$LOG_FILENAME"
 }
 # Parse command-line arguments
 while [ "$#" -gt 0 ]; do
@@ -162,6 +172,7 @@ LOG_FILENAME="${LOG_FILENAME:-"benchmark_$(date +'%Y%m%d%H%M%S').log"}"
 MODELS_DIR="${MODELS_DIR:-"./models"}"
 
 check_platform
+check_rust
 check_python
 setup "$MODELS_DIR"
 run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$LOG_FILENAME" "$MODELS_DIR"
