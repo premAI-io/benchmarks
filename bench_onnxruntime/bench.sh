@@ -78,7 +78,7 @@ run_benchmarks() {
     local DEVICE="$4"
     local LOG_FILENAME="$5"
     local MODELS_DIR="$6"
-    
+
     # shellcheck disable=SC1091
     source "$SCRIPT_DIR/venv/bin/activate"
 
