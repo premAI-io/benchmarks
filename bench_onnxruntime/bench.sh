@@ -150,5 +150,5 @@ MODELS_DIR="${MODELS_DIR:-"./models"}"
 
 check_platform
 check_python
-setup "$DEVICE"
+setup "$MODELS_DIR"
 run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$LOG_FILENAME" "$MODELS_DIR"
