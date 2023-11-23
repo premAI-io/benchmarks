@@ -71,7 +71,7 @@ Model: LLAMA-2-7B
 
 CUDA Version: 11.7
 
-Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --nvidia --prompt 'Explain what is a transformer'`
+Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cuda --prompt 'Explain what is a transformer'`
 
 | Engine      | float32      | float16       | int8          | int4          |
 |-------------|--------------|---------------|---------------|---------------|
@@ -80,6 +80,7 @@ Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --nvidia
 | llama.cpp   |      -       |      -        | 84.48 ± 3.76  | 106.76 ± 1.29 |
 | ctranslate  |      -       | 51.38 ± 16.01 | 36.12 ± 11.93 |      -        |
 | tinygrad    |      -       | 20.32 ± 0.06  |      -        |      -        |
+| onnx        |      -       | 54.16 ± 3.15  |      -        |      -        |
 
 *(data updated: 23th November 2023)
 
@@ -94,24 +95,26 @@ CUDA Version: NA
 
 Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cpu --prompt 'Explain what is a transformer'`
 
-| Engine      | float32       | float16       | int8         | int4         |
+| Engine      | float32      | float16      | int8         | int4         |
 |-------------|--------------|--------------|--------------|--------------|
 | burn        | 0.30 ± 0.09  |      -       |      -       |      -       |
 | candle      |      -       | 3.43 ± 0.02  |      -       |      -       |
 | llama.cpp   |      -       |      -       | 14.41 ± 1.59 | 20.96 ± 1.94 |
 | ctranslate  |      -       |      -       | 2.11 ± 0.73  |      -       |
 | tinygrad    |      -       | 4.21 ± 0.38  |      -       |      -       |
+| onnx        |      -       |      -       |      -       |      -       |
 
 #### GPU (Metal)
 
-Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --prompt 'Explain what is a transformer'`
+Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device metal --prompt 'Explain what is a transformer'`
 
-| Engine      | float32       | float16       | int8         | int4         |
+| Engine      | float32      | float16      | int8         | int4         |
 |-------------|--------------|--------------|--------------|--------------|
 | burn        |      -       |      -       |      -       |      -       |
 | candle      |      -       |      -       |      -       |      -       |
 | llama.cpp   |      -       |      -       | 31.24 ± 7.82 | 46.75 ± 9.55 |
 | ctranslate  |      -       |      -       |      -       |      -       |
 | tinygrad    |      -       | 29.78 ± 1.18 |      -       |      -       |
+| onnx        |      -       |      -       |      -       |      -       |
 
 *(data updated: 23th November 2023)
