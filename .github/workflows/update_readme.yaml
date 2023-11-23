@@ -1,0 +1,30 @@
+name: Update README
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - README.md.template
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+
+      - name: Update README
+        run: sed "s|<LAST_UPDATE>|$(date -u +"%dth %B %Y")|g" README.md.template > README.md
+
+      - name: Commit changes
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add README.md
+          git commit -m "Update <LAST_UPDATE> placeholder in README.md" || true
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}

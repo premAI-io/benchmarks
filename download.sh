@@ -96,7 +96,7 @@ fi
 if $force_download; then
   echo "Force download enabled. Removing all files in the models folder and cache file."
   rm -rf ./models/*
-  > "$cache_file"
+  rm "$cache_file"
 fi
 
 # Read the JSON file
