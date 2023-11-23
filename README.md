@@ -1,46 +1,45 @@
 # benchmarks
 MLOps Engines, Frameworks, and Languages benchmarks over main stream AI Models.
 
-## Tool
+## Structure
 
-The benchmarking tool comprises three main scripts:
-- `benchmark.sh` for running the end-to-end benchmarking
-- `download.sh` which is internally used by the benchmark script to download the needed model files based on a configuration
+The repository is organized to facilitate benchmark management and execution through a consistent structure:
 
-### benchmark
+- Each benchmark, identified as `bench_name`, has a dedicated folder, `bench_{bench_name}`.
+- Within these benchmark folders, a common script named `bench.sh` handles setup, environment configuration, and execution.
 
-This script runs all the defined benchmarks (i.e. `bench_{benchmark_name}`). It provides options to customize the benchmarks, such as the prompt, repetitions, maximum tokens, device.
+### Benchmark Script
 
-```bash
-./benchmark.sh [OPTIONS]
-```
-where `OPTIONS`:
-- `-p, --prompt`        Prompt for benchmarks (default: 'Explain what is a transformer')
-- `-r, --repetitions`   Number of repetitions for benchmarks (default: 10)
-- `-m, --max_tokens`    Maximum number of tokens for benchmarks (default: 100)
-- `-d, --device`        Device for benchmarks (possible values: 'metal', 'gpu', and 'cpu', default: 'cpu')
-- `-lf, --log_file`     Logging file name.
-- `-md, --models_dir`   Models directory.
+The `bench.sh` script supports key parameters:
 
-### download
+- `prompt`: Benchmark-specific prompt.
+- `max_tokens`: Maximum tokens for the benchmark.
+- `repetitions`: Number of benchmark repetitions.
+- `log_file`: File for storing benchmark logs.
+- `device`: Device for benchmark execution (cpu, cuda, metal).
+- `models_dir`: Directory containing necessary model files.
 
-Downloads files from a list of URLs specified in a JSON file. The JSON file should contain an array of objects, each with a 'url', 'file', and 'folder' property. The script checks if the file already exists before downloading it.
+### Unified Execution
 
-```bash
-./download.sh --models <json_file> --cache <cache_file> --force-download
-```
-Options
-- `--models`: JSON file specifying the models to download (default: models.json)
-- `--cache`: Cache file to keep track of downloaded files (default: cache.log)
-- `--force-download`: Force download of all files, removing existing files and cache
+An overarching `bench.sh` script streamlines benchmark execution:
 
-### setup
-1. Creates a python virtual environment `venv` and installs project requirements.
-3. Converts and stores models in different formats.
+- Downloads essential files for benchmarking.
+- Iterates through all benchmark folders in the repository.
+
+This empowers users to seamlessly execute benchmarks based on their preference. To run a specific benchmark, navigate to the corresponding benchmark folder (e.g., `bench_{bench_name}`) and execute the `bench.sh` script with the required parameters.
+
+
+
+## Usage
 
 ```bash
-./setup.sh
+# Run a specific benchmark
+./bench_{bench_name}/bench.sh --prompt <value> --max_tokens <value> --num_repetitions <value> --log_file <file_path> --device <cpu/cuda/metal> --models_dir <path_to_models>
+
+# Run all benchmarks collectively
+./bench.sh --prompt <value> --max_tokens <value> --num_repetitions <value> --log_file <file_path> --device <cpu/cuda/metal> --models_dir <path_to_models>
 ```
+
 
 ## ML Engines: Feature Table
 
@@ -82,7 +81,7 @@ Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --nvidia
 | ctranslate  |      -       | 51.38 ± 16.01 | 36.12 ± 11.93 |      -        |
 | tinygrad    |      -       | 20.32 ± 0.06  |      -        |      -        |
 
-*(data updated: 22th November 2023)
+*(data updated: 23th November 2023)
 
 
 ### M2 MAX 32GB Inference Bench:
@@ -115,4 +114,4 @@ Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device gpu --prompt
 | ctranslate  |      -       |      -       |      -       |      -       |
 | tinygrad    |      -       | 29.78 ± 1.18 |      -       |      -       |
 
-*(data updated: 22th November 2023)
+*(data updated: 23th November 2023)
