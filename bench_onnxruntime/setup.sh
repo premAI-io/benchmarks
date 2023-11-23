@@ -26,7 +26,7 @@ if [ ! -d "$VENV_DIR" ]; then
     # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
     pip install --upgrade pip > /dev/null
-    pip install -r "$SCRIPT_DIR"/requirements.txt
+    pip install -r "$SCRIPT_DIR"/requirements.txt > /dev/null
 else
     # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
@@ -42,14 +42,10 @@ get_device() {
 
 # Check and create llama-2-7b-onnx model
 if [ ! -d "$LLAMA_ONNX_MODEL_DIR" ]; then
-    echo "optimum-cli export onnx \
-        --model $LLAMA_HF_MODEL_DIR --task text-generation --framework pt \
-        --opset 17 --sequence_length 1024 --batch_size 1 --device $(get_device) --fp16 \
-        $LLAMA_ONNX_MODEL_DIR"
     optimum-cli export onnx \
         --model "$LLAMA_HF_MODEL_DIR" --task text-generation --framework pt \
         --opset 17 --sequence_length 1024 --batch_size 1 --device "$(get_device)" --fp16 \
-        "$LLAMA_ONNX_MODEL_DIR"
+        "$LLAMA_ONNX_MODEL_DIR" > /dev/null
 else
     echo "Model llama-2-7b-onnx already exists!"
 fi

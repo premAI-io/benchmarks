@@ -80,7 +80,7 @@ Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cuda --promp
 | llama.cpp   |      -       |      -        | 84.48 ± 3.76  | 106.76 ± 1.29 |
 | ctranslate  |      -       | 51.38 ± 16.01 | 36.12 ± 11.93 |      -        |
 | tinygrad    |      -       | 20.32 ± 0.06  |      -        |      -        |
-| onnx        |      -       | 50.50 ± 3.58  |      -        |      -        |
+| onnx        |      -       | 54.16 ± 3.15  |      -        |      -        |
 
 *(data updated: <LAST_UPDATE>)
 

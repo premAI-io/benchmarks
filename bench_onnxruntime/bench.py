@@ -22,6 +22,7 @@ class ONNXBenchmark:
         self.provider = (
             "CUDAExecutionProvider" if device == "cuda" else "CPUExecutionProvider"
         )
+        self.results = []
 
     def load_model(self):
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
