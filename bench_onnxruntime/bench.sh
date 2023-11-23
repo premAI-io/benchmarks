@@ -124,6 +124,10 @@ while [ "$#" -gt 0 ]; do
                 echo "Metal not supported!"
                 exit 0
             fi
+            if [ "$DEVICE" == "cpu" ]; then
+                echo "cpu not supported!"
+                exit 0
+            fi
             shift 2
             ;;
         -lf|--log_file)

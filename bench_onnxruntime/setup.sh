@@ -31,20 +31,11 @@ else
     # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
 fi
-
-get_device() {
-  if command -v nvidia-smi &> /dev/null; then
-    echo "cuda"
-  else
-    echo "cpu"
-  fi
-}
-
 # Check and create llama-2-7b-onnx model
 if [ ! -d "$LLAMA_ONNX_MODEL_DIR" ]; then
     optimum-cli export onnx \
         --model "$LLAMA_HF_MODEL_DIR" --task text-generation --framework pt \
-        --opset 17 --sequence_length 1024 --batch_size 1 --device "$(get_device)" --fp16 \
+        --opset 17 --sequence_length 1024 --batch_size 1 --device cuda --fp16 \
         "$LLAMA_ONNX_MODEL_DIR" > /dev/null
 else
     echo "Model llama-2-7b-onnx already exists!"
