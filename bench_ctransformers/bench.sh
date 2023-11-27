@@ -37,7 +37,7 @@ check_cuda() {
     then
         echo -e "\nUsing CUDA"
         nvcc --version
-        pip install ctransformers[cuda]
+        pip install ctransformers[cuda] numpy
     else
         echo -e "\nCUDA is not available."
         exit 1
@@ -49,6 +49,7 @@ check_platform() {
     platform=$(uname -s)
     if [[ "$platform" == "Linux" ]]; then
         echo "Running on Linux."
+        pip install -r requirements.txt
     elif [[ "$platform" == "Darwin" ]]; then
         echo "Running on Mac OS."
         echo "Installing CTransformers on metal"
@@ -68,11 +69,6 @@ check_python() {
         echo -e "\nPython does not exist."
         exit 1
     fi
-}
-
-setup() {
-    echo -e "\nSetting up with $SCRIPT_DIR/setup.sh..."
-    bash "$SCRIPT_DIR"/setup.sh "$1"
 }
 
 run_benchmarks() {
