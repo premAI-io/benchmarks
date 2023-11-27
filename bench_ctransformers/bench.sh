@@ -15,7 +15,6 @@
 #   -h, --help        Show this help message
 ########################################################################################################
 
-
 set -euo pipefail
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -38,6 +37,7 @@ check_cuda() {
     then
         echo -e "\nUsing CUDA"
         nvcc --version
+        pip install ctransformers[cuda]
     else
         echo -e "\nCUDA is not available."
         exit 1
@@ -51,6 +51,9 @@ check_platform() {
         echo "Running on Linux."
     elif [[ "$platform" == "Darwin" ]]; then
         echo "Running on Mac OS."
+        echo "Installing CTransformers on metal"
+        export CT_METAL=1
+        pip install ctransformers --no-binary ctransformers
     else
         echo "Unknown platform."
         exit 1
@@ -72,3 +75,79 @@ setup() {
     bash "$SCRIPT_DIR"/setup.sh "$1"
 }
 
+run_benchmarks() {
+    local PROMPT="$1"
+    local REPETITIONS="$2"
+    local MAX_TOKENS="$3"
+    local DEVICE="$4"
+    local LOG_FILENAME="$5"
+    local MODELS_DIR="$6"
+
+    python "$SCRIPT_DIR"/bench.py \
+        --prompt "$PROMPT" \
+        --repetitions "$REPETITIONS" \
+        --max_tokens "$MAX_TOKENS" \
+        --log_file "$LOG_FILENAME" \
+        --models_dir "$MODELS_DIR" \
+        --device "$DEVICE"
+}
+
+# Parse command-line arguments
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        -p|--prompt)
+            PROMPT="$2"
+            shift 2
+            ;;
+        -r|--repetitions)
+            REPETITIONS="$2"
+            shift 2
+            ;;
+        -m|--max_tokens)
+            MAX_TOKENS="$2"
+            shift 2
+            ;;
+        -d|--device)
+            DEVICE="$2"
+            case "$DEVICE" in
+                "cuda" | "metal" | "cpu")
+                    ;;
+                *)
+                    echo "Invalid value for --device. Please use 'cuda', 'gpu' or 'cpu'."
+                    print_usage
+                    ;;
+            esac
+            if [ "$DEVICE" == "cuda" ]; then
+                check_cuda
+            fi
+            shift 2
+            ;;
+        -lf|--log_file)
+            LOG_FILENAME="$2"
+            shift 2
+            ;;
+        -md|--models_dir)
+            MODELS_DIR="$2"
+            shift 2
+            ;;
+        -h|--help)
+            print_usage
+            ;;
+        *)
+            echo "Unknown option: $1"
+            print_usage
+            ;;
+    esac
+done
+# Set default values if not provided
+PROMPT="${PROMPT:-"Explain what is a transformer"}"
+REPETITIONS="${REPETITIONS:-10}"
+MAX_TOKENS="${MAX_TOKENS:-100}"
+DEVICE="${DEVICE:-'cpu'}"
+LOG_FILENAME="${LOG_FILENAME:-"benchmark_$(date +'%Y%m%d%H%M%S').log"}"
+MODELS_DIR="${MODELS_DIR:-"./models"}"
+
+check_platform
+check_python
+setup "$DEVICE"
+run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$LOG_FILENAME" "$MODELS_DIR"
