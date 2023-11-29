@@ -38,8 +38,9 @@ class LlamaCTransformersBenchmark:
     def run_model(self, prompt: str, max_tokens: int) -> float:
         start = time.time()
         output = self.model(prompt, max_new_tokens=max_tokens)
+        delta = time.time() - start
         tokens = len(self.model.tokenize(output))
-        return tokens / (time.time() - start)
+        return tokens / delta
 
     def benchmark(self, prompt: str, max_tokens: int, repetitions: int) -> None:
         for i in range(repetitions):
