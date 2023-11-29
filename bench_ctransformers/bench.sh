@@ -2,7 +2,7 @@
 
 ########################################################################################################
 # Script: bench.sh
-# Description: This script runs benchmarks llama.cpp llama benchmark.
+# Description: This script runs benchmarks ctransformers llama benchmark.
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
