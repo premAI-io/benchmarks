@@ -22,9 +22,9 @@
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <li><a href="#getting-started">Getting started</a></li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#contribute">Contribute</a></li>
+    <li><a href="#-getting-started">Getting started</a></li>
+    <li><a href="#-usage">Usage</a></li>
+    <li><a href="#-contribute">Contribute</a></li>
   </ol>
 </details>
 
