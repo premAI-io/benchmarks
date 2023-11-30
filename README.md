@@ -1,10 +1,3 @@
-[![GitHub contributors](https://img.shields.io/github/contributors/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/graphs/contributors)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/commits/master)
-[![GitHub last commit](https://img.shields.io/github/last-commit/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/commits/master)
-[![GitHub top language](https://img.shields.io/github/languages/top/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks)
-[![GitHub issues](https://img.shields.io/github/issues/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/issues)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-
 <div align="center">
 
   <h1 align="center">🕹️ Benchmarks</h1>
@@ -18,6 +11,13 @@
     </p>
 </div>
 
+[![GitHub contributors](https://img.shields.io/github/contributors/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/graphs/contributors)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/commits/master)
+[![GitHub last commit](https://img.shields.io/github/last-commit/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/commits/master)
+[![GitHub top language](https://img.shields.io/github/languages/top/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks)
+[![GitHub issues](https://img.shields.io/github/issues/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/issues)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 
 <details>
   <summary>Table of Contents</summary>
@@ -30,7 +30,7 @@
 
 </br>
 
-# 🚀 Getting Started
+## 🚀 Getting Started
 
 Welcome to our benchmarking repository! This organized structure is designed to simplify benchmark management and execution. Here's a quick guide to get you started:
 
@@ -38,7 +38,7 @@ Welcome to our benchmarking repository! This organized structure is designed to 
 
 - **Benchmark Script (`bench.sh`):** Within these benchmark folders, you'll find a common script named `bench.sh`. This script takes care of everything from setup and environment configuration to actual execution.
 
-## Benchmark Script Parameters
+### Benchmark Script Parameters
 
 The `bench.sh` script supports the following key parameters, allowing for customization and flexibility:
 
@@ -46,10 +46,10 @@ The `bench.sh` script supports the following key parameters, allowing for custom
 - `max_tokens`: Maximum tokens for the benchmark.
 - `repetitions`: Number of benchmark repetitions.
 - `log_file`: File for storing benchmark logs.
-- `device`: Specify the device for benchmark execution (cpu, cuda, metal).
+- `device`: Specify the device for benchmark execution (CPU, CUDA, Metal).
 - `models_dir`: Directory containing necessary model files.
 
-## Streamlined Execution
+### Streamlined Execution
 
 The overarching [`benchmark.sh`](./benchmark.sh) script further simplifies the benchmark execution process:
 
@@ -58,11 +58,11 @@ The overarching [`benchmark.sh`](./benchmark.sh) script further simplifies the b
 
 This approach empowers users to effortlessly execute benchmarks based on their preferences. To run a specific benchmark, navigate to the corresponding benchmark folder (e.g., `bench_{bench_name}`) and execute the `bench.sh` script with the required parameters.
 
-# 📄 Usage
+## 📄 Usage
 
 To utilize the benchmarking capabilities of this repository, follow these usage examples:
 
-## Run a Specific Benchmark
+### Run a Specific Benchmark
 
 Navigate to the benchmark folder and execute the `bench.sh` script with the desired parameters:
 
@@ -72,7 +72,7 @@ Navigate to the benchmark folder and execute the `bench.sh` script with the desi
 
 Replace <value> with the specific values for your benchmark, and <file_path> and <path_to_models> with the appropriate file and directory paths.
 
-## Run All Benchmarks Collectively
+### Run All Benchmarks Collectively
 
 For a comprehensive execution of all benchmarks, use the overarching `benchmark.sh` script:
 
@@ -84,11 +84,11 @@ Again, customize the parameters according to your preferences, ensuring that <fi
 
 Feel free to adjust the parameters as needed for your specific benchmarking requirements.
 
-# 🤝 Contribute
+## 🤝 Contribute
 
 We welcome contributions to enhance and expand our benchmarking repository. If you'd like to contribute a new benchmark, follow these steps:
 
-## Creating a New Benchmark
+### Creating a New Benchmark
 
 1. **Create a New Folder:**
    - Start by creating a new folder for your benchmark. Name it `bench_{new_bench_name}` for consistency.
@@ -108,18 +108,20 @@ We welcome contributions to enhance and expand our benchmarking repository. If y
 3. **Benchmark Script (`bench.sh`):**
    - The `bench.sh` script should handle setup, environment configuration, and the actual execution of the benchmark. Ensure it supports the parameters mentioned in the [Benchmark Script Parameters](#benchmark-script-parameters) section.
 
-## Pre-commit Hooks
+### Pre-commit Hooks
 
 We use pre-commit hooks to maintain code quality and consistency.
 
 1. **Install Pre-commit:** Ensure you have `pre-commit` installed
-    ```bash
-    pip install pre-commit
-    ```
+
+```bash
+pip install pre-commit
+```
 
 2. **Install Hooks:** Run the following command to install the pre-commit hooks
-    ```bash
-    pre-commit install
-    ```
+
+```bash
+pre-commit install
+```
 
 The existing pre-commit configuration will be used for automatic checks before each commit, ensuring code quality and adherence to defined standards.
