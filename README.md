@@ -90,35 +90,40 @@ We welcome contributions to enhance and expand our benchmarking repository. If y
 
 ### Creating a New Benchmark
 
-1. **Create a New Folder:**
-   - Start by creating a new folder for your benchmark. Name it `bench_{new_bench_name}` for consistency.
-     ```bash
-     mkdir bench_{new_bench_name}
-     ```
+**1. Create a New Folder**
 
-2. **Folder Structure:**
-   - Inside the new benchmark folder, include the following structure:
-     ```
-     bench_{new_bench_name}
-     ├── bench.sh           # Benchmark script for setup and execution
-     ├── requirements.txt   # Dependencies required for the benchmark
-     └── ...                # Any additional files needed for the benchmark
-     ```
+Start by creating a new folder for your benchmark. Name it `bench_{new_bench_name}` for consistency.
 
-3. **Benchmark Script (`bench.sh`):**
-   - The `bench.sh` script should handle setup, environment configuration, and the actual execution of the benchmark. Ensure it supports the parameters mentioned in the [Benchmark Script Parameters](#benchmark-script-parameters) section.
+```bash
+mkdir bench_{new_bench_name}
+```
+
+**2. Folder Structure**
+
+Inside the new benchmark folder, include the following structure
+
+```
+bench_{new_bench_name}
+├── bench.sh           # Benchmark script for setup and execution
+├── requirements.txt   # Dependencies required for the benchmark
+└── ...                # Any additional files needed for the benchmark
+```
+
+**3. Benchmark Script (`bench.sh`):**
+
+The `bench.sh` script should handle setup, environment configuration, and the actual execution of the benchmark. Ensure it supports the parameters mentioned in the [Benchmark Script Parameters](#benchmark-script-parameters) section.
 
 ### Pre-commit Hooks
 
 We use pre-commit hooks to maintain code quality and consistency.
 
-1. **Install Pre-commit:** Ensure you have `pre-commit` installed
+**1. Install Pre-commit:** Ensure you have `pre-commit` installed
 
 ```bash
 pip install pre-commit
 ```
 
-2. **Install Hooks:** Run the following command to install the pre-commit hooks
+**2. Install Hooks:** Run the following command to install the pre-commit hooks
 
 ```bash
 pre-commit install
