@@ -44,7 +44,7 @@ install_device_specific_ctransformers() {
             ;;
         metal)
             echo "Installing CTransformers for Metal."
-            CT_METAL=1 pip install ctransformers --no-binary ctransformers
+            CT_METAL=1 pip install ctransformers --no-binary ctransformers > /dev/null
             ;;
         cpu)
             echo "Installing CTransformers for CPU."
