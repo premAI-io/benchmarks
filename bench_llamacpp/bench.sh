@@ -79,6 +79,9 @@ run_benchmarks() {
     local LOG_FILENAME="$5"
     local MODELS_DIR="$6"
 
+    # shellcheck disable=SC1091
+    source "$SCRIPT_DIR/venv/bin/activate"
+
     if [ "$DEVICE" == "cuda" ] || [ "$DEVICE" == "metal" ]; then
         export LLAMA_CPP_LIB=$SCRIPT_DIR/venv/libllama_$DEVICE.so
         echo "LLAMA_CPP_LIB=$LLAMA_CPP_LIB"
