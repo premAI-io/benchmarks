@@ -2,7 +2,7 @@
 
 ########################################################################################################
 # Script: bench.sh
-# Description: This script runs benchmarks ctransformers llama benchmark.
+# Description: This script runs benchmarks llama.cpp llama benchmark.
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
@@ -37,7 +37,6 @@ check_cuda() {
     then
         echo -e "\nUsing CUDA"
         nvcc --version
-        pip install ctransformers[cuda] numpy
     else
         echo -e "\nCUDA is not available."
         exit 1
@@ -49,12 +48,8 @@ check_platform() {
     platform=$(uname -s)
     if [[ "$platform" == "Linux" ]]; then
         echo "Running on Linux."
-        pip install -r requirements.txt
     elif [[ "$platform" == "Darwin" ]]; then
         echo "Running on Mac OS."
-        echo "Installing CTransformers on metal"
-        export CT_METAL=1
-        pip install ctransformers --no-binary ctransformers
     else
         echo "Unknown platform."
         exit 1
@@ -71,6 +66,11 @@ check_python() {
     fi
 }
 
+setup() {
+    echo -e "\nSetting up with $SCRIPT_DIR/setup.sh..."
+    bash "$SCRIPT_DIR"/setup.sh "$1"
+}
+
 run_benchmarks() {
     local PROMPT="$1"
     local REPETITIONS="$2"
@@ -79,6 +79,8 @@ run_benchmarks() {
     local LOG_FILENAME="$5"
     local MODELS_DIR="$6"
 
+    # shellcheck disable=SC1091
+    source "$SCRIPT_DIR/venv/bin/activate"
     python "$SCRIPT_DIR"/bench.py \
         --prompt "$PROMPT" \
         --repetitions "$REPETITIONS" \
@@ -145,4 +147,5 @@ MODELS_DIR="${MODELS_DIR:-"./models"}"
 
 check_platform
 check_python
+setup "$DEVICE"
 run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$LOG_FILENAME" "$MODELS_DIR"
