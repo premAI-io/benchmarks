@@ -17,7 +17,7 @@
 | tinygrad    |      -       | 20.32 ± 0.06  |      -        |      -        |
 | onnx        |      -       | 54.16 ± 3.15  |      -        |      -        |
 
-*(Data updated: `30th November 2023`)
+*(Data updated: `01th December 2023`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -53,4 +53,4 @@
 | tinygrad    |      -       | 29.78 ± 1.18 |      -       |      -       |
 | onnx        |      -       |      -       |      -       |      -       |
 
-*(Data updated: `30th November 2023`)
+*(Data updated: `01th December 2023`)
