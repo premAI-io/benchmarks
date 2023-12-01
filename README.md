@@ -1,123 +1,132 @@
-# benchmarks
-MLOps Engines, Frameworks, and Languages benchmarks over main stream AI Models.
+<div align="center">
 
-## Structure
+  <h1 align="center">🕹️ Benchmarks</h1>
+    <p align="center">Performance Comparison of MLOps Engines, Frameworks, and Languages on Mainstream AI Models.</p>
+    <p align="center">
+         <a href="https://github.com/premAI-io/benchmarks/blob/main/docs/ml_engines.md">👀 View ML Engines</a>
+         ·
+        <a href="https://github.com/premAI-io/benchmarks/blob/main/docs/llama2.md">🦙 LLama 2 Benchmark</a>
+        ·
+        <a href="https://github.com/premAI-io/benchmarks/issues">🐞 Request Feature</a>
+    </p>
+</div>
 
-The repository is organized to facilitate benchmark management and execution through a consistent structure:
+[![GitHub contributors](https://img.shields.io/github/contributors/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/graphs/contributors)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/commits/master)
+[![GitHub last commit](https://img.shields.io/github/last-commit/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/commits/master)
+[![GitHub top language](https://img.shields.io/github/languages/top/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks)
+[![GitHub issues](https://img.shields.io/github/issues/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/issues)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-- Each benchmark, identified as `bench_name`, has a dedicated folder, `bench_{bench_name}`.
-- Within these benchmark folders, a common script named `bench.sh` handles setup, environment configuration, and execution.
 
-### Benchmark Script
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li><a href="#-getting-started">Getting started</a></li>
+    <li><a href="#-usage">Usage</a></li>
+    <li><a href="#-contribute">Contribute</a></li>
+  </ol>
+</details>
 
-The `bench.sh` script supports key parameters:
+</br>
+
+## 🚀 Getting Started
+
+Welcome to our benchmarking repository! This organized structure is designed to simplify benchmark management and execution. Here's a quick guide to get you started:
+
+- **Benchmark Organization:** Each benchmark is uniquely identified as `bench_name` and resides in its dedicated folder, named `bench_{bench_name}`.
+
+- **Benchmark Script (`bench.sh`):** Within these benchmark folders, you'll find a common script named `bench.sh`. This script takes care of everything from setup and environment configuration to actual execution.
+
+### Benchmark Script Parameters
+
+The `bench.sh` script supports the following key parameters, allowing for customization and flexibility:
 
 - `prompt`: Benchmark-specific prompt.
 - `max_tokens`: Maximum tokens for the benchmark.
 - `repetitions`: Number of benchmark repetitions.
 - `log_file`: File for storing benchmark logs.
-- `device`: Device for benchmark execution (cpu, cuda, metal).
+- `device`: Specify the device for benchmark execution (CPU, CUDA, Metal).
 - `models_dir`: Directory containing necessary model files.
 
-### Unified Execution
+### Streamlined Execution
 
-An overarching `bench.sh` script streamlines benchmark execution:
+The overarching [`benchmark.sh`](./benchmark.sh) script further simplifies the benchmark execution process:
 
-- Downloads essential files for benchmarking.
-- Iterates through all benchmark folders in the repository.
+- **File Download:** It automatically downloads essential files required for benchmarking.
+- **Folder Iteration:** The script iterates through all benchmark folders in the repository, streamlining the process for multiple benchmarks.
 
-This empowers users to seamlessly execute benchmarks based on their preference. To run a specific benchmark, navigate to the corresponding benchmark folder (e.g., `bench_{bench_name}`) and execute the `bench.sh` script with the required parameters.
+This approach empowers users to effortlessly execute benchmarks based on their preferences. To run a specific benchmark, navigate to the corresponding benchmark folder (e.g., `bench_{bench_name}`) and execute the `bench.sh` script with the required parameters.
 
+## 📄 Usage
 
+To utilize the benchmarking capabilities of this repository, follow these usage examples:
 
-## Usage
+### Run a Specific Benchmark
+
+Navigate to the benchmark folder and execute the `bench.sh` script with the desired parameters:
 
 ```bash
-# Run a specific benchmark
-./bench_{bench_name}/bench.sh --prompt <value> --max_tokens <value> --num_repetitions <value> --log_file <file_path> --device <cpu/cuda/metal> --models_dir <path_to_models>
-
-# Run all benchmarks collectively
-./bench.sh --prompt <value> --max_tokens <value> --num_repetitions <value> --log_file <file_path> --device <cpu/cuda/metal> --models_dir <path_to_models>
+./bench_{bench_name}/bench.sh --prompt <value> --max_tokens <value> --repetitions <value> --log_file <file_path> --device <cpu/cuda/metal> --models_dir <path_to_models>
 ```
 
+Replace <value> with the specific values for your benchmark, and <file_path> and <path_to_models> with the appropriate file and directory paths.
 
-## ML Engines: Feature Table
+### Run All Benchmarks Collectively
 
-| Features                    | pytorch | burn | llama.cpp | candle | tinygrad | onnxruntime | CTranslate2 |
-| --------------------------- | ------- | ---- | --------- | ------ | -------- | ----------- | ----------- |
-| Inference support           | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
-| 16-bit quantization support | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
-| 8-bit quantization support  | ✅      | ❌   | ✅        | ✅     | ✅       | ✅          | ✅          |
-| 4-bit quantization support  | ✅      | ❌   | ✅        | ✅     | ❌       | ❌          | ❌          |
-| 2/3bit quantization support | ✅      | ❌   | ✅        | ✅     | ❌       | ❌          | ❌          |
-| CUDA support                | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
-| ROCM support                | ✅      | ✅   | ✅        | ✅     | ✅       | ❌          | ❌          |
-| Intel OneAPI/SYCL support   | ✅**    | ✅   | ✅        | ✅     | ✅       | ❌          | ❌          |
-| Mac M1/M2 support           | ✅      | ✅   | ✅        | ⭐     | ✅       | ✅          | ⭐          |
-| BLAS support(CPU)           | ✅      | ✅   | ✅        | ✅     | ❌       | ✅          | ✅          |
-| Model Parallel support      | ✅      | ❌   | ❌        | ✅     | ❌       | ❌          | ✅          |
-| Tensor Parallel support     | ✅      | ❌   | ❌        | ✅     | ❌       | ❌          | ✅          |
-| Onnx Format support         | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ❌          |
-| Training support            | ✅      | 🌟   | ❌        | 🌟     | ❌       | ❌          | ❌          |
+For a comprehensive execution of all benchmarks, use the overarching `benchmark.sh` script:
 
-⭐ = No Metal Support
-🌟 = Partial Support for Training (Finetuning already works, but training from scratch may not work)
+```bash
+./bench.sh --prompt <value> --max_tokens <value> --repetitions <value> --log_file <file_path> --device <cpu/cuda/metal> --models_dir <path_to_models>
+```
 
-## Benchmarking ML Engines
+Again, customize the parameters according to your preferences, ensuring that <file_path> and <path_to_models> point to the correct locations.
 
-### A100 80GB Inference Bench:
+Feel free to adjust the parameters as needed for your specific benchmarking requirements.
 
-Model: LLAMA-2-7B
+## 🤝 Contribute
 
-CUDA Version: 11.7
+We welcome contributions to enhance and expand our benchmarking repository. If you'd like to contribute a new benchmark, follow these steps:
 
-Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cuda --prompt 'Explain what is a transformer'`
+### Creating a New Benchmark
 
-| Engine               | float32      | float16       | int8          | int4          |
-|----------------------|--------------|---------------|---------------|---------------|
-| burn                 | 13.12 ± 0.85 |      -        |      -        |      -        |
-| candle               |      -       | 36.78 ± 2.17  |      -        |      -        |
-| llama.cpp            |      -       |      -        | 84.48 ± 3.76  | 106.76 ± 1.29 |
-| ctranslate           |      -       | 51.38 ± 16.01 | 36.12 ± 11.93 |      -        |
-| tinygrad             |      -       | 20.32 ± 0.06  |      -        |      -        |
-| onnx                 |      -       | 54.16 ± 3.15  |      -        |      -        |
-| ctransformers        |      -       |      -        | 81.61 ± 3.66  | 84.51 ± 7.93  |
+**1. Create a New Folder**
 
-*(data updated: 30th November 2023)
+Start by creating a new folder for your benchmark. Name it `bench_{new_bench_name}` for consistency.
 
+```bash
+mkdir bench_{new_bench_name}
+```
 
-### M2 MAX 32GB Inference Bench:
+**2. Folder Structure**
 
-#### CPU
+Inside the new benchmark folder, include the following structure
 
-Model: LLAMA-2-7B
+```
+bench_{new_bench_name}
+├── bench.sh           # Benchmark script for setup and execution
+├── requirements.txt   # Dependencies required for the benchmark
+└── ...                # Any additional files needed for the benchmark
+```
 
-CUDA Version: NA
+**3. Benchmark Script (`bench.sh`):**
 
-Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cpu --prompt 'Explain what is a transformer'`
+The `bench.sh` script should handle setup, environment configuration, and the actual execution of the benchmark. Ensure it supports the parameters mentioned in the [Benchmark Script Parameters](#benchmark-script-parameters) section.
 
-| Engine               | float32      | float16      | int8         | int4         |
-|----------------------|--------------|--------------|--------------|--------------|
-| burn                 | 0.30 ± 0.09  |      -       |      -       |      -       |
-| candle               |      -       | 3.43 ± 0.02  |      -       |      -       |
-| llama.cpp            |      -       |      -       | 14.41 ± 1.59 | 20.96 ± 1.94 |
-| ctranslate           |      -       |      -       | 2.11 ± 0.73  |      -       |
-| tinygrad             |      -       | 4.21 ± 0.38  |      -       |      -       |
-| onnx                 |      -       |      -       |      -       |      -       |
-| ctransformers        |      -       |      -       | 13.79 ± 0.50 | 22.93 ± 0.86 |
+### Pre-commit Hooks
 
-#### GPU (Metal)
+We use pre-commit hooks to maintain code quality and consistency.
 
-Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device metal --prompt 'Explain what is a transformer'`
+**1. Install Pre-commit:** Ensure you have `pre-commit` installed
 
-| Engine               | float32      | float16       | int8         | int4         |
-|----------------------|--------------|---------------|--------------|--------------|
-| burn                 |      -       |      -        |      -       |      -       |
-| candle               |      -       |      -        |      -       |      -       |
-| llama.cpp            |      -       |      -        | 31.24 ± 7.82 | 46.75 ± 9.55 |
-| ctranslate           |      -       |      -        |      -       |      -       |
-| tinygrad             |      -       | 29.78 ± 1.18  |      -       |      -       |
-| onnx                 |      -       |      -        |      -       |      -       |
-| ctransformers        |      -       |      -        | 21.24 ± 0.81 | 34.08 ± 4.78 |
+```bash
+pip install pre-commit
+```
 
-*(data updated: 23th November 2023)
+**2. Install Hooks:** Run the following command to install the pre-commit hooks
+
+```bash
+pre-commit install
+```
+
+The existing pre-commit configuration will be used for automatic checks before each commit, ensuring code quality and adherence to defined standards.
