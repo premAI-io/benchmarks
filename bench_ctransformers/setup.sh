@@ -20,7 +20,7 @@ install_ctransformers_cuda() {
     CUDA_MAJOR=$(echo "$CUDA_VERSION" | cut -d. -f1)
     CUDA_MINOR=$(echo "$CUDA_VERSION" | cut -d. -f2)
 
-    if [ "$CUDA_MAJOR" -gt 12 ] || { [ "$CUDA_MAJOR" -eq 12 ] && [ "$CUDA_MINOR" -ge 2 ]; }; then
+   if [ "$CUDA_MAJOR" -gt 12 ] || [ "$CUDA_MAJOR" -eq 12 -a "$CUDA_MINOR" -ge 2 ]; then
         echo "Detected CUDA version >= 12.2"
         pip install ctransformers[cuda] > /dev/null
     else
