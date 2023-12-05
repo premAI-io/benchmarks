@@ -32,7 +32,7 @@ class LlamaPyTorchBenchmark:
 
         # some of the conditions where things can not be supported
         assert precision in ["bf16", "fp16", "fp32"], ValueError(
-            "Supported precisions are: p16', 'fp32', 'int8', 'int4'"
+            "Supported precisions are: 'bf16', fp16', 'fp32'"
         )
         assert device in ["cpu", "cuda", "mps"], ValueError(
             "Supported devices are: 'cpu', 'cuda', 'mps'"
@@ -64,7 +64,7 @@ class LlamaPyTorchBenchmark:
             self.device
         )
         output = (
-            self.model.generate(**tokenized_input, max_new_tokens=max_tokens)
+            self.model.generate(input_ids=tokenized_input, max_new_tokens=max_tokens)
             .detach()
             .cpu()
             .numpy()
@@ -79,6 +79,8 @@ class LlamaPyTorchBenchmark:
             )
             tokens_per_second = self.run_model(prompt, max_tokens)
             self.results.append(tokens_per_second)
+        del self.model
+        torch.cuda.synchronize()
 
 
 if __name__ == "__main__":
@@ -115,12 +117,12 @@ if __name__ == "__main__":
     )
     report = defaultdict(lambda: defaultdict(float))
 
-    for precision in ("bf16", "fp16", "fp32") if args.device != "cpu" else ("fp32"):
+    for precision in ("bf16", "fp16", "fp32") if args.device != "cpu" else ("fp32",):
         logging.info(
             f"Running Transformer benchmark (pytorch backend) on Llama with precision: {precision}"
         )
         llama_transformers_pytorch_benchmark = LlamaPyTorchBenchmark(
-            model_path=args.model_dir, device=args.device, precision=precision
+            model_path=args.models_dir, device=args.device, precision=precision
         ).load_model()
         llama_transformers_pytorch_benchmark.benchmark(
             max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
