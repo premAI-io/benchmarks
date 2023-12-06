@@ -3,6 +3,7 @@ import logging
 import sys
 import time
 from collections import defaultdict
+from typing import Optional
 
 import numpy as np
 from vllm import LLM
@@ -16,40 +17,51 @@ logging.basicConfig(
 
 
 class LlamaVLLMBenchmark:
-    def __init__(self, model_path: str, device: str, precision: str):
+    def __init__(self, model_path: str, device: str):
         # VLLM is not supported for CPU issue: https://github.com/vllm-project/vllm/issues/176
         # VLLM also not supports Metal, issue: https://github.com/vllm-project/vllm/issues/1441
+
+        assert device == "cuda", ValueError("Supported device is cuda only.")
+
+        self.results = []
+        self.model_path = model_path
+
+    def load_model(self):
+        self.model = LLM(model=self.model_path)
+        return self
+
+    def run_model(
+        self, prompt: str, max_tokens: int, precision: Optional[str] = "fp16"
+    ) -> float:
         assert precision in ["fp16", "fp32"], ValueError(
             "supported precision are: fp16 and fp32"
         )
-        assert device == "cuda", ValueError("Supported device is cuda only.")
-        self.precision_map = {"fp16": "float16", "fp32": "float32"}
-        self.results = []
-        self.model_path, self.precision = model_path, self.precision_map[precision]
-
-    def load_model(self):
-        self.model = LLM(model=self.model_path, dtype=self.precision)
-        return self
-
-    def run_model(self, prompt: str, max_tokens: int) -> float:
+        precision_map = {"fp16": "float16", "fp32": "float32"}
         self.model.max_num_seqs = max_tokens
+        self.model.dtype = precision_map[precision]
+
         start = time.time()
         output = self.model.generate(prompts=[prompt])
         delta = time.time() - start
-        tokens = len(output[0])
-        return tokens / delta
+        return len(output[0].outputs[0].token_ids) / delta
 
-    def benchmark(self, prompt: str, max_tokens: int, repetitions: int) -> None:
+    def benchmark(
+        self,
+        prompt: str,
+        max_tokens: int,
+        repetitions: int,
+        precision: Optional[str] = "fp16",
+    ) -> None:
         for i in range(repetitions):
             logging.info(
                 f"Running repetition [{str(i+1).zfill(len(str(repetitions)))}/{repetitions}]"
             )
-            tokens_per_second = self.run_model(prompt, max_tokens)
+            tokens_per_second = self.run_model(prompt, max_tokens, precision=precision)
             self.results.append(tokens_per_second)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="CTransformers Benchmark.")
+    parser = argparse.ArgumentParser(description="vllm Benchmark.")
     parser.add_argument(
         "--prompt",
         type=str,
@@ -81,17 +93,17 @@ if __name__ == "__main__":
         + f"repetitions={args.repetitions} device={args.device}"
     )
     report = defaultdict(lambda: defaultdict(float))
+    llama_vllm_bench = LlamaVLLMBenchmark(
+        args.models_dir, device=args.device
+    ).load_model()
     for precision in ("fp16", "fp32"):
         logging.info(f"Running VLLM benchmark on Llama on {precision} precision.")
-        llama_ctransformers_bench = LlamaVLLMBenchmark(
-            args.models_dir, device=args.device, precision=precision
-        ).load_model()
-        llama_ctransformers_bench.benchmark(
+        llama_vllm_bench.benchmark(
             max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
         )
         report["llama_vllm"][precision] = {
-            "mean": np.mean(llama_ctransformers_bench.results),
-            "std": np.std(llama_ctransformers_bench.results),
+            "mean": np.mean(llama_vllm_bench.results),
+            "std": np.std(llama_vllm_bench.results),
         }
 
     logging.info("Benchmark report")
