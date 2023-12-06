@@ -57,3 +57,5 @@
 | ctransformers        |      -       |      -        | 21.24 ± 0.81 | 34.08 ± 4.78 |
 
 *(Data updated: `02th December 2023`)
+
+*Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
