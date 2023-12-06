@@ -18,5 +18,10 @@
         "url": "https://prem-models.s3.eu-central-1.amazonaws.com/llama-v2/llama-2-7b-raw.zip",
         "file": "llama-2-7b-raw.zip",
         "folder": "./models/llama-2-7b-raw"
+    },
+    {
+        "url": "https://prem-models.s3.eu-central-1.amazonaws.com/llama-v2/llama-2-7b-exllamav2.zip",
+        "file": "llama-2-7b-exllamav2.zip",
+        "folder": "./models/llama-2-7b-exllamav2"
     }
 ]
