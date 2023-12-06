@@ -19,7 +19,7 @@ logging.basicConfig(
 
 class LlamaPyTorchBenchmark:
     def __init__(
-        self, model_path: str, precision: str, device: Optional[str] = "cuda"
+        self, model_path: str, precision: str, device: Optional[str] = "cpu"
     ) -> None:
         self.model_path = model_path
         self.precision = precision
