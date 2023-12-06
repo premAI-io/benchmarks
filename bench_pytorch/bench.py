@@ -34,7 +34,7 @@ class LlamaPyTorchBenchmark:
         assert precision in ["bf16", "fp16", "fp32"], ValueError(
             "Supported precisions are: 'bf16', fp16', 'fp32'"
         )
-        assert device in ["cpu", "cuda", "mps"], ValueError(
+        assert device in ["cpu", "cuda", "metal"], ValueError(
             "Supported devices are: 'cpu', 'cuda', 'mps'"
         )
 
