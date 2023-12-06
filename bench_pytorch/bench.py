@@ -59,10 +59,10 @@ class LlamaPyTorchBenchmark:
         return self
 
     def run_model(self, prompt: str, max_tokens: int) -> float:
-        start = time.time()
         tokenized_input = self.tokenizer.encode(prompt, return_tensors="pt").to(
             self.device
         )
+        start = time.time()
         output = (
             self.model.generate(input_ids=tokenized_input, max_new_tokens=max_tokens)
             .detach()
