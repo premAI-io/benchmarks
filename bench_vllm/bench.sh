@@ -143,7 +143,7 @@ REPETITIONS="${REPETITIONS:-10}"
 MAX_TOKENS="${MAX_TOKENS:-100}"
 DEVICE="${DEVICE:-'cpu'}"
 LOG_FILENAME="${LOG_FILENAME:-"benchmark_$(date +'%Y%m%d%H%M%S').log"}"
-MODELS_DIR="${MODELS_DIR:-"./models"}"
+MODELS_DIR="${MODELS_DIR:-"./models/llama-2-7b-hf"}"
 
 check_platform
 check_python
