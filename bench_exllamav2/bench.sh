@@ -27,12 +27,12 @@ print_usage() {
     echo "  -p, --prompt        Prompt for benchmarks (default: 'Explain what is a transformer')"
     echo "  -r, --repetitions   Number of repetitions for benchmarks (default: 2)"
     echo "  -m, --max_tokens    Maximum number of tokens for benchmarks (default: 100)"
+    echo "  -d, --device        Device for benchmarks (possible values: 'metal', 'gpu', and 'cpu', default: 'cpu')"
     echo "  -lf, --log_file     Logging file name."
     echo "  -md, --models_dir   Models directory."
     echo "  -h, --help          Show this help message"
     exit 1
 }
-
 check_cuda() {
     if command -v nvcc &> /dev/null
     then
@@ -76,12 +76,12 @@ run_benchmarks() {
     local PROMPT="$1"
     local REPETITIONS="$2"
     local MAX_TOKENS="$3"
-    local LOG_FILENAME="$4"
-    local MODELS_DIR="$5"
+    local DEVICE="$4"
+    local LOG_FILENAME="$5"
+    local MODELS_DIR="$6"
 
     # shellcheck disable=SC1091
     source "$SCRIPT_DIR/venv/bin/activate"
-
     python "$SCRIPT_DIR"/bench.py \
         --prompt "$PROMPT" \
         --repetitions "$REPETITIONS" \
@@ -89,7 +89,6 @@ run_benchmarks() {
         --log_file "$LOG_FILENAME" \
         --models_dir "$MODELS_DIR"
 }
-
 
 
 # Parse command-line arguments
@@ -105,6 +104,24 @@ while [ "$#" -gt 0 ]; do
             ;;
         -m|--max_tokens)
             MAX_TOKENS="$2"
+            shift 2
+            ;;
+        -d|--device)
+            DEVICE="$2"
+            case "$DEVICE" in
+                "cuda" | "metal" | "cpu")
+                    ;;
+                *)
+                    echo "Invalid value for --device. Please use 'cuda', 'cpu' or 'metal'."
+                    print_usage
+                    ;;
+            esac
+            if [ "$DEVICE" == "cuda" ]; then
+                check_cuda
+            else
+                echo "Not supported for $DEVICE"
+                exit 1
+            fi
             shift 2
             ;;
         -lf|--log_file)
@@ -130,6 +147,7 @@ done
 PROMPT="${PROMPT:-"Explain what is a transformer"}"
 REPETITIONS="${REPETITIONS:-10}"
 MAX_TOKENS="${MAX_TOKENS:-100}"
+DEVICE="${DEVICE:-'cuda'}"
 LOG_FILENAME="${LOG_FILENAME:-"benchmark_$(date +'%Y%m%d%H%M%S').log"}"
 MODELS_DIR="${MODELS_DIR:-"./models"}"
 
@@ -137,4 +155,4 @@ check_platform
 check_cuda
 check_python
 setup
-run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$LOG_FILENAME" "$MODELS_DIR"
+run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$LOG_FILENAME" "$MODELS_DIR"
