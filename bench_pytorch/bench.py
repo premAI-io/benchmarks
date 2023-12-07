@@ -70,7 +70,7 @@ class LlamaPyTorchBenchmark:
             .numpy()
         )
         delta = time.time() - start
-        return len(output) / delta
+        return len(output[0]) / delta
 
     def benchmark(self, prompt: str, max_tokens: int, repetitions: int) -> None:
         for i in range(repetitions):
