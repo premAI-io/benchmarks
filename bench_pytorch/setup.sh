@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-# Script: setup.sh <DEVICE>
+# Script: setup.sh
 # Description: Automates the setup of a virtual environment and installs project
 # requirements.
 ################################################################################
