@@ -13,7 +13,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 VENV_DIR="$SCRIPT_DIR/venv"
 
 if [ ! -d "$VENV_DIR" ]; then
-    python3 -m venv "$VENV_DIR"
+    python -m venv "$VENV_DIR"
     echo "Virtual environment '$VENV_DIR' created."
     # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
