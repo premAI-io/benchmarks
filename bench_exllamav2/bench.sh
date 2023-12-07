@@ -33,6 +33,7 @@ print_usage() {
     echo "  -h, --help          Show this help message"
     exit 1
 }
+
 check_cuda() {
     if command -v nvcc &> /dev/null
     then
