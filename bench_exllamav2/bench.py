@@ -20,8 +20,8 @@ class Config:
 
 
 config = Config(
-    model_dir="/home/paperspace/workspace/benchmarks/models/llama-2-7b-exllamav2",
-    prompt="hello world",
+    model_dir="/home/paperspace/workspace/benchmarks/models/exllamav2",
+    prompt="Write a neural network using c++",
     tokens=100,
 )
 
@@ -48,7 +48,6 @@ if config.prompt:
         settings.top_p = 0.8
         settings.token_repetition_penalty = 1.15
         settings.disallow_tokens(tokenizer, [tokenizer.eos_token_id])
-
         start = time.time()
         output = generator.generate_simple(
             config.prompt, settings, config.tokens, token_healing=True
