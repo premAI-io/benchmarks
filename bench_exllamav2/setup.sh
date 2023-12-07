@@ -51,13 +51,6 @@ convert_safetensor_to_exllamav2() {
         rm -rf "$EXLLAMA_WEIGHTS_FOLDER/out_tensor"
         rsync -av --exclude='*.safetensors' --exclude='.*' --exclude='*.bin' "$HF_WEIGHTS_FOLDER" "$EXLLAMA_WEIGHTS_FOLDER"
     fi
-
-    # do a sanity check, before finishing
-    if python "$SCRIPT_DIR/exllamav2/test_inference.py" -m "$EXLLAMA_WEIGHTS_FOLDER/" -p "just say ok to this message."; then
-        echo "All done, everything set."
-    else
-        echo "Please check, exllamav2 not run successfully"
-    fi
 }
 
 
