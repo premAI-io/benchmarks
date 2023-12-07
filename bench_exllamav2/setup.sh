@@ -49,7 +49,7 @@ convert_safetensor_to_exllamav2() {
 
         # once done, delete the un-necessary files
         rm -rf "$EXLLAMA_WEIGHTS_FOLDER/out_tensor"
-        rsync -av --exclude='*.safetensors' --exclude='.*' --exclude='.bin' "$HF_WEIGHTS_FOLDER" "$EXLLAMA_WEIGHTS_FOLDER"
+        rsync -av --exclude='*.safetensors' --exclude='.*' --exclude='*.bin' "$HF_WEIGHTS_FOLDER" "$EXLLAMA_WEIGHTS_FOLDER"
     fi
 
     # do a sanity check, before finishing
