@@ -20,6 +20,7 @@ logging.basicConfig(
 
 @dataclass
 class ExtraConfig:
+    model_dir: str
     length: int = 2048
     rope_scale: float = 1.0
     rope_alpha: float = 1.0
@@ -36,7 +37,7 @@ class ExllamaV2Benchmark:
 
     def load_model(self):
         self.model, self.tokenizer = model_init.init(
-            ExtraConfig(), allow_auto_split=True
+            ExtraConfig(model_dir=self.model_path), allow_auto_split=True
         )
         self.settings = ExLlamaV2Sampler.Settings()
         self.settings.temperature = 0.85
@@ -61,7 +62,7 @@ class ExllamaV2Benchmark:
             prompt, self.settings, max_tokens, token_healing=True
         )
         delta = time.time() - start
-        return self.generator.sequence_ids[0] / delta
+        return len(self.generator.sequence_ids[0]) / delta
 
     def benchmark(self, prompt: str, max_tokens: int, repetitions: int) -> None:
         for i in range(repetitions):
@@ -86,10 +87,6 @@ if __name__ == "__main__":
         help="The number of repetitions for the benchmark.",
     )
     parser.add_argument(
-        "--device",
-        help="Device to use for the benchmark.",
-    )
-    parser.add_argument(
         "--log_file",
         type=str,
         help="Path to the log file for writing logs (in append mode).",
@@ -102,14 +99,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
     logging.info(
         f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} "
-        + f"repetitions={args.repetitions} device={args.device}"
+        + f"repetitions={args.repetitions} device=cuda"
     )
     report = defaultdict(lambda: defaultdict(float))
     for quantize in ("q4", "q8"):
         logging.info(f"Running ExllamaV2 benchmark with {quantize}")
         llamacpp_bench = ExllamaV2Benchmark(
-            f"{args.models_dir}/llama-2-7b-exllamav2-{quantize}",
-            device=args.device,
+            f"{args.models_dir}/llama-2-7b-exllamav2-{quantize}"
         ).load_model()
         llamacpp_bench.benchmark(
             max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
