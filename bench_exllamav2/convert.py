@@ -41,7 +41,7 @@ class TorchBinToSafeTensorsConverter:
         for k, v in tensors.items():
             ptrs[v.data_ptr()].append(k)
         failing = []
-        for ptr, names in ptrs.items():
+        for _, names in ptrs.items():
             if len(names) > 1:
                 failing.append(names)
         return failing
@@ -73,9 +73,6 @@ class TorchBinToSafeTensorsConverter:
 
         # For tensors to be contiguous
         loaded = {k: v.contiguous().half() for k, v in loaded.items()}
-
-        dirname = os.path.dirname(sf_filename)
-        os.makedirs(dirname, exist_ok=True)
         save_file(loaded, sf_filename, metadata={"format": "pt"})
         self.check_file_size(sf_filename, pt_filename)
         reloaded = load_file(sf_filename)
