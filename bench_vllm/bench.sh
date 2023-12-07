@@ -115,6 +115,10 @@ while [ "$#" -gt 0 ]; do
                     print_usage
                     ;;
             esac
+            if [ "$DEVICE" == "metal" ] || [ "$DEVICE" == "cpu" ]; then
+                echo "$DEVICE not supported"
+                exit 1
+            fi
             if [ "$DEVICE" == "cuda" ]; then
                 check_cuda
             fi
