@@ -19,7 +19,7 @@ logging.basicConfig(
 
 class LlamaPyTorchBenchmark:
     def __init__(
-        self, model_path: str, precision: str, device: Optional[str] = "cuda"
+        self, model_path: str, precision: str, device: Optional[str] = "cpu"
     ) -> None:
         self.model_path = model_path
         self.precision = precision
@@ -34,7 +34,7 @@ class LlamaPyTorchBenchmark:
         assert precision in ["bf16", "fp16", "fp32"], ValueError(
             "Supported precisions are: 'bf16', fp16', 'fp32'"
         )
-        assert device in ["cpu", "cuda", "mps"], ValueError(
+        assert device in ["cpu", "cuda", "metal"], ValueError(
             "Supported devices are: 'cpu', 'cuda', 'mps'"
         )
 
@@ -59,10 +59,10 @@ class LlamaPyTorchBenchmark:
         return self
 
     def run_model(self, prompt: str, max_tokens: int) -> float:
-        start = time.time()
         tokenized_input = self.tokenizer.encode(prompt, return_tensors="pt").to(
             self.device
         )
+        start = time.time()
         output = (
             self.model.generate(input_ids=tokenized_input, max_new_tokens=max_tokens)
             .detach()
