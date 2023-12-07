@@ -35,7 +35,7 @@ class LlamaPyTorchBenchmark:
             "Supported precisions are: 'bf16', fp16', 'fp32'"
         )
         assert device in ["cpu", "cuda", "metal"], ValueError(
-            "Supported devices are: 'cpu', 'cuda', 'mps'"
+            "Supported devices are: 'cpu', 'cuda', 'metal'"
         )
 
         if device == "cpu" and precision != "fp32":
