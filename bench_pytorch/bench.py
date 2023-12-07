@@ -118,7 +118,7 @@ if __name__ == "__main__":
     )
     report = defaultdict(lambda: defaultdict(float))
 
-    for precision in ("bf16", "fp16", "fp32") if args.device != "cpu" else ("fp32",):
+    for precision in ("fp16", "fp32") if args.device != "cpu" else ("fp32",):
         logging.info(
             f"Running Transformer benchmark (pytorch backend) on Llama with precision: {precision}"
         )
