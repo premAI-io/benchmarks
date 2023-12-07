@@ -24,11 +24,17 @@ class TorchBinToSafeTensorsConverter:
             None
         """
         instance = cls()
-        for filename in os.listdir(folder_path):
-            if filename == "pytorch_model.bin":
-                instance.convert_single(folder_path, delete=delete_bins)
-                sys.exit(0)
-        instance.convert_multi(folder_path, delete_bins)
+        if not [
+            file for file in os.listdir(folder_path) if file.endswith(".safetensors")
+        ]:
+            for filename in os.listdir(folder_path):
+                if filename == "pytorch_model.bin":
+                    instance.convert_single(folder_path, delete=delete_bins)
+                    sys.exit(0)
+            instance.convert_multi(folder_path, delete_bins)
+        else:
+            print("Already converted to .safetensors")
+            return
 
     def rename(self, pt_filename: str) -> str:
         filename, _ = os.path.splitext(pt_filename)
