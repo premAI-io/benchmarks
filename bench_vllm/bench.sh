@@ -111,7 +111,7 @@ while [ "$#" -gt 0 ]; do
                 "cuda" | "metal" | "cpu")
                     ;;
                 *)
-                    echo "Invalid value for --device. Please use 'cuda', 'gpu' or 'cpu'."
+                    echo "Invalid value for --device. Please use 'cuda', 'metal' or 'cpu'."
                     print_usage
                     ;;
             esac
