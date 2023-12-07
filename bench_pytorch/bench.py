@@ -80,7 +80,8 @@ class LlamaPyTorchBenchmark:
             tokens_per_second = self.run_model(prompt, max_tokens)
             self.results.append(tokens_per_second)
         del self.model
-        torch.cuda.synchronize()
+        if self.device == "cuda":
+            torch.cuda.synchronize()
 
 
 if __name__ == "__main__":
