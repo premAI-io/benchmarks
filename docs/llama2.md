@@ -18,6 +18,7 @@
 | onnx                         |      -       | 54.16 ± 3.15  |      -        |      -        |
 | transformers (pytorch)       | 46.44 ± 46.44| 42.56 ± 42.56 |      -        |      -        |
 | vllm                 | 90.78 ± 1.60 | 90.54 ± 2.22  |      -        |      -        |
+| exllamav2                    |      -        |      -       | 163.41 ± 5.58 | 120.17 ± 0.73 |
 
 *(Data updated: `08th December 2023`)
 
@@ -42,6 +43,7 @@
 | onnx                  |      -       |      -       |      -       |      -       |
 | ctransformers         |      -       |      -       | 13.79 ± 0.50 | 22.93 ± 0.86 |
 | transformers (pytorch)|      -       |      -       |      -       |      -       |
+| exllamav2             |      -       |      -       |      -       |      -       |
 
 ### GPU (Metal)
 
@@ -57,8 +59,10 @@
 | tinygrad              |      -       | 29.78 ± 1.18  |      -       |      -       |
 | onnx                  |      -       |      -        |      -       |      -       |
 | ctransformers         |      -       |      -        | 21.24 ± 0.81 | 34.08 ± 4.78 |
-| transformers (pytorch)|      -       |      -       |      -       |      -       |
+| transformers (pytorch)|      -       |      -        |      -       |      -       |
+| exllamav2             |      -       |      -        |      -       |      -       |
 
 *(Data updated: `08th December 2023`)
 
 *Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
+*Note: ExllamaV2 does not run in only CPUs or Apple GPU. It requires CUDA.
