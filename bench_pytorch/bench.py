@@ -19,7 +19,7 @@ logging.basicConfig(
 
 class LlamaPyTorchBenchmark:
     def __init__(
-        self, model_path: str, precision: str, device: Optional[str] = "cuda"
+        self, model_path: str, precision: str, device: Optional[str] = "cpu"
     ) -> None:
         self.model_path = model_path
         self.precision = precision
@@ -34,8 +34,8 @@ class LlamaPyTorchBenchmark:
         assert precision in ["bf16", "fp16", "fp32"], ValueError(
             "Supported precisions are: 'bf16', fp16', 'fp32'"
         )
-        assert device in ["cpu", "cuda", "mps"], ValueError(
-            "Supported devices are: 'cpu', 'cuda', 'mps'"
+        assert device in ["cpu", "cuda", "metal"], ValueError(
+            "Supported devices are: 'cpu', 'cuda', 'metal'"
         )
 
         if device == "cpu" and precision != "fp32":
@@ -59,10 +59,10 @@ class LlamaPyTorchBenchmark:
         return self
 
     def run_model(self, prompt: str, max_tokens: int) -> float:
-        start = time.time()
         tokenized_input = self.tokenizer.encode(prompt, return_tensors="pt").to(
             self.device
         )
+        start = time.time()
         output = (
             self.model.generate(input_ids=tokenized_input, max_new_tokens=max_tokens)
             .detach()
@@ -70,7 +70,7 @@ class LlamaPyTorchBenchmark:
             .numpy()
         )
         delta = time.time() - start
-        return len(output) / delta
+        return len(output[0]) / delta
 
     def benchmark(self, prompt: str, max_tokens: int, repetitions: int) -> None:
         for i in range(repetitions):
@@ -80,7 +80,8 @@ class LlamaPyTorchBenchmark:
             tokens_per_second = self.run_model(prompt, max_tokens)
             self.results.append(tokens_per_second)
         del self.model
-        torch.cuda.synchronize()
+        if self.device == "cuda":
+            torch.cuda.synchronize()
 
 
 if __name__ == "__main__":
@@ -117,12 +118,14 @@ if __name__ == "__main__":
     )
     report = defaultdict(lambda: defaultdict(float))
 
-    for precision in ("bf16", "fp16", "fp32") if args.device != "cpu" else ("fp32",):
+    for precision in ("fp16", "fp32") if args.device != "cpu" else ("fp32",):
         logging.info(
             f"Running Transformer benchmark (pytorch backend) on Llama with precision: {precision}"
         )
         llama_transformers_pytorch_benchmark = LlamaPyTorchBenchmark(
-            model_path=args.models_dir, device=args.device, precision=precision
+            model_path=f"{args.models_dir}/llama-2-7b-hf",
+            device=args.device,
+            precision=precision,
         ).load_model()
         llama_transformers_pytorch_benchmark.benchmark(
             max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions

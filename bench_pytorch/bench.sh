@@ -68,7 +68,7 @@ check_python() {
 
 setup() {
     echo -e "\nSetting up with $SCRIPT_DIR/setup.sh..."
-    bash "$SCRIPT_DIR"/setup.sh "$1"
+    bash "$SCRIPT_DIR"/setup.sh
 }
 
 run_benchmarks() {
@@ -143,9 +143,9 @@ REPETITIONS="${REPETITIONS:-10}"
 MAX_TOKENS="${MAX_TOKENS:-100}"
 DEVICE="${DEVICE:-'cpu'}"
 LOG_FILENAME="${LOG_FILENAME:-"benchmark_$(date +'%Y%m%d%H%M%S').log"}"
-MODELS_DIR="${MODELS_DIR:-"./models/llama-2-7b-hf"}"
+MODELS_DIR="${MODELS_DIR:-"./models"}"
 
 check_platform
 check_python
-setup "$DEVICE"
+setup
 run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$LOG_FILENAME" "$MODELS_DIR"
