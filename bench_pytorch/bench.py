@@ -123,7 +123,7 @@ if __name__ == "__main__":
             f"Running Transformer benchmark (pytorch backend) on Llama with precision: {precision}"
         )
         llama_transformers_pytorch_benchmark = LlamaPyTorchBenchmark(
-            model_path=f"{args.models_dir}/llama2-7b-hf",
+            model_path=f"{args.models_dir}/llama-2-7b-hf",
             device=args.device,
             precision=precision,
         ).load_model()
