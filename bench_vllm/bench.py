@@ -94,7 +94,7 @@ if __name__ == "__main__":
     )
     report = defaultdict(lambda: defaultdict(float))
     llama_vllm_bench = LlamaVLLMBenchmark(
-        args.models_dir, device=args.device
+        f"{args.models_dir}/llama-2-7b-hf", device=args.device
     ).load_model()
     for precision in ("fp16", "fp32"):
         logging.info(f"Running VLLM benchmark on Llama on {precision} precision.")
