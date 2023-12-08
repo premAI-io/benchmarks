@@ -21,7 +21,7 @@ install_vllm_cuda() {
 
    if [ "$CUDA_MAJOR" -gt 12 ] || { [ "$CUDA_MAJOR" -eq 12 ] && [ "$CUDA_MINOR" -ge 2 ]; }; then
         echo "Detected CUDA version >= 12.2"
-        pip install vllm > /dev/null
+        pip install vllm torch > /dev/null
     else
         echo "Detected CUDA version < 12.2"
         PY_VERSION=$(get_python_version)
@@ -32,8 +32,6 @@ install_vllm_cuda() {
         echo "Installing vllm for CUDA 11.8 with Python version: $PY_VERSION"
         # Download vllm for CUDA 11.8 and specified Python version
         pip install https://github.com/vllm-project/vllm/releases/download/v0.2.2/vllm-0.2.2+cu118-"$PY_VERSION"-"$PY_VERSION"-manylinux1_x86_64.whl
-        # Re-install PyTorch with CUDA 11.8
-        pip uninstall torch -y
         pip install torch --upgrade --index-url https://download.pytorch.org/whl/cu118
     fi
 }
