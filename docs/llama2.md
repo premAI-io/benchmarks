@@ -17,6 +17,7 @@
 | tinygrad                     |      -       | 20.32 ± 0.06  |      -        |      -        |
 | onnx                         |      -       | 54.16 ± 3.15  |      -        |      -        |
 | transformers (pytorch)       | 46.44 ± 46.44| 42.56 ± 42.56 |      -        |      -        |
+| vllm                 | 90.78 ± 1.60 | 90.54 ± 2.22  |      -        |      -        |
 
 *(Data updated: `08th December 2023`)
 
