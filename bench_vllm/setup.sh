@@ -98,7 +98,6 @@ if [ ! -d "$VENV_DIR" ]; then
     # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
     pip install --upgrade pip > /dev/null
-    pip install -r "$SCRIPT_DIR/requirements.txt" --no-cache-dir > /dev/null
     install_device_specific_vllm "$DEVICE"
 else
     # shellcheck disable=SC1091
