@@ -59,3 +59,5 @@
 | transformers (pytorch)|      -       |      -       |      -       |      -       |
 
 *(Data updated: `<LAST_UPDATE>`)
+
+*Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
