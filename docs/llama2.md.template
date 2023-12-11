@@ -45,6 +45,7 @@
 | ctransformers         |      -       |      -       | 13.79 ± 0.50 | 22.93 ± 0.86 |
 | transformers (pytorch)|      -       |      -       |      -       |      -       |
 | exllamav2             |      -       |      -       |      -       |      -       |
+| vllm                  |      -       |      -       |      -       |      -       |
 
 ### GPU (Metal)
 
@@ -62,8 +63,10 @@
 | ctransformers         |      -       |      -        | 21.24 ± 0.81 | 34.08 ± 4.78 |
 | transformers (pytorch)|      -       |      -        |      -       |      -       |
 | exllamav2             |      -       |      -        |      -       |      -       |
+| vllm                  |      -       |      -        |      -       |      -       |
 
 *(Data updated: `<LAST_UPDATE>`)
 
 *Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
 *Note: ExllamaV2 does not run in only CPUs or Apple GPU. It requires CUDA.
+*Note: CPU/Metal is not supported right now. Support for CPU is on [developement](https://github.com/vllm-project/vllm/pull/1028). No developement for metal so far.
