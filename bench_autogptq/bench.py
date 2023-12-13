@@ -33,7 +33,7 @@ class LlamaAutoGPTQBenchmark:
     def load_model(self):
         """Loads the model in the required precision."""
         self.model = AutoGPTQForCausalLM.from_quantized(self.model_path)
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
+        self.tokenizer = AutoTokenizer.from_pretrained("./models/llama-2-7b-hf")
         return self
 
     def run_model(self, prompt: str, max_tokens: int) -> float:
@@ -101,7 +101,7 @@ if __name__ == "__main__":
             f"Running AutoGPT benchmark on Llama with {precision} bit precision"
         )
         llama_autogptq_benchmark = LlamaAutoGPTQBenchmark(
-            model_path=f"{args.models_dir}/llama-2-7b-hf",
+            model_path=f"{args.models_dir}/llama-2-7b-gptq-q{precision}",
             device=args.device,
             precision=precision,
         ).load_model()
