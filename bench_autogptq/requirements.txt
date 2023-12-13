@@ -1,0 +1,4 @@
+transformers==4.34.1
+torch==2.0.0
+auto-gptq[llama]
+datasets
