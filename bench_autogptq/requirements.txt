@@ -1,4 +1,6 @@
 transformers==4.34.1
-torch==2.0.0
-auto-gptq[llama]
+torch==2.1.1
 datasets
+gekko
+pandas
+numpy
