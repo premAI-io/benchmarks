@@ -35,7 +35,7 @@ class PrepareGPTForQuantization:
             "The key: 'text' must be present for starting quantization"
         )
 
-        examples = [tokenizer(example) for example in dataset["text"]]
+        examples = [tokenizer(example) for example in dataset["text"]][:1]
         print(f"=> Starting to quantize the model in {precision} bit precision ...")
 
         try:
