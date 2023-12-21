@@ -1,0 +1,5 @@
+torch
+accelerate
+transformers
+optimum
+autoawq
