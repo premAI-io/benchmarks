@@ -57,14 +57,16 @@ check_platform() {
 }
 
 check_python() {
-    if command -v python &> /dev/null
-    then
-        echo -e "\nUsing $(python --version)."
+    if command -v python &> /dev/null; then
+        PYTHON_CMD="python"
+    elif command -v python3 &> /dev/null; then
+        PYTHON_CMD="python3"
     else
-        echo -e "\nPython does not exist."
+        echo "Python is not installed."
         exit 1
     fi
 }
+
 
 setup() {
     echo -e "\nSetting up with $SCRIPT_DIR/setup.sh..."
@@ -81,7 +83,7 @@ run_benchmarks() {
 
     # shellcheck disable=SC1091
     source "$SCRIPT_DIR/venv/bin/activate"
-    python "$SCRIPT_DIR"/bench.py \
+    "$PYTHON_CMD" "$SCRIPT_DIR"/bench.py \
         --prompt "$PROMPT" \
         --repetitions "$REPETITIONS" \
         --max_tokens "$MAX_TOKENS" \
