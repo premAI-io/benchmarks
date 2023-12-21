@@ -92,7 +92,6 @@ run_benchmarks() {
         --device "$DEVICE"
 }
 
-# Parse command-line arguments
 while [ "$#" -gt 0 ]; do
     case "$1" in
         -p|--prompt)
@@ -113,12 +112,15 @@ while [ "$#" -gt 0 ]; do
                 "cuda" | "metal" | "cpu")
                     ;;
                 *)
-                    echo "Invalid value for --device. Please use 'cuda', 'gpu' or 'cpu'."
+                    echo "Invalid value for --device. Please use 'cuda', 'cpu' or 'metal'."
                     print_usage
                     ;;
             esac
             if [ "$DEVICE" == "cuda" ]; then
                 check_cuda
+            else
+                echo "Not supported for $DEVICE"
+                exit 1
             fi
             shift 2
             ;;
@@ -139,6 +141,7 @@ while [ "$#" -gt 0 ]; do
             ;;
     esac
 done
+
 # Set default values if not provided
 PROMPT="${PROMPT:-"Explain what is a transformer"}"
 REPETITIONS="${REPETITIONS:-10}"
