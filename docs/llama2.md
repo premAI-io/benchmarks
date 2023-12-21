@@ -7,7 +7,7 @@
 - CUDA Version: 11.7
 - Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cuda --prompt 'Explain what is a transformer'`
 
-**Performance Metrics:**
+**Performance Metrics:** (unit: Tokens / second)
 | Engine                       | float32      | float16       | int8          | int4          |
 |------------------------------|--------------|---------------|---------------|---------------|
 | burn                         | 13.12 ± 0.85 |      -        |      -        |      -        |
@@ -20,7 +20,7 @@
 | vllm                 | 90.78 ± 1.60 | 90.54 ± 2.22  |      -        |      -        |
 | exllamav2                    |      -        |      -       | 163.41 ± 5.58 | 120.17 ± 0.73 |
 
-*(Data updated: `08th December 2023`)
+*(Data updated: `21th December 2023`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -32,7 +32,7 @@
 - CUDA Version: NA
 - Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cpu --prompt 'Explain what is a transformer'`
 
-**Performance Metrics:**
+**Performance Metrics:** (unit: Tokens / second)
 | Engine                | float32      | float16      | int8         | int4         |
 |-----------------------|--------------|--------------|--------------|--------------|
 | burn                  | 0.30 ± 0.09  |      -       |      -       |      -       |
@@ -49,7 +49,7 @@
 
 **Command:** `./benchmark.sh --repetitions 10 --max_tokens 100 --device metal --prompt 'Explain what is a transformer'`
 
-**Performance Metrics:**
+**Performance Metrics:** (unit: Tokens / second)
 | Engine                | float32      | float16       | int8         | int4         |
 |-----------------------|--------------|---------------|--------------|--------------|
 | burn                  |      -       |      -        |      -       |      -       |
@@ -62,7 +62,7 @@
 | transformers (pytorch)|      -       |      -        |      -       |      -       |
 | exllamav2             |      -       |      -        |      -       |      -       |
 
-*(Data updated: `08th December 2023`)
+*(Data updated: `21th December 2023`)
 
 *Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
 *Note: ExllamaV2 does not run in only CPUs or Apple GPU. It requires CUDA.
