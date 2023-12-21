@@ -120,7 +120,7 @@ if __name__ == "__main__":
                 repetitions=args.repetitions,
             )
 
-        report["llama_transformers_pytorch"][precision] = {
+        report["Llama AutoAWQ"][f"FP-{precision}"] = {
             "mean": np.mean(llama_autogptq_benchmark.results),
             "std": np.std(llama_autogptq_benchmark.results),
         }
