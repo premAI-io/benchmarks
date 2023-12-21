@@ -7,7 +7,7 @@
 - CUDA Version: 11.7
 - Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cuda --prompt 'Explain what is a transformer'`
 
-**Performance Metrics:**
+**Performance Metrics:** (unit: Tokens / second)
 | Engine                       | float32      | float16       | int8          | int4          |
 |------------------------------|--------------|---------------|---------------|---------------|
 | burn                         | 13.12 ± 0.85 |      -        |      -        |      -        |
@@ -32,7 +32,7 @@
 - CUDA Version: NA
 - Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cpu --prompt 'Explain what is a transformer'`
 
-**Performance Metrics:**
+**Performance Metrics:** (unit: Tokens / second)
 | Engine                | float32      | float16      | int8         | int4         |
 |-----------------------|--------------|--------------|--------------|--------------|
 | burn                  | 0.30 ± 0.09  |      -       |      -       |      -       |
@@ -49,7 +49,7 @@
 
 **Command:** `./benchmark.sh --repetitions 10 --max_tokens 100 --device metal --prompt 'Explain what is a transformer'`
 
-**Performance Metrics:**
+**Performance Metrics:** (unit: Tokens / second)
 | Engine                | float32      | float16       | int8         | int4         |
 |-----------------------|--------------|---------------|--------------|--------------|
 | burn                  |      -       |      -        |      -       |      -       |
