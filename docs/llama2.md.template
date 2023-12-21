@@ -19,6 +19,7 @@
 | transformers (pytorch)       | 46.44 ± 46.44| 42.56 ± 42.56 |      -        |      -        |
 | vllm                 | 90.78 ± 1.60 | 90.54 ± 2.22  |      -        |      -        |
 | exllamav2                    |      -        |      -       | 163.41 ± 5.58 | 120.17 ± 0.73 |
+| AutoAWQ                    |      -        |116.94 ± 13.14|      -        |      -        |
 
 *(Data updated: `<LAST_UPDATE>`)
 
@@ -66,3 +67,4 @@
 
 *Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
 *Note: ExllamaV2 does not run in only CPUs or Apple GPU. It requires CUDA.
+*Note: AutoAWQ is not supported devices other than GPU (only supports when CUDA is available).
