@@ -21,7 +21,7 @@ class LlamaAutoGPTQBenchmark:
         assert precision in [
             "fp16",
             "fp32",
-        ], "For benchmarks supported precision are 4 and 8 bits."
+        ], "For benchmarks supported precision are Fp-16 and FP-32."
         self.model_path, self.precision, self.device = (
             model_path,
             precision,
@@ -115,7 +115,7 @@ if __name__ == "__main__":
             continue
         else:
             logging.info(
-                f"Running AutoGPT benchmark on Llama with {precision} bit precision"
+                f"Running AutoGPTQ benchmark on Llama with {precision} bit precision"
             )
             llama_autogptq_benchmark = LlamaAutoGPTQBenchmark(
                 model_path=f"{args.models_dir}/llama-2-7b-autogptq",
@@ -128,9 +128,9 @@ if __name__ == "__main__":
                 repetitions=args.repetitions,
             )
 
-        report["llama_transformers_pytorch"][precision] = {
+        report["Llama AutoGPTQ"][f"FP-{precision}"] = {
             "mean": np.mean(llama_autogptq_benchmark.results),
-            "std": np.mean(llama_autogptq_benchmark.results),
+            "std": np.std(llama_autogptq_benchmark.results),
         }
     logging.info("Benchmark Report")
     with open(args.log_file, "a") as file:
