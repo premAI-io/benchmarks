@@ -23,8 +23,9 @@ setup_environment() {
         fi
 
         # install everything
-        pip install -r "$SCRIPT_DIR/lit-gpt/requirements-all.txt"
-        pip install -e "$SCRIPT_DIR/lit-gpt"
+        pip install -r "$SCRIPT_DIR/lit-gpt/requirements-all.txt" --no-cache-dir > /dev/null
+        pip install -r "$SCRIPT_DIR/requirements.txt" --no-cache-dir > /dev/null
+        pip install -e "$SCRIPT_DIR/lit-gpt" --no-cache-dir > /dev/null
         echo "Successfully installed lit-gpt and it's dependencies"
     else
         # shellcheck disable=SC1091
