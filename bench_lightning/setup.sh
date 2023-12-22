@@ -41,7 +41,7 @@ convert_hf_to_litgpt() {
     else
         if [ -d "$SCRIPT_DIR/lit-gpt" ]; then
             mkdir "$LITGPT_WEIGHTS_FOLDER"
-            python "$SCRIPT_DIR/lit-gpt/scripts/convert_hf_checkpoint.py" --checkpoint_dir "$HF_WEIGHTS_FOLDER"
+            python "$SCRIPT_DIR/convert.py" --checkpoint_dir "$HF_WEIGHTS_FOLDER"
             mv "$HF_WEIGHTS_FOLDER/lit_config.json" "$HF_WEIGHTS_FOLDER/lit_model.pth" "$LITGPT_WEIGHTS_FOLDER"
         else
             echo "Please install the repo first and then go for conversion"
