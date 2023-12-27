@@ -74,7 +74,7 @@ class LlamaAutoGPTQBenchmark:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="CTransformers Benchmark.")
+    parser = argparse.ArgumentParser(description="AutoGPTQ Benchmark.")
     parser.add_argument(
         "--prompt",
         type=str,
