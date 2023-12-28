@@ -36,7 +36,8 @@ class LlamaPyTorchLightningBenchmark:
         assert device in [
             "cuda",
             "cpu",
-        ], f"Device {device} is not supported. Supported devices are: 'cuda' or 'cpu'"
+            "metal",
+        ], f"Device {device} is not supported. Supported devices are: 'cuda' or 'cpu' or 'metal'"
 
         self.model_path, self.precision, self.device = model_path, precision, device
         if self.device == "metal":
@@ -139,7 +140,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     logging.info(
         f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} "
-        + f"repetitions={args.repetitions} device=cuda"
+        + f"repetitions={args.repetitions} device={args.device}"
     )
     report = defaultdict(lambda: defaultdict(float))
     for precision in ("fp16", "fp32", "int8", "int4"):
