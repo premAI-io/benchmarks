@@ -67,3 +67,4 @@
 
 *Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
 *Note: ExllamaV2 does not run in only CPUs or Apple GPU. It requires CUDA.
+*Note: Pytorch Lightning runs out of memory in metal (out of 18 GB) so benchmark not available.
