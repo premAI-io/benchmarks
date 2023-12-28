@@ -39,6 +39,9 @@ class LlamaPyTorchLightningBenchmark:
         ], f"Device {device} is not supported. Supported devices are: 'cuda' or 'cpu'"
 
         self.model_path, self.precision, self.device = model_path, precision, device
+        if self.device == "metal":
+            self.device = "mps"
+
         dtype = {
             "fp16": torch.float16,
             "fp32": torch.float32,
