@@ -6,10 +6,21 @@
 # requirements.
 ################################################################################
 
+check_python() {
+    if command -v python &> /dev/null; then
+        PYTHON_CMD="python"
+    elif command -v python3 &> /dev/null; then
+        PYTHON_CMD="python3"
+    else
+        echo "Python is not installed."
+        exit 1
+    fi
+}
+
 
 setup_environment() {
     if [ ! -d "$VENV_DIR" ]; then
-        python -m venv "$VENV_DIR"
+        "$PYTHON_CMD" -m venv "$VENV_DIR"
         echo "Virtual environment '$VENV_DIR' created."
         # shellcheck disable=SC1091
         source "$VENV_DIR/bin/activate"
@@ -42,7 +53,7 @@ convert_hf_to_litgpt() {
     else
         if [ -d "$SCRIPT_DIR/lit-gpt" ]; then
             mkdir "$LITGPT_WEIGHTS_FOLDER"
-            python "$SCRIPT_DIR/convert.py" --checkpoint_dir "$HF_WEIGHTS_FOLDER"
+            "$PYTHON_CMD" "$SCRIPT_DIR/convert.py" --checkpoint_dir "$HF_WEIGHTS_FOLDER"
             mv "$HF_WEIGHTS_FOLDER/lit_config.json" "$HF_WEIGHTS_FOLDER/lit_model.pth" "$HF_WEIGHTS_FOLDER/tokenizer.json" "$LITGPT_WEIGHTS_FOLDER"
         else
             echo "Please install the repo first and then go for conversion"
