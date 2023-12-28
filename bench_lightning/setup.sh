@@ -54,7 +54,8 @@ convert_hf_to_litgpt() {
         if [ -d "$SCRIPT_DIR/lit-gpt" ]; then
             mkdir "$LITGPT_WEIGHTS_FOLDER"
             "$PYTHON_CMD" "$SCRIPT_DIR/convert.py" --checkpoint_dir "$HF_WEIGHTS_FOLDER"
-            mv "$HF_WEIGHTS_FOLDER/lit_config.json" "$HF_WEIGHTS_FOLDER/lit_model.pth" "$HF_WEIGHTS_FOLDER/tokenizer.json" "$LITGPT_WEIGHTS_FOLDER"
+            mv "$HF_WEIGHTS_FOLDER/lit_config.json" "$HF_WEIGHTS_FOLDER/lit_model.pth" "$LITGPT_WEIGHTS_FOLDER"
+            cp "$HF_WEIGHTS_FOLDER/tokenizer.model" "$LITGPT_WEIGHTS_FOLDER"
         else
             echo "Please install the repo first and then go for conversion"
             exit 1
@@ -70,5 +71,6 @@ VENV_DIR="$SCRIPT_DIR/venv"
 HF_MODELS_DIR="${HF_MODELS_DIR:-"models/llama-2-7b-hf"}"
 LIT_GPT_MODELS_DIR="${LIT_GPT_MODELS_DIR:-"models/llama-2-7b-lit-gpt"}"
 
+check_python
 setup_environment
 convert_hf_to_litgpt "$CURRENT_DIR/$HF_MODELS_DIR" "$CURRENT_DIR/$LIT_GPT_MODELS_DIR"
