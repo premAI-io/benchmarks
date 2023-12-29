@@ -120,18 +120,18 @@ if __name__ == "__main__":
             repetitions=args.repetitions,
         )
 
-    report["Llama AutoAWQ"][f"FP-{precision}"] = {
-        "mean": np.mean(llama_autogptq_benchmark.results),
-        "std": np.std(llama_autogptq_benchmark.results),
-    }
-    logging.info("Benchmark Report")
-    with open(args.log_file, "a") as file:
-        for framework, quantizations in report.items():
-            for quantization, stats in quantizations.items():
-                logging.info(
-                    f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}"
-                )
-                print(
-                    f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}",
-                    file=file,
-                )
+        report["Llama AutoAWQ"][f"FP-{precision}"] = {
+            "mean": np.mean(llama_autogptq_benchmark.results),
+            "std": np.std(llama_autogptq_benchmark.results),
+        }
+        logging.info("Benchmark Report")
+        with open(args.log_file, "a") as file:
+            for framework, quantizations in report.items():
+                for quantization, stats in quantizations.items():
+                    logging.info(
+                        f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}"
+                    )
+                    print(
+                        f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}",
+                        file=file,
+                    )
