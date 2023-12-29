@@ -99,31 +99,31 @@ if __name__ == "__main__":
     )
     report = defaultdict(lambda: defaultdict(float))
 
-    for precision in (16,):
-        if args.device == "cpu" and precision == 16:
-            logging.info(
-                "Skipping running model on fp16 on CPU, not implemented for Half"
-            )
-            continue
-        else:
-            logging.info(
-                f"Running AutoGPT benchmark on Llama with {precision} bit precision"
-            )
-            llama_autogptq_benchmark = LlamaAutoAWQBenchmark(
-                model_path=f"{args.models_dir}/llama-2-7b-autoawq",
-                device=args.device,
-                precision=f"fp{precision}",
-            ).load_model()
-            llama_autogptq_benchmark.benchmark(
-                max_tokens=args.max_tokens,
-                prompt=args.prompt,
-                repetitions=args.repetitions,
-            )
+    # Hardcoding precision to fp16 for AutoAWQ
+    precision = 16
 
-        report["Llama AutoAWQ"][f"FP-{precision}"] = {
-            "mean": np.mean(llama_autogptq_benchmark.results),
-            "std": np.std(llama_autogptq_benchmark.results),
-        }
+    if args.device == "cpu":
+        logging.info("Skipping running model on fp16 on CPU, not implemented for Half")
+        pass
+    else:
+        logging.info(
+            f"Running AutoGPT benchmark on Llama with {precision} bit precision"
+        )
+        llama_autogptq_benchmark = LlamaAutoAWQBenchmark(
+            model_path=f"{args.models_dir}/llama-2-7b-autoawq",
+            device=args.device,
+            precision=f"fp{precision}",
+        ).load_model()
+        llama_autogptq_benchmark.benchmark(
+            max_tokens=args.max_tokens,
+            prompt=args.prompt,
+            repetitions=args.repetitions,
+        )
+
+    report["Llama AutoAWQ"][f"FP-{precision}"] = {
+        "mean": np.mean(llama_autogptq_benchmark.results),
+        "std": np.std(llama_autogptq_benchmark.results),
+    }
     logging.info("Benchmark Report")
     with open(args.log_file, "a") as file:
         for framework, quantizations in report.items():
