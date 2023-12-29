@@ -102,7 +102,7 @@ if __name__ == "__main__":
         + f"repetitions={args.repetitions} device=cuda"
     )
     report = defaultdict(lambda: defaultdict(float))
-    for quantize in ("q4", "q8"):
+    for quantize in ("q8", "q4"):
         logging.info(f"Running ExllamaV2 benchmark with {quantize}")
         llamacpp_bench = ExllamaV2Benchmark(
             f"{args.models_dir}/llama-2-7b-exllamav2-{quantize}"
