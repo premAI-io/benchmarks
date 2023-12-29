@@ -21,7 +21,7 @@
 | exllamav2                    |      -       |      -        | 116.91 ± 1.73 | 164.28 ± 4.07 |
 | ctransformers                |      -       |      -        | 80.67 ± 3.89  | 84.42 ± 4.57  |
 
-*(Data updated: `21th December 2023`)
+*(Data updated: `29th December 2023`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -65,8 +65,7 @@
 | exllamav2             |      -       |      -        |      -       |      -       |
 | vllm                  |      -       |      -        |      -       |      -       |
 
-
-*(Data updated: `21th December 2023`)
+*(Data updated: `29th December 2023`)
 
 *Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
 *Note: ExllamaV2 does not run in only CPUs or Apple GPU. It requires CUDA.
