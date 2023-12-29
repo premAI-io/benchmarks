@@ -36,7 +36,7 @@ class LlamaAutoGPTQBenchmark:
             bits=4,
             group_size=128,
             desc_act=False,
-            use_exllama=False if self.device == "cpu" else False,
+            use_exllama=False if self.device == "cpu" else True,
         )
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_path,
