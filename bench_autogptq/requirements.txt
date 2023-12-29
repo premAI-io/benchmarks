@@ -2,4 +2,4 @@ torch==2.1.1
 accelerate
 transformers
 optimum
-auto_gptq==0.2.0
+auto_gptq
