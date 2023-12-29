@@ -33,10 +33,7 @@ class LlamaAutoGPTQBenchmark:
     def load_model(self):
         """Loads the model in the required precision."""
         quantization_config = GPTQConfig(
-            bits=4,
-            group_size=128,
-            desc_act=False,
-            use_exllama=False if self.device == "cpu" else True,
+            bits=4, group_size=128, desc_act=False, use_exllama=False
         )
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_path,
