@@ -1,5 +1,5 @@
-torch
+torch==2.1.1
 accelerate
 transformers
 optimum
-auto-gptq
+auto_gptq==0.2.0
