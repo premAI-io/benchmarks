@@ -73,6 +73,7 @@ class LlamaPyTorchLightningBenchmark:
         self.fabric = L.Fabric(
             accelerator=self.device, precision=self.precision, plugins=self.plugins
         )
+        self.fabric.launch()
         self.config = Config.from_json(os.path.join(self.model_path, "lit_config.json"))
 
     def load_model(self):
