@@ -10,15 +10,14 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 
 import torch
-from lightning.fabric.utilities.load import \
-    _NotYetLoadedTensor as NotYetLoadedTensor
+from lightning.fabric.utilities.load import _NotYetLoadedTensor
 
 # support running without installing as a package
 wd = Path(__file__).parent.parent.resolve()
 sys.path.append(str(wd))
 
-from lit_gpt import Config  # noqa: E402
-from lit_gpt.utils import incremental_save, lazy_load  # noqa: E402
+from lit_gpt import Config  # noqa E402
+from lit_gpt.utils import incremental_save, lazy_load  # noqa E402
 
 
 def layer_template(layer_name: str, idx: int) -> Tuple[str, int]:
@@ -30,7 +29,7 @@ def layer_template(layer_name: str, idx: int) -> Tuple[str, int]:
 
 
 def load_param(
-    param: Union[torch.Tensor, NotYetLoadedTensor],
+    param: Union[torch.Tensor, _NotYetLoadedTensor],
     name: str,
     dtype: Optional[torch.dtype],
 ) -> torch.Tensor:
@@ -40,7 +39,7 @@ def load_param(
         param = param._load_tensor()
     if (
         dtype is not None
-        and type(dtype) is not NotYetLoadedTensor
+        and type(dtype) is not _NotYetLoadedTensor
         and dtype != param.dtype
     ):
         print(f"Converting {name!r} from {param.dtype} to {dtype}")
@@ -50,9 +49,9 @@ def load_param(
 
 def copy_weights_hf_llama(
     config: Config,
-    qkv_weights: Dict[int, List[Optional[NotYetLoadedTensor]]],
+    qkv_weights: Dict[int, List[Optional[_NotYetLoadedTensor]]],
     state_dict: Dict[str, torch.Tensor],
-    hf_weights: Dict[str, Union[torch.Tensor, NotYetLoadedTensor]],
+    hf_weights: Dict[str, Union[torch.Tensor, _NotYetLoadedTensor]],
     saver: Optional[incremental_save] = None,
     dtype: Optional[torch.dtype] = None,
 ) -> None:

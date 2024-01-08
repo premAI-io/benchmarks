@@ -113,7 +113,7 @@ class LlamaPyTorchLightningBenchmark:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="llama.cpp Benchmark Llama model.")
+    parser = argparse.ArgumentParser(description="Pytorch Lightning Benchmark Llama model.")
     parser.add_argument(
         "--prompt",
         type=str,
@@ -164,7 +164,7 @@ if __name__ == "__main__":
                 "std": np.std(lightning_bench.results),
             }
         except Exception as e:
-            logging.info(f"Error: {e}")
+            logging.error(f"Error: {e}")
             continue
 
     logging.info("Benchmark Report")
