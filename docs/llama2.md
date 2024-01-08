@@ -22,7 +22,6 @@
 | ctransformers               |      -        |      -        | 80.67 ± 3.89  | 84.42 ± 4.57  |
 | AutoGPTQ                     |45.31 ± 45.31 | 33.70 ± 34.78 |      -        |      -        |
 
-
 *(Data updated: `08th January 2024`)
 
 
@@ -66,7 +65,6 @@
 | transformers (pytorch)|      -       |      -        |      -       |      -       |
 | exllamav2             |      -       |      -        |      -       |      -       |
 | vllm                  |      -       |      -        |      -       |      -       |
-
 
 *(Data updated: `08th January 2024`)
 
