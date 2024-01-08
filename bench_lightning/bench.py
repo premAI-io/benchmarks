@@ -112,7 +112,7 @@ class LlamaPyTorchLightningBenchmark:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="llama.cpp Benchmark Llama model.")
+    parser = argparse.ArgumentParser(description="Pytorch Lightning Benchmark Llama model.")
     parser.add_argument(
         "--prompt",
         type=str,
