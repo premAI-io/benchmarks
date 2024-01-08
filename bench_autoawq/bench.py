@@ -66,7 +66,7 @@ class LlamaAutoAWQBenchmark:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="CTransformers Benchmark.")
+    parser = argparse.ArgumentParser(description="AutoAWQ Benchmark.")
     parser.add_argument(
         "--prompt",
         type=str,
