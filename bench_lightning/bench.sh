@@ -116,6 +116,11 @@ while [ "$#" -gt 0 ]; do
                     print_usage
                     ;;
             esac
+            if [ "$DEVICE" == "cuda" ]; then
+                check_cuda
+            else
+                echo "Using $DEVICE"
+            fi
             shift 2
             ;;
         -lf|--log_file)
