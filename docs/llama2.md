@@ -23,7 +23,6 @@
 | AutoGPTQ                     |45.31 ± 45.31 | 33.70 ± 34.78 |      -        |      -        |
 | AutoAWQ                    |      -        |116.94 ± 13.14|      -        |      -        |
 
-
 *(Data updated: `09th January 2024`)
 
 
@@ -67,7 +66,6 @@
 | transformers (pytorch)|      -       |      -        |      -       |      -       |
 | exllamav2             |      -       |      -        |      -       |      -       |
 | vllm                  |      -       |      -        |      -       |      -       |
-
 
 *(Data updated: `09th January 2024`)
 
