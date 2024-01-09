@@ -39,7 +39,6 @@ class LlamaOptimumNvidiaBenchmark:
         assert device in ["cuda"], ValueError("Supported devices are: 'cuda'")
 
         self.model_args = {
-            "device_map": self.device,
             "torch_dtype": self.precision_to_dtype_map[self.precision],
         }
 
@@ -48,7 +47,9 @@ class LlamaOptimumNvidiaBenchmark:
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_path, **self.model_args
         )
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
+
+        # Hardcoding this for now.
+        self.tokenizer = AutoTokenizer.from_pretrained("/mnt/models/llama-2-7b-hf")
         return self
 
     def run_model(self, prompt: str, max_tokens: int) -> float:
@@ -62,6 +63,7 @@ class LlamaOptimumNvidiaBenchmark:
             .cpu()
             .numpy()
         )
+
         delta = time.time() - start
         return len(output[0]) / delta
 
