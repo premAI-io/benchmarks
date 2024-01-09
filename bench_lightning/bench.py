@@ -146,8 +146,10 @@ if __name__ == "__main__":
         + f"repetitions={args.repetitions} device={args.device}"
     )
     report = defaultdict(lambda: defaultdict(float))
-    for precision in ("fp16", "fp32", "int8", "int4"):
+    for precision in ("fp32", "fp16", "int8", "int4"):
         logging.info(f"Running Lightning AI Llama benchmark with {precision}")
+        if precision == "fp32":
+            torch.set_float32_matmul_precision("medium")
         try:
             lightning_bench = LlamaPyTorchLightningBenchmark(
                 model_path=f"{args.models_dir}/llama-2-7b-lit-gpt",
