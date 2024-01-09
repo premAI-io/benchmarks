@@ -21,9 +21,9 @@
 | exllamav2                    |      -       |      -        | 116.91 ± 1.73 | 164.28 ± 4.07 |
 | ctransformers               |      -        |      -        | 80.67 ± 3.89  | 84.42 ± 4.57  |
 | AutoGPTQ                     |45.31 ± 45.31 | 33.70 ± 34.78 |      -        |      -        |
+| AutoAWQ                    |      -        |116.94 ± 13.14|      -        |      -        |
 
-
-*(Data updated: `08th January 2024`)
+*(Data updated: `09th January 2024`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -67,10 +67,10 @@
 | exllamav2             |      -       |      -        |      -       |      -       |
 | vllm                  |      -       |      -        |      -       |      -       |
 
-
-*(Data updated: `08th January 2024`)
+*(Data updated: `09th January 2024`)
 
 *Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
 *Note: ExllamaV2 does not run in CPUs or Apple GPU. It requires CUDA.
 *Note: AutoGPTQ does not run in CPUs or Apple GPU, it requires CUDA to run.
+*Note: AutoAWQ is not supported devices other than GPU (only supports when CUDA is available).
 *Note: CPU/Metal is not supported right now. Support for CPU is on [developement](https://github.com/vllm-project/vllm/pull/1028). No developement for metal so far.
