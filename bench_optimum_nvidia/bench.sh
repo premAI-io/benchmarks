@@ -72,6 +72,7 @@ setup() {
 }
 
 run_benchmarks() {
+    # this will change
     local PROMPT="$1"
     local REPETITIONS="$2"
     local MAX_TOKENS="$3"
@@ -80,7 +81,6 @@ run_benchmarks() {
     local MODELS_DIR="$6"
 
     # shellcheck disable=SC1091
-    source "$SCRIPT_DIR/venv/bin/activate"
     python "$SCRIPT_DIR"/bench.py \
         --prompt "$PROMPT" \
         --repetitions "$REPETITIONS" \
@@ -146,9 +146,27 @@ REPETITIONS="${REPETITIONS:-10}"
 MAX_TOKENS="${MAX_TOKENS:-100}"
 DEVICE="${DEVICE:-'cpu'}"
 LOG_FILENAME="${LOG_FILENAME:-"benchmark_$(date +'%Y%m%d%H%M%S').log"}"
-MODELS_DIR="${MODELS_DIR:-"./models"}"
+MODELS_DIR="${MODELS_DIR:-"/build"}"
 
 check_platform
 check_python
 setup
-run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$LOG_FILENAME" "$MODELS_DIR"
+# run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$LOG_FILENAME" "$MODELS_DIR"
+
+docker run \
+    --gpus all \
+    --ipc=host \
+    --ulimit memlock=-1 \
+    --ulimit stack=67108864 \
+    -e PYTHONUNBUFFERED=1 \
+    -v "$(pwd)/models:/mnt/models" \
+    -v "$(pwd)/models/llama-2-7b-optimum_nvidia_build:/build" \
+    -v "$SCRIPT_DIR:/mnt/scripts" \
+    -it prem/optimum-nvidia:latest \
+    python3 -u "/mnt/scripts/bench.py" \
+        --prompt "$PROMPT" \
+        --repetitions "$REPETITIONS" \
+        --max_tokens "$MAX_TOKENS" \
+        --log_file "$LOG_FILENAME" \
+        --models_dir "$MODELS_DIR" \
+        --device "$DEVICE"
