@@ -28,7 +28,7 @@ build_docker_image () {
     # Check if the Docker image exists
     if docker image inspect prem/optimum-nvidia:latest &> /dev/null; then
         echo "Image 'prem/optimum-nvidia:latest' already exists."
-        exit 1
+        exit 0
     else
 
         if [ -d "$SCRIPT_DIR/$repo_name" ]; then
@@ -71,7 +71,7 @@ build_and_compile_model () {
         docker image rm prem/optimum-nvidia:base -f
     else
         echo "The base image does not exist locally. Exiting..."
-        exit 1
+        exit 0
     fi
 }
 
