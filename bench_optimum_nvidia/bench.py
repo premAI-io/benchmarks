@@ -13,7 +13,7 @@ from transformers import AutoTokenizer
 logging.getLogger("transformers").setLevel(logging.ERROR)
 logging.basicConfig(
     stream=sys.stdout,
-    level=logging.INFO,
+    level=print,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
@@ -41,6 +41,7 @@ class LlamaOptimumNvidiaBenchmark:
         self.model_args = {
             "torch_dtype": self.precision_to_dtype_map[self.precision],
         }
+        self.device = device
 
     def load_model(self):
         """Loads the model into various formats and device"""
@@ -57,19 +58,18 @@ class LlamaOptimumNvidiaBenchmark:
             self.device
         )
         start = time.time()
-        output = (
-            self.model.generate(input_ids=tokenized_input, max_new_tokens=max_tokens)
-            .detach()
-            .cpu()
-            .numpy()
-        )
-
+        generated = self.model.generate(
+            input_ids=tokenized_input, max_new_tokens=max_tokens
+        )[0]
         delta = time.time() - start
-        return len(output[0]) / delta
+
+        output = generated.detach().cpu().numpy()
+        decoded = self.tokenizer.decode(output[0][0], skip_special_tokens=True)
+        return len(self.tokenizer.encode(decoded)) / delta
 
     def benchmark(self, prompt: str, max_tokens: int, repetitions: int) -> None:
         for i in range(repetitions):
-            logging.info(
+            print(
                 f"Running repetition [{str(i+1).zfill(len(str(repetitions)))}/{repetitions}]"
             )
             tokens_per_second = self.run_model(prompt, max_tokens)
@@ -107,16 +107,16 @@ if __name__ == "__main__":
         help="Path to the models directory.",
     )
     args = parser.parse_args()
-    logging.info(
+    print(
         f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} "
         + f"repetitions={args.repetitions} device={args.device}"
     )
     report = defaultdict(lambda: defaultdict(float))
 
     for precision in ("fp16", "fp32"):
-        logging.info(f"Running Optimum-Nvidia on Llama with precision: {precision}")
+        print(f"Running Optimum-Nvidia on Llama with precision: {precision}")
         llama_transformers_pytorch_benchmark = LlamaOptimumNvidiaBenchmark(
-            model_path=f"{args.models_dir}/llama-2-7b-hf",
+            model_path=args.models_dir,
             device=args.device,
             precision=precision,
         ).load_model()
@@ -128,11 +128,11 @@ if __name__ == "__main__":
             "mean": np.mean(llama_transformers_pytorch_benchmark.results),
             "std": np.mean(llama_transformers_pytorch_benchmark.results),
         }
-    logging.info("Benchmark Report")
+    print("Benchmark Report")
     with open(args.log_file, "a") as file:
         for framework, quantizations in report.items():
             for quantization, stats in quantizations.items():
-                logging.info(
+                print(
                     f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}"
                 )
                 print(
