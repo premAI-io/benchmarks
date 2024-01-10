@@ -17,11 +17,13 @@
 | tinygrad                     |      -       | 20.32 ± 0.06  |      -        |      -        |
 | onnx                         |      -       | 54.16 ± 3.15  |      -        |      -        |
 | transformers (pytorch)       | 46.44 ± 46.44| 42.56 ± 42.56 |      -        |      -        |
-| vllm                         | 90.78 ± 1.60 | 90.54 ± 2.22  |      -        |      -        |
+| vllm                                 | 90.78 ± 1.60 | 90.54 ± 2.22  |      -        |      -        |
 | exllamav2                    |      -       |      -        | 116.91 ± 1.73 | 164.28 ± 4.07 |
-| ctransformers                |      -       |      -        | 80.67 ± 3.89  | 84.42 ± 4.57  |
+| ctransformers               |      -        |      -        | 80.67 ± 3.89  | 84.42 ± 4.57  |
+| AutoGPTQ                     |45.31 ± 45.31 | 33.70 ± 34.78 |      -        |      -        |
+| AutoAWQ                    |      -        |116.94 ± 13.14|      -        |      -        |
 
-*(Data updated: `21th December 2023`)
+*(Data updated: `09th January 2024`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -65,9 +67,10 @@
 | exllamav2             |      -       |      -        |      -       |      -       |
 | vllm                  |      -       |      -        |      -       |      -       |
 
-
-*(Data updated: `21th December 2023`)
+*(Data updated: `09th January 2024`)
 
 *Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
-*Note: ExllamaV2 does not run in only CPUs or Apple GPU. It requires CUDA.
+*Note: ExllamaV2 does not run in CPUs or Apple GPU. It requires CUDA.
+*Note: AutoGPTQ does not run in CPUs or Apple GPU, it requires CUDA to run.
+*Note: AutoAWQ is not supported devices other than GPU (only supports when CUDA is available).
 *Note: CPU/Metal is not supported right now. Support for CPU is on [developement](https://github.com/vllm-project/vllm/pull/1028). No developement for metal so far.
