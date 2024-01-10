@@ -73,6 +73,7 @@ class LlamaPyTorchLightningBenchmark:
         self.fabric = L.Fabric(
             accelerator=self.device, precision=self.precision, plugins=self.plugins
         )
+        self.fabric.launch()
         self.config = Config.from_json(os.path.join(self.model_path, "lit_config.json"))
 
     def load_model(self):
@@ -112,7 +113,9 @@ class LlamaPyTorchLightningBenchmark:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="llama.cpp Benchmark Llama model.")
+    parser = argparse.ArgumentParser(
+        description="Pytorch Lightning Benchmark Llama model."
+    )
     parser.add_argument(
         "--prompt",
         type=str,
@@ -143,8 +146,10 @@ if __name__ == "__main__":
         + f"repetitions={args.repetitions} device={args.device}"
     )
     report = defaultdict(lambda: defaultdict(float))
-    for precision in ("fp16", "fp32", "int8", "int4"):
+    for precision in ("fp32", "fp16", "int8", "int4"):
         logging.info(f"Running Lightning AI Llama benchmark with {precision}")
+        if precision == "fp32":
+            torch.set_float32_matmul_precision("medium")
         try:
             lightning_bench = LlamaPyTorchLightningBenchmark(
                 model_path=f"{args.models_dir}/llama-2-7b-lit-gpt",
@@ -163,7 +168,7 @@ if __name__ == "__main__":
                 "std": np.std(lightning_bench.results),
             }
         except Exception as e:
-            logging.info(f"Error: {e}")
+            logging.error(f"Error: {e}")
             continue
 
     logging.info("Benchmark Report")
