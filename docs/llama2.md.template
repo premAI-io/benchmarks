@@ -22,6 +22,7 @@
 | ctransformers               |      -        |      -        | 80.67 ± 3.89  | 84.42 ± 4.57  |
 | AutoGPTQ                     |45.31 ± 45.31 | 33.70 ± 34.78 |      -        |      -        |
 | AutoAWQ                    |      -        |116.94 ± 13.14|      -        |      -        |
+| Optimum Nvidia                    |106.71 ± 106.71|105.37 ± 105.37|      -        |      -        |
 
 *(Data updated: `<LAST_UPDATE>`)
 
@@ -74,3 +75,4 @@
 *Note: AutoGPTQ does not run in CPUs or Apple GPU, it requires CUDA to run.
 *Note: AutoAWQ is not supported devices other than GPU (only supports when CUDA is available).
 *Note: CPU/Metal is not supported right now. Support for CPU is on [developement](https://github.com/vllm-project/vllm/pull/1028). No developement for metal so far.
+*Note: Optimum Nvidia only supports CUDA right now. Also it supports float 16/32 as precision. It additionally supports FP-8 precision. We do not add this, just to keep everything same for all other candidates.
