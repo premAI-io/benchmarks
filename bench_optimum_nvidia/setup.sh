@@ -11,6 +11,7 @@ set -euo pipefail
 # Main script starts here.
 
 CURRENT_DIR="$(pwd)"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 check_docker() {
     if command -v docker &> /dev/null; then
@@ -22,14 +23,20 @@ check_docker() {
 
 
 build_docker_image () {
+    local repo_name="optimum-nvidia"
+
     # Check if the Docker image exists
     if docker image inspect prem/optimum-nvidia:latest &> /dev/null; then
         echo "Image 'prem/optimum-nvidia:latest' already exists."
         exit 1
     else
-        # Clone the repository and build the Docker image
-        git clone --recursive --depth=1 https://github.com/huggingface/optimum-nvidia.git
-        cd optimum-nvidia/third-party/tensorrt-llm
+
+        if [ -d "$SCRIPT_DIR/$repo_name" ]; then
+            echo "Repo already cloned"
+        else
+            git clone --recursive --depth=1 https://github.com/huggingface/optimum-nvidia.git "$SCRIPT_DIR/$repo_name"
+        fi
+        cd "$SCRIPT_DIR/$repo_name/third-party/tensorrt-llm"
         make -C docker release_build
         cd ../.. && docker build -t prem/optimum-nvidia:base -f docker/Dockerfile .
     fi
@@ -38,26 +45,36 @@ build_docker_image () {
 }
 
 build_and_compile_model () {
-    echo "Running ... "
-    if docker image inspect prem/optimum-nvidia:base &> /dev/null; then
+    echo "Running and building the model inside Docker..."
+
+    if docker image inspect prem/optimum-nvidia:latest &> /dev/null; then
+        echo "Image 'prem/optimum-nvidia:latest' already exists."
+        exit 0
+    elif docker image inspect prem/optimum-nvidia:base &> /dev/null; then
+        local model_build_path="$CURRENT_DIR/models/llama-2-7b-optimum_nvidia_build"
+        if [ -d "$model_build_path" ]; then
+            exit 0
+        else
+            mkdir "$model_build_path"
+        fi
         docker run \
-        --gpus all \
-        --ipc=host \
-        --ulimit memlock=-1 \
-        --ulimit stack=67108864 \
-        -v /home/paperspace/workspace/benchmarks/models:/models \
-        prem/optimum-nvidia:base \
-        python3 ./text-generation/llama.py /models/llama-2-7b-hf /build
-        docker tag prem/optimum-nvidia:base prem/optimum-nvidia:latest
+            --gpus all \
+            --ipc=host \
+            --ulimit memlock=-1 \
+            --ulimit stack=67108864 \
+            -v "$CURRENT_DIR"/models:/models \
+            -v "$model_build_path":/optimum_nvidia_build \
+            prem/optimum-nvidia:base \
+            python3 ./text-generation/llama.py /models/llama-2-7b-hf /optimum_nvidia_build
+
+        docker commit "$(docker ps -lq)" prem/optimum-nvidia:latest
         docker image rm prem/optimum-nvidia:base -f
-    elif docker image inspect prem/optimum-nvidia:latest &> /dev/null; then
-        echo "Image already present."
-        exit
     else
         echo "The base image does not exist locally. Exiting..."
         exit 1
     fi
 }
+
 
 
 if check_docker; then
