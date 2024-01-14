@@ -126,7 +126,7 @@ if __name__ == "__main__":
 
         report["llama_optimum_nvidia"][precision] = {
             "mean": np.mean(llama_transformers_pytorch_benchmark.results),
-            "std": np.mean(llama_transformers_pytorch_benchmark.results),
+            "std": np.std(llama_transformers_pytorch_benchmark.results),
         }
     print("Benchmark Report")
     with open(args.log_file, "a") as file:
