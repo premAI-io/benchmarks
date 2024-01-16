@@ -16,7 +16,7 @@
 | ctranslate                   |      -       | 51.38 ± 16.01 | 36.12 ± 11.93 |      -        |
 | tinygrad                     |      -       | 20.32 ± 0.06  |      -        |      -        |
 | onnx                         |      -       | 54.16 ± 3.15  |      -        |      -        |
-| transformers (pytorch)       | 46.44 ± 46.44| 42.56 ± 42.56 |      -        |      -        |
+| transformers (pytorch)       | 44.28 ± 0.54| 40.32 ± 2.33 |      -        |      -        |
 | vllm                                 | 90.78 ± 1.60 | 90.54 ± 2.22  |      -        |      -        |
 | exllamav2                    |      -       |      -        | 116.91 ± 1.73 | 164.28 ± 4.07 |
 | ctransformers               |      -        |      -        | 80.67 ± 3.89  | 84.42 ± 4.57  |
@@ -24,7 +24,7 @@
 | AutoAWQ                    |      -        |116.94 ± 13.14|      -        |      -        |
 | PyTorch Lightning            | 24.85 ± 0.07 | 44.56 ± 2.89 | 10.50 ± 0.12 | 24.83 ± 0.05 |
 
-*(Data updated: `10th January 2024`)
+*(Data updated: `16th January 2024`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -68,7 +68,7 @@
 | exllamav2             |      -       |      -        |      -       |      -       |
 | vllm                  |      -       |      -        |      -       |      -       |
 
-*(Data updated: `10th January 2024`)
+*(Data updated: `16th January 2024`)
 
 *Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
 *Note: ExllamaV2 does not run in CPUs or Apple GPU. It requires CUDA.
