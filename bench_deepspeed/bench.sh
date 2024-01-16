@@ -2,7 +2,7 @@
 
 ########################################################################################################
 # Script: bench.sh
-# Description: This script runs benchmarks AutoAWQ llama benchmark.
+# Description: This script runs benchmarks DeepSpeed llama benchmark.
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
