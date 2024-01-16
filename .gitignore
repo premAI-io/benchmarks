@@ -168,3 +168,4 @@ bench_tinygrad/tinygrad
 bench_burn/llama2-burn
 bench_exllamav2/exllamav2
 bench_exllamav2/wikitext-test.parquet
+bench_lightning/lit-gpt

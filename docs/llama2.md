@@ -16,14 +16,17 @@
 | ctranslate                   |      -       | 51.38 ± 16.01 | 36.12 ± 11.93 |      -        |
 | tinygrad                     |      -       | 20.32 ± 0.06  |      -        |      -        |
 | onnx                         |      -       | 54.16 ± 3.15  |      -        |      -        |
-| transformers (pytorch)       | 46.44 ± 46.44| 42.56 ± 42.56 |      -        |      -        |
+| transformers (pytorch)       | 44.28 ± 0.54| 40.32 ± 2.33 |      -        |      -        |
 | vllm                                 | 90.78 ± 1.60 | 90.54 ± 2.22  |      -        |      -        |
 | exllamav2                    |      -       |      -        | 116.91 ± 1.73 | 164.28 ± 4.07 |
 | ctransformers               |      -        |      -        | 80.67 ± 3.89  | 84.42 ± 4.57  |
 | AutoGPTQ                     |45.31 ± 45.31 | 33.70 ± 34.78 |      -        |      -        |
+| AutoAWQ                    |      -        |116.94 ± 13.14|      -        |      -        |
+| DeepSpeed                    |      -        |81.44 ± 8.13|      -        |
+| PyTorch Lightning            | 24.85 ± 0.07 | 44.56 ± 2.89 | 10.50 ± 0.12 | 24.83 ± 0.05 |
+| Optimum Nvidia                    |110.36 ± 0.52|109.09 ± 4.26|      -        |      -        |
 
-
-*(Data updated: `08th January 2024`)
+*(Data updated: `16th January 2024`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -67,10 +70,13 @@
 | exllamav2             |      -       |      -        |      -       |      -       |
 | vllm                  |      -       |      -        |      -       |      -       |
 
-
-*(Data updated: `08th January 2024`)
+*(Data updated: `16th January 2024`)
 
 *Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
 *Note: ExllamaV2 does not run in CPUs or Apple GPU. It requires CUDA.
 *Note: AutoGPTQ does not run in CPUs or Apple GPU, it requires CUDA to run.
+*Note: AutoAWQ is not supported devices other than GPU (only supports when CUDA is available).
+*Note: Pytorch Lightning runs out of memory in metal (out of 18 GB) so benchmark not available.
 *Note: CPU/Metal is not supported right now. Support for CPU is on [developement](https://github.com/vllm-project/vllm/pull/1028). No developement for metal so far.
+*Note: Optimum Nvidia only supports CUDA right now. Also it supports float 16/32 as precision. It additionally supports FP-8 precision. We do not add this, just to keep everything same for all other candidates.
+*Note: DeepSpeed inference is not supported for Metal/CPU devices. Also, it only works for fp-16 precision.
