@@ -22,6 +22,7 @@
 | ctransformers               |      -        |      -        | 80.67 ± 3.89  | 84.42 ± 4.57  |
 | AutoGPTQ                     |45.31 ± 45.31 | 33.70 ± 34.78 |      -        |      -        |
 | AutoAWQ                    |      -        |116.94 ± 13.14|      -        |      -        |
+| DeepSpeed                    |      -        |81.44 ± 8.13|      -        |
 
 *(Data updated: `<LAST_UPDATE>`)
 
@@ -74,3 +75,4 @@
 *Note: AutoGPTQ does not run in CPUs or Apple GPU, it requires CUDA to run.
 *Note: AutoAWQ is not supported devices other than GPU (only supports when CUDA is available).
 *Note: CPU/Metal is not supported right now. Support for CPU is on [developement](https://github.com/vllm-project/vllm/pull/1028). No developement for metal so far.
+*Note: DeepSpeed inference is not supported for Metal/CPU devices. Also, it only works for fp-16 precision.
