@@ -162,7 +162,7 @@ docker run \
     -v "$(pwd)/models:/mnt/models" \
     -v "$(pwd)/models/llama-2-7b-optimum_nvidia_build:/build" \
     -v "$SCRIPT_DIR:/mnt/scripts" \
-    -it prem/optimum-nvidia:latest \
+    -it prem/optimum-nvidia:base \
     python3 -u "/mnt/scripts/bench.py" \
         --prompt "$PROMPT" \
         --repetitions "$REPETITIONS" \

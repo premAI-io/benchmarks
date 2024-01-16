@@ -52,23 +52,23 @@ build_and_compile_model () {
         exit 0
     elif docker image inspect prem/optimum-nvidia:base &> /dev/null; then
         local model_build_path="$CURRENT_DIR/models/llama-2-7b-optimum_nvidia_build"
-        if [ -d "$model_build_path" ]; then
-            exit 0
-        else
+        if [ ! -d "$model_build_path" ]; then
             mkdir "$model_build_path"
         fi
-        docker run \
-            --gpus all \
-            --ipc=host \
-            --ulimit memlock=-1 \
-            --ulimit stack=67108864 \
-            -v "$CURRENT_DIR"/models:/models \
-            -v "$model_build_path":/optimum_nvidia_build \
-            prem/optimum-nvidia:base \
-            python3 ./text-generation/llama.py /models/llama-2-7b-hf /optimum_nvidia_build
 
-        docker commit "$(docker ps -lq)" prem/optimum-nvidia:latest
-        docker image rm prem/optimum-nvidia:base -f
+        if [ -z "$(ls -A "$model_build_path")" ]; then
+            docker run \
+                --gpus all \
+                --ipc=host \
+                --ulimit memlock=-1 \
+                --ulimit stack=67108864 \
+                -v "$CURRENT_DIR"/models:/models \
+                -v "$model_build_path":/optimum_nvidia_build \
+                prem/optimum-nvidia:base \
+                python3 ./text-generation/llama.py /models/llama-2-7b-hf /optimum_nvidia_build
+        else
+            echo "Engine file already exists"
+        fi
     else
         echo "The base image does not exist locally. Exiting..."
         exit 0

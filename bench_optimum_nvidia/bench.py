@@ -80,7 +80,7 @@ class LlamaOptimumNvidiaBenchmark:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="CTransformers Benchmark.")
+    parser = argparse.ArgumentParser(description="Nvidia Optimum Benchmark.")
     parser.add_argument(
         "--prompt",
         type=str,
@@ -126,7 +126,7 @@ if __name__ == "__main__":
 
         report["llama_optimum_nvidia"][precision] = {
             "mean": np.mean(llama_transformers_pytorch_benchmark.results),
-            "std": np.mean(llama_transformers_pytorch_benchmark.results),
+            "std": np.std(llama_transformers_pytorch_benchmark.results),
         }
     print("Benchmark Report")
     with open(args.log_file, "a") as file:
