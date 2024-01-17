@@ -17,7 +17,7 @@ jobs:
       - name: Update Benchmark
         run: |
           sed "s|<LAST_UPDATE>|$(date -u +"%dth %B %Y")|g" docs/llama2.md.template >  docs/llama2.md
-
+          sed "s|<LAST_UPDATE>|$(date -u +"%dth %B %Y")|g" README.md.template >  README.md
 
       - name: Commit changes
         run: |
