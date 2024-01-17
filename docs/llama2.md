@@ -26,7 +26,7 @@
 | PyTorch Lightning            | 24.85 ± 0.07 | 44.56 ± 2.89 | 10.50 ± 0.12 | 24.83 ± 0.05 |
 | Optimum Nvidia                    |110.36 ± 0.52|109.09 ± 4.26|      -        |      -        |
 
-*(Data updated: `16th January 2024`)
+*(Data updated: `17th January 2024`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -70,7 +70,7 @@
 | exllamav2             |      -       |      -        |      -       |      -       |
 | vllm                  |      -       |      -        |      -       |      -       |
 
-*(Data updated: `16th January 2024`)
+*(Data updated: `17th January 2024`)
 
 *Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
 *Note: ExllamaV2 does not run in CPUs or Apple GPU. It requires CUDA.
