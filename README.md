@@ -2,13 +2,6 @@
 
   <h1 align="center">🕹️ Benchmarks</h1>
     <p align="center">Performance Comparison of MLOps Engines, Frameworks, and Languages on Mainstream AI Models.</p>
-    <p align="center">
-         <a href="https://github.com/premAI-io/benchmarks/blob/main/docs/ml_engines.md">👀 View ML Engines</a>
-         ·
-        <a href="https://github.com/premAI-io/benchmarks/blob/main/docs/llama2.md">🦙 LLama 2 Benchmark</a>
-        ·
-        <a href="https://github.com/premAI-io/benchmarks/issues">🐞 Request Feature</a>
-    </p>
 </div>
 
 [![GitHub contributors](https://img.shields.io/github/contributors/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/graphs/contributors)
@@ -18,7 +11,20 @@
 [![GitHub issues](https://img.shields.io/github/issues/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/issues)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## 📊 Performance Metrics for Llama-2-7B
+
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li><a href="#-quick-glance">Quick glance towards performance metrics for Llama-2-7B</a></li>
+    <li><a href="#-getting-started">Getting started</a></li>
+    <li><a href="#-usage">Usage</a></li>
+    <li><a href="#-contribute">Contribute</a></li>
+  </ol>
+</details>
+
+</br>
+
+## 📊 Quick glance towards performance metrics for Llama-2-7B
 
 Take a first glance of Llama-2-7B Model Performance Metrics Across Different Precision and Inference Engines
 
@@ -46,16 +52,6 @@ Take a first glance of Llama-2-7B Model Performance Metrics Across Different Pre
 The above benchmarking is done on A100-80GB GPU. You can find more details for other devices like CPU/Metal under `docs/llama2.md` folder.
 Also if you want to see more detailed information about each of the benchmark, you can find those details the respective benchmark folders.
 
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li><a href="#-getting-started">Getting started</a></li>
-    <li><a href="#-usage">Usage</a></li>
-    <li><a href="#-contribute">Contribute</a></li>
-  </ol>
-</details>
-
-</br>
 
 ## 🚀 Getting Started
 
