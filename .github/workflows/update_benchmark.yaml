@@ -5,7 +5,7 @@ on:
     branches: ["main"]
     paths:
       - docs/llama2.md.template
-      - readme.md.template
+      - README.md.template
 
 jobs:
   update-readme:
