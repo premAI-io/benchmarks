@@ -1,7 +1,9 @@
+import argparse
 import json
 import logging
 import sys
 import time
+from collections import defaultdict
 from pathlib import Path
 from typing import Optional
 
@@ -19,7 +21,6 @@ logging.basicConfig(
 )
 
 # todo: investigate for int-4/8 precision
-# todo: need to investigate for floa32 and float16
 
 
 class LlamaTensorRTMBenchmark:
@@ -47,10 +48,6 @@ class LlamaTensorRTMBenchmark:
         self.precision, self.device = precision, device
         self.result = []
         self.tokenizer_path = tokenizer_path
-        self.precision_to_dtype_map = {
-            "fp16": "float16",
-            "fp32": "float32",
-        }
 
     def load_model(self):
         with open(self.config_path) as f:
@@ -134,3 +131,69 @@ class LlamaTensorRTMBenchmark:
             )
             self.results.append(tokens_per_second)
         torch.cuda.synchronize()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="CTransformers Benchmark.")
+    parser.add_argument(
+        "--prompt",
+        type=str,
+        help="The prompt for the model.",
+    )
+    parser.add_argument("--max_tokens", type=int, help="The maximum number of tokens.")
+    parser.add_argument(
+        "--repetitions",
+        type=int,
+        help="The number of repetitions for the benchmark.",
+    )
+    parser.add_argument(
+        "--device",
+        help="Device to use for the benchmark.",
+    )
+    parser.add_argument(
+        "--log_file",
+        type=str,
+        help="Path to the log file for writing logs (in append mode).",
+    )
+    parser.add_argument(
+        "--models_dir",
+        type=str,
+        help="Path to the models directory.",
+    )
+    args = parser.parse_args()
+    logging.info(
+        f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} "
+        + f"repetitions={args.repetitions} device={args.device}"
+    )
+    report = defaultdict(lambda: defaultdict(float))
+
+    for precision in ("fp16", "fp32"):
+        logging.info(
+            f"Running TensorRT LLM benchmark (pytorch backend) on Llama with precision: {precision}"
+        )
+        llama_tensorrt_benchmark = LlamaTensorRTMBenchmark(
+            model_path=f"{args.models_dir}/llama-2-7b-nvidia_tensorrt_build_{precision[2:]}",
+            device=args.device,
+            precision=precision,
+        ).load_model()
+
+        llama_tensorrt_benchmark.benchmark(
+            max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
+        )
+
+        report["llama_transformers_pytorch"][precision] = {
+            "mean": np.mean(llama_tensorrt_benchmark.results),
+            "std": np.std(llama_tensorrt_benchmark.results),
+        }
+
+    logging.info("Benchmark Report")
+    with open(args.log_file, "a") as file:
+        for framework, quantizations in report.items():
+            for quantization, stats in quantizations.items():
+                logging.info(
+                    f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}"
+                )
+                print(
+                    f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}",
+                    file=file,
+                )
