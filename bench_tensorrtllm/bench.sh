@@ -2,7 +2,7 @@
 
 ########################################################################################################
 # Script: bench.sh
-# Description: This script runs benchmarks Nvidia-Optimum Llama benchmark.
+# Description: This script runs benchmarks TensorRT Llama benchmark.
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
