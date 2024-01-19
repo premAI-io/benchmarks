@@ -28,7 +28,6 @@
 
 Take a first glance of Llama-2-7B Model Performance Metrics Across Different Precision and Inference Engines
 
-<LLAMA-GPU-TABLE>
 | Engine                       | float32      | float16       | int8          | int4          |
 |------------------------------|--------------|---------------|---------------|---------------|
 | burn                         | 13.12 ± 0.85 |      -        |      -        |      -        |
