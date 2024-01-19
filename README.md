@@ -28,25 +28,29 @@
 
 Take a first glance of Llama-2-7B Model Performance Metrics Across Different Precision and Inference Engines
 
+<LLAMA-GPU-TABLE>
 | Engine                       | float32      | float16       | int8          | int4          |
 |------------------------------|--------------|---------------|---------------|---------------|
-| **burn**                     | 13.12 ± 0.85 |      -        |      -        |      -        |
-| **candle**                   |      -       | 36.78 ± 2.17  |      -        |      -        |
-| **llama.cpp**                |      -       |      -        | 38.48 ± 1.02  | 41.99 ± 2.70  |
-| **ctranslate**               |      -       | 51.38 ± 16.01 | 36.12 ± 11.93 |      -        |
-| **tinygrad**                 |      -       | 20.32 ± 0.06  |      -        |      -        |
-| **onnx**                     |      -       | 54.16 ± 3.15  |      -        |      -        |
-| **transformers (pytorch)**   | 44.28 ± 0.54 | 40.32 ± 2.33  |      -        |      -        |
-| **vllm**                     | 90.78 ± 1.60 | 90.54 ± 2.22  |      -        |      -        |
-| **exllamav2**                |      -       |      -        | 116.91 ± 1.73 | 164.28 ± 4.07 |
-| **ctransformers**            |      -       |      -        | 80.67 ± 3.89  | 84.42 ± 4.57  |
-| **AutoGPTQ**                 | 45.31 ± 45.31| 33.70 ± 34.78 |      -        |      -        |
-| **AutoAWQ**                  |      -       |      -        |      -        | 116.94 ± 13.14|
-| **DeepSpeed**                |      -       | 81.44 ± 8.13  |      -        |      -        |
-| **PyTorch Lightning**        | 24.85 ± 0.07 | 44.56 ± 2.89  | 10.50 ± 0.12  | 24.83 ± 0.05  |
-| **Optimum Nvidia**           |110.36 ± 0.52 |109.09 ± 4.26  |      -        |      -        |
+| burn                         | 13.12 ± 0.85 |      -        |      -        |      -        |
+| candle                       |      -       | 36.78 ± 2.17  |      -        |      -        |
+| llama.cpp                    |      -       |      -        | 38.48 ± 1.02  | 41.99 ± 2.70  |
+| ctranslate                   |      -       | 51.38 ± 16.01 | 36.12 ± 11.93 |      -        |
+| tinygrad                     |      -       | 20.32 ± 0.06  |      -        |      -        |
+| onnx                         |      -       | 54.16 ± 3.15  |      -        |      -        |
+| transformers (pytorch)       | 44.28 ± 0.54| 40.32 ± 2.33 |      -        |      -        |
+| vllm                                 | 90.78 ± 1.60 | 90.54 ± 2.22  |      -        |      -        |
+| exllamav2                    |      -       |      -        | 116.91 ± 1.73 | 164.28 ± 4.07 |
+| ctransformers               |      -        |      -        | 80.67 ± 3.89  | 84.42 ± 4.57  |
+| AutoGPTQ                     |45.31 ± 45.31 | 33.70 ± 34.78 |      -        |      -        |
+| AutoAWQ                    |      -         |      -        |      -        | 116.94 ± 13.14|
+| DeepSpeed                    |      -        |81.44 ± 8.13|      -        |
+| PyTorch Lightning            | 24.85 ± 0.07 | 44.56 ± 2.89 | 10.50 ± 0.12 | 24.83 ± 0.05 |
+| Optimum Nvidia                    |110.36 ± 0.52|109.09 ± 4.26|      -        |      -        |
+| Nvidia TensorRT-LLM               |60.39 ± 0.62|101.94 ± 8.34|      -        |      -        |
 
-*(Data updated: `17th January 2024`)
+*(Data updated: `19th January 2024`)
+
+
 
 - The above benchmarking is done on A100-80GB GPU. You can find more details for other devices like CPU/Metal under [docs](docs/llama2.md) folder.
 
