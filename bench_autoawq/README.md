@@ -30,7 +30,7 @@ This will take all the default values (see in the `./bench_autoawq/bench.sh` fil
 
 ### 📊 Results of AutoAWQ
 
-Here are the results of AutoAWQ run using the following command:
+Here are the results of AutoAWQ. The metric used to benchmark is `tokens/sec` and the results are gathered by running the following command:
 
 ```
 ./bench_autoawq/bench.sh --repetitions 10 --max_tokens 100 --device cuda --prompt 'Explain what is a transformer'
