@@ -47,7 +47,7 @@ Take a first glance of Llama-2-7B Model Performance Metrics Across Different Pre
 | Optimum Nvidia                    |110.36 ± 0.52|109.09 ± 4.26|      -        |      -        |
 | Nvidia TensorRT-LLM               |60.39 ± 0.62|101.94 ± 8.34|      -        |      -        |
 
-*(Data updated: `19th January 2024`)
+*(Data updated: `22th January 2024`)
 
 
 

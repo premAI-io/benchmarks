@@ -27,7 +27,7 @@
 | Optimum Nvidia                    |110.36 ± 0.52|109.09 ± 4.26|      -        |      -        |
 | Nvidia TensorRT-LLM               |60.39 ± 0.62|101.94 ± 8.34|      -        |      -        |
 
-*(Data updated: `19th January 2024`)
+*(Data updated: `22th January 2024`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -71,7 +71,7 @@
 | exllamav2             |      -       |      -        |      -       |      -       |
 | vllm                  |      -       |      -        |      -       |      -       |
 
-*(Data updated: `19th January 2024`)
+*(Data updated: `22th January 2024`)
 
 *Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
 *Note: ExllamaV2 does not run in CPUs or Apple GPU. It requires CUDA.
