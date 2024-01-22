@@ -25,21 +25,7 @@ To get started quickly you can simply run:
 ```bash
 ./bench_autoawq/bench.sh -d cuda
 ```
-
 This will take all the default values (see in the `./bench_autoawq/bench.sh` file) and do the benchmarks.
-
-### 📊 Results of AutoAWQ
-
-Here are the results of AutoAWQ. The metric used to benchmark is `tokens/sec` and the results are gathered by running the following command:
-
-```
-./bench_autoawq/bench.sh --repetitions 10 --max_tokens 100 --device cuda --prompt 'Explain what is a transformer'
-```
-#### On GPU
-
-| Engine                       | float32      | float16       | int8          | int4          |
-|------------------------------|--------------|---------------|---------------|---------------|
-| AutoAWQ                      |      -       |      -        |      -        | 116.94 ± 13.14|
 
 
 ### 👀 Some points to note:
