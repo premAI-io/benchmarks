@@ -153,4 +153,7 @@ MODELS_DIR="${MODELS_DIR:-"./models"}"
 check_platform
 check_python
 setup
+echo "Note: While the model is 4-bit quantized, GPTQ employs a mixed quantization scheme."
+echo "This means it will be dequantized on the fly during inference at the specified precision."
+echo -e ""
 run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$LOG_FILENAME" "$MODELS_DIR"
