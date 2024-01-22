@@ -11,7 +11,7 @@ AutoAWQ is a package that is a polished implemementation of the original work [l
 You can run the AutoAWQ benchmark using the following command:
 
 ```bash
-./bench_{bench_name}/bench.sh \
+./bench_autoawq/bench.sh \
   --prompt <value> \            # Enter a prompt string
   --max_tokens <value> \        # Maximum number of tokens to output
   --repetitions <value> \       # Number of repititions to be made for the prompt.
