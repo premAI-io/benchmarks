@@ -19,10 +19,8 @@ logging.basicConfig(
 
 class LlamaAutoAWQBenchmark:
     def __init__(self, model_path: str, precision: int, device: str) -> None:
-        assert precision in ["fp16"], "For benchmarks supported precision is in FP16."
-        assert (
-            device == "cuda"
-        ), "Since it's an optimization for FP-16, CPU not supported."
+        assert precision in ["int4"], "For benchmarks supported precision is in FP16."
+        assert device == "cuda", "Device other than CUDA is not supported for autoawq."
 
         self.model_path, self.precision, self.device = (
             model_path,
@@ -99,11 +97,10 @@ if __name__ == "__main__":
     )
     report = defaultdict(lambda: defaultdict(float))
 
-    # Hardcoding precision to fp16 for AutoAWQ
-    precision = 16
+    precision = 4
 
     if args.device == "cpu":
-        logging.info("Skipping running model on fp16 on CPU, not implemented for Half")
+        logging.info("Skipping running model on int4 on CPU, not implemented for Half")
         pass
     else:
         logging.info(
@@ -120,7 +117,7 @@ if __name__ == "__main__":
             repetitions=args.repetitions,
         )
 
-        report["Llama AutoAWQ"][f"FP-{precision}"] = {
+        report["Llama AutoAWQ"][f"INT-{precision}"] = {
             "mean": np.mean(llama_autogptq_benchmark.results),
             "std": np.std(llama_autogptq_benchmark.results),
         }
