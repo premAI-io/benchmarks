@@ -25,8 +25,9 @@
 | DeepSpeed                    |      -        |81.44 ± 8.13|      -        |
 | PyTorch Lightning            | 24.85 ± 0.07 | 44.56 ± 2.89 | 10.50 ± 0.12 | 24.83 ± 0.05 |
 | Optimum Nvidia                    |110.36 ± 0.52|109.09 ± 4.26|      -        |      -        |
+| Nvidia TensorRT-LLM               |60.39 ± 0.62|101.94 ± 8.34|      -        |      -        |
 
-*(Data updated: `18th January 2024`)
+*(Data updated: `19th January 2024`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -70,7 +71,7 @@
 | exllamav2             |      -       |      -        |      -       |      -       |
 | vllm                  |      -       |      -        |      -       |      -       |
 
-*(Data updated: `18th January 2024`)
+*(Data updated: `19th January 2024`)
 
 *Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
 *Note: ExllamaV2 does not run in CPUs or Apple GPU. It requires CUDA.
@@ -80,3 +81,4 @@
 *Note: CPU/Metal is not supported right now. Support for CPU is on [developement](https://github.com/vllm-project/vllm/pull/1028). No developement for metal so far.
 *Note: Optimum Nvidia only supports CUDA right now. Also it supports float 16/32 as precision. It additionally supports FP-8 precision. We do not add this, just to keep everything same for all other candidates.
 *Note: DeepSpeed inference is not supported for Metal/CPU devices. Also, it only works for fp-16 precision.
+*Note: Nvidia TensorRT LLM only supports for CUDA.
