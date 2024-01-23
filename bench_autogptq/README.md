@@ -17,7 +17,7 @@ You can run the AutoGPTQ benchmark using the following command:
   --repetitions <value> \       # Number of repititions to be made for the prompt.
   --log_file <file_path> \      # A .log file underwhich we want to write the results.
   --device <cpu/cuda/metal> \   # The device in which we want to benchmark.
-  --models_dir <path_to_models> # The directory in which AWQ model weights are present
+  --models_dir <path_to_models> # The directory in which GPTQ model weights are present
 ```
 
 To get started quickly you can simply run:
