@@ -1,16 +1,16 @@
-# ONNX Runtime
+# TinyGrad
 
-[![GitHub Repo](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ggerganov/llama.cpp) &nbsp;
+[![GitHub Repo](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/tinygrad/tinygrad) &nbsp;
+
+TinyGrad is a minimalistic deep learning framework, very similar to [PyTorch](https://github.com/pytorch/pytorch). It's simplicity is inspired from the [micrograd](https://github.com/karpathy/micrograd) implementation by [Andrej Karpathy](https://karpathy.ai/). TinyGrad leverages uses different methods like lazy computation and kernel fusion techniques to run different operations. It supports various accelerators out of the box, including CPU, GPU etc. This benchmark implementation uses the [Llama 2 example](https://github.com/tinygrad/tinygrad/blob/master/examples/llama.py) written inside tinygrad/examples.
 
 
-[ONNX (Open Neural Network Exchange) Runtime](https://github.com/microsoft/onnxruntime) is an open-source, cross-platform runtime that enables efficient execution of neural network models trained in various frameworks, promoting interoperability and flexibility in deploying machine learning models. This benchmark implementation uses [HuggingFace Optimum](https://github.com/huggingface/optimum) which supports models running under ONNX Runtime.
+### 🚀 Running the TinyGrad Benchmark.
 
-### 🚀 Running the ONNX Runtime Benchmark.
-
-You can run the ONNX Runtime  benchmark using the following command:
+You can run the TinyGrad  benchmark using the following command:
 
 ```bash
-./bench_onnxruntime/bench.sh \
+./bench_tinygrad/bench.sh \
   --prompt <value> \            # Enter a prompt string
   --max_tokens <value> \        # Maximum number of tokens to output
   --repetitions <value> \       # Number of repititions to be made for the prompt.
@@ -22,13 +22,12 @@ You can run the ONNX Runtime  benchmark using the following command:
 To get started quickly you can simply run:
 
 ```bash
-./bench_onnxruntime/bench.sh -d cuda
+./bench_tinygrad/bench.sh -d cuda
 ```
-This will take all the default values (see in the [bench.sh](/bench_onnxruntime/bench.sh) file) and perform the benchmarks. You can find all the benchmarks results for ONNX Runtime [here](/docs/llama2.md).
+This will take all the default values (see in the [bench.sh](/bench_tinygrad/bench.sh) file) and perform the benchmarks. You can find all the benchmarks results for TinyGrad [here](/docs/llama2.md).
 
 
 ### 👀 Some points to note:
 
-1. ONNX Runtime requires HuggingFace Llama2-7B weights. And it converts those weights into ONNX format using this [setup.sh](/bench_onnxruntime/setup.sh) script. So running this benchmark would assume that you already agree to the required terms and conditions and verified to download the weights.
-2. ONNX Runtime GPU only support Float16 precision format.
-3. Running LLama 2 using ONNX Runtime in CPU/Metal is too memory intensive, so benchmarking is skipped for those.
+1. The current implementation of TinyGrad only supports Float16 for CUDA, CPU and Metal.
+2. This benchmark implementation expects the Raw Llama 2 weights from Meta AI to run LLama2 Model. So it assumes that you already accepted all the [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) before running it.
