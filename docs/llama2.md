@@ -7,20 +7,27 @@
 - CUDA Version: 11.7
 - Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cuda --prompt 'Explain what is a transformer'`
 
-**Performance Metrics:**
+**Performance Metrics:** (unit: Tokens / second)
 | Engine                       | float32      | float16       | int8          | int4          |
 |------------------------------|--------------|---------------|---------------|---------------|
 | burn                         | 13.12 ± 0.85 |      -        |      -        |      -        |
 | candle                       |      -       | 36.78 ± 2.17  |      -        |      -        |
-| llama.cpp                    |      -       |      -        | 84.48 ± 3.76  | 106.76 ± 1.29 |
+| llama.cpp                    |      -       |      -        | 38.48 ± 1.02  | 41.99 ± 2.70  |
 | ctranslate                   |      -       | 51.38 ± 16.01 | 36.12 ± 11.93 |      -        |
 | tinygrad                     |      -       | 20.32 ± 0.06  |      -        |      -        |
 | onnx                         |      -       | 54.16 ± 3.15  |      -        |      -        |
-| transformers (pytorch)       | 46.44 ± 46.44| 42.56 ± 42.56 |      -        |      -        |
-| vllm                 | 90.78 ± 1.60 | 90.54 ± 2.22  |      -        |      -        |
-| exllamav2                    |      -        |      -       | 163.41 ± 5.58 | 120.17 ± 0.73 |
+| transformers (pytorch)       | 44.28 ± 0.54| 40.32 ± 2.33 |      -        |      -        |
+| vllm                                 | 90.78 ± 1.60 | 90.54 ± 2.22  |      -        |      -        |
+| exllamav2                    |      -       |      -        | 116.91 ± 1.73 | 164.28 ± 4.07 |
+| ctransformers               |      -        |      -        | 80.67 ± 3.89  | 84.42 ± 4.57  |
+| AutoGPTQ                     |45.31 ± 45.31 | 33.70 ± 34.78 |      -        |      -        |
+| AutoAWQ                    |      -         |      -        |      -        | 116.94 ± 13.14|
+| DeepSpeed                    |      -        |81.44 ± 8.13|      -        |
+| PyTorch Lightning            | 24.85 ± 0.07 | 44.56 ± 2.89 | 10.50 ± 0.12 | 24.83 ± 0.05 |
+| Optimum Nvidia                    |110.36 ± 0.52|109.09 ± 4.26|      -        |      -        |
+| Nvidia TensorRT-LLM               |60.39 ± 0.62|101.94 ± 8.34|      -        |      -        |
 
-*(Data updated: `08th December 2023`)
+*(Data updated: `22th January 2024`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -32,7 +39,7 @@
 - CUDA Version: NA
 - Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cpu --prompt 'Explain what is a transformer'`
 
-**Performance Metrics:**
+**Performance Metrics:** (unit: Tokens / second)
 | Engine                | float32      | float16      | int8         | int4         |
 |-----------------------|--------------|--------------|--------------|--------------|
 | burn                  | 0.30 ± 0.09  |      -       |      -       |      -       |
@@ -44,12 +51,13 @@
 | ctransformers         |      -       |      -       | 13.79 ± 0.50 | 22.93 ± 0.86 |
 | transformers (pytorch)|      -       |      -       |      -       |      -       |
 | exllamav2             |      -       |      -       |      -       |      -       |
+| vllm                  |      -       |      -       |      -       |      -       |
 
 ### GPU (Metal)
 
 **Command:** `./benchmark.sh --repetitions 10 --max_tokens 100 --device metal --prompt 'Explain what is a transformer'`
 
-**Performance Metrics:**
+**Performance Metrics:** (unit: Tokens / second)
 | Engine                | float32      | float16       | int8         | int4         |
 |-----------------------|--------------|---------------|--------------|--------------|
 | burn                  |      -       |      -        |      -       |      -       |
@@ -61,8 +69,16 @@
 | ctransformers         |      -       |      -        | 21.24 ± 0.81 | 34.08 ± 4.78 |
 | transformers (pytorch)|      -       |      -        |      -       |      -       |
 | exllamav2             |      -       |      -        |      -       |      -       |
+| vllm                  |      -       |      -        |      -       |      -       |
 
-*(Data updated: `08th December 2023`)
+*(Data updated: `22th January 2024`)
 
 *Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
-*Note: ExllamaV2 does not run in only CPUs or Apple GPU. It requires CUDA.
+*Note: ExllamaV2 does not run in CPUs or Apple GPU. It requires CUDA.
+*Note: AutoGPTQ does not run in CPUs or Apple GPU, it requires CUDA to run.
+*Note: AutoAWQ is not supported devices other than GPU (only supports when CUDA is available).
+*Note: Pytorch Lightning runs out of memory in metal (out of 18 GB) so benchmark not available.
+*Note: CPU/Metal is not supported right now. Support for CPU is on [developement](https://github.com/vllm-project/vllm/pull/1028). No developement for metal so far.
+*Note: Optimum Nvidia only supports CUDA right now. Also it supports float 16/32 as precision. It additionally supports FP-8 precision. We do not add this, just to keep everything same for all other candidates.
+*Note: DeepSpeed inference is not supported for Metal/CPU devices. Also, it only works for fp-16 precision.
+*Note: Nvidia TensorRT LLM only supports for CUDA.

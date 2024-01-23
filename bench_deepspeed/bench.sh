@@ -2,7 +2,7 @@
 
 ########################################################################################################
 # Script: bench.sh
-# Description: This script runs benchmarks llama.cpp llama benchmark.
+# Description: This script runs benchmarks DeepSpeed llama benchmark.
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
@@ -57,18 +57,19 @@ check_platform() {
 }
 
 check_python() {
-    if command -v python &> /dev/null
-    then
-        echo -e "\nUsing $(python --version)."
+    if command -v python &> /dev/null; then
+        PYTHON_CMD="python"
+    elif command -v python3 &> /dev/null; then
+        PYTHON_CMD="python3"
     else
-        echo -e "\nPython does not exist."
+        echo "Python is not installed."
         exit 1
     fi
 }
 
 setup() {
     echo -e "\nSetting up with $SCRIPT_DIR/setup.sh..."
-    bash "$SCRIPT_DIR"/setup.sh "$1"
+    bash "$SCRIPT_DIR"/setup.sh
 }
 
 run_benchmarks() {
@@ -81,7 +82,7 @@ run_benchmarks() {
 
     # shellcheck disable=SC1091
     source "$SCRIPT_DIR/venv/bin/activate"
-    python "$SCRIPT_DIR"/bench.py \
+    "$PYTHON_CMD" "$SCRIPT_DIR"/bench.py \
         --prompt "$PROMPT" \
         --repetitions "$REPETITIONS" \
         --max_tokens "$MAX_TOKENS" \
@@ -90,7 +91,7 @@ run_benchmarks() {
         --device "$DEVICE"
 }
 
-# Parse command-line arguments
+
 while [ "$#" -gt 0 ]; do
     case "$1" in
         -p|--prompt)
@@ -111,12 +112,15 @@ while [ "$#" -gt 0 ]; do
                 "cuda" | "metal" | "cpu")
                     ;;
                 *)
-                    echo "Invalid value for --device. Please use 'cuda', 'gpu' or 'cpu'."
+                    echo "Invalid value for --device. Please use 'cuda', 'cpu' or 'metal'."
                     print_usage
                     ;;
             esac
             if [ "$DEVICE" == "cuda" ]; then
                 check_cuda
+            else
+                echo "Not supported for $DEVICE"
+                exit 1
             fi
             shift 2
             ;;
@@ -137,15 +141,16 @@ while [ "$#" -gt 0 ]; do
             ;;
     esac
 done
+
 # Set default values if not provided
 PROMPT="${PROMPT:-"Explain what is a transformer"}"
 REPETITIONS="${REPETITIONS:-10}"
 MAX_TOKENS="${MAX_TOKENS:-100}"
-DEVICE="${DEVICE:-'cpu'}"
+DEVICE="${DEVICE:-'cuda'}"
 LOG_FILENAME="${LOG_FILENAME:-"benchmark_$(date +'%Y%m%d%H%M%S').log"}"
 MODELS_DIR="${MODELS_DIR:-"./models"}"
 
 check_platform
 check_python
-setup "$DEVICE"
+setup
 run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$LOG_FILENAME" "$MODELS_DIR"

@@ -7,19 +7,22 @@ from typing import Optional
 
 import numpy as np
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from optimum.nvidia import AutoModelForCausalLM
+from transformers import AutoTokenizer
 
 logging.getLogger("transformers").setLevel(logging.ERROR)
 logging.basicConfig(
     stream=sys.stdout,
-    level=logging.INFO,
+    level=print,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
+# Optimum-Nvidia is meant for Nvidia GPU usage. Not any other platform is supported.
 
-class LlamaPyTorchBenchmark:
+
+class LlamaOptimumNvidiaBenchmark:
     def __init__(
-        self, model_path: str, precision: str, device: Optional[str] = "cpu"
+        self, model_path: str, precision: str, device: Optional[str] = "cuda"
     ) -> None:
         self.model_path = model_path
         self.precision = precision
@@ -27,35 +30,27 @@ class LlamaPyTorchBenchmark:
         self.precision_to_dtype_map = {
             "fp16": torch.float16,
             "fp32": torch.float32,
-            "bf16": torch.bfloat16,
         }
 
         # some of the conditions where things can not be supported
-        assert precision in ["bf16", "fp16", "fp32"], ValueError(
-            "Supported precisions are: 'bf16', fp16', 'fp32'"
+        assert precision in ["fp16", "fp32"], ValueError(
+            "Supported precisions are: fp16', 'fp32'"
         )
-        assert device in ["cpu", "cuda", "metal"], ValueError(
-            "Supported devices are: 'cpu', 'cuda', 'metal'"
-        )
+        assert device in ["cuda"], ValueError("Supported devices are: 'cuda'")
 
-        if device == "cpu" and precision != "fp32":
-            raise ValueError(
-                "When device is set to CPU, fp32 is the only supported precision."
-            )
-
-        self.device = "cuda:0" if device == "cuda" else device
-        # build the params
         self.model_args = {
-            "device_map": self.device,
             "torch_dtype": self.precision_to_dtype_map[self.precision],
         }
+        self.device = device
 
     def load_model(self):
-        """Loads the model into various formats and device."""
+        """Loads the model into various formats and device"""
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_path, **self.model_args
         )
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
+
+        # Hardcoding this for now.
+        self.tokenizer = AutoTokenizer.from_pretrained("/mnt/models/llama-2-7b-hf")
         return self
 
     def run_model(self, prompt: str, max_tokens: int) -> float:
@@ -63,18 +58,18 @@ class LlamaPyTorchBenchmark:
             self.device
         )
         start = time.time()
-        output = (
-            self.model.generate(input_ids=tokenized_input, max_new_tokens=max_tokens)
-            .detach()
-            .cpu()
-            .numpy()
-        )
+        generated = self.model.generate(
+            input_ids=tokenized_input, max_new_tokens=max_tokens
+        )[0]
         delta = time.time() - start
-        return len(output[0]) / delta
+
+        output = generated.detach().cpu().numpy()
+        decoded = self.tokenizer.decode(output[0][0], skip_special_tokens=True)
+        return len(self.tokenizer.encode(decoded)) / delta
 
     def benchmark(self, prompt: str, max_tokens: int, repetitions: int) -> None:
         for i in range(repetitions):
-            logging.info(
+            print(
                 f"Running repetition [{str(i+1).zfill(len(str(repetitions)))}/{repetitions}]"
             )
             tokens_per_second = self.run_model(prompt, max_tokens)
@@ -85,7 +80,7 @@ class LlamaPyTorchBenchmark:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="CTransformers Benchmark.")
+    parser = argparse.ArgumentParser(description="Nvidia Optimum Benchmark.")
     parser.add_argument(
         "--prompt",
         type=str,
@@ -112,18 +107,16 @@ if __name__ == "__main__":
         help="Path to the models directory.",
     )
     args = parser.parse_args()
-    logging.info(
+    print(
         f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} "
         + f"repetitions={args.repetitions} device={args.device}"
     )
     report = defaultdict(lambda: defaultdict(float))
 
-    for precision in ("fp16", "fp32") if args.device != "cpu" else ("fp32",):
-        logging.info(
-            f"Running Transformer benchmark (pytorch backend) on Llama with precision: {precision}"
-        )
-        llama_transformers_pytorch_benchmark = LlamaPyTorchBenchmark(
-            model_path=f"{args.models_dir}/llama-2-7b-hf",
+    for precision in ("fp16", "fp32"):
+        print(f"Running Optimum-Nvidia on Llama with precision: {precision}")
+        llama_transformers_pytorch_benchmark = LlamaOptimumNvidiaBenchmark(
+            model_path=args.models_dir,
             device=args.device,
             precision=precision,
         ).load_model()
@@ -131,15 +124,15 @@ if __name__ == "__main__":
             max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
         )
 
-        report["llama_transformers_pytorch"][precision] = {
+        report["llama_optimum_nvidia"][precision] = {
             "mean": np.mean(llama_transformers_pytorch_benchmark.results),
             "std": np.std(llama_transformers_pytorch_benchmark.results),
         }
-    logging.info("Benchmark Report")
+    print("Benchmark Report")
     with open(args.log_file, "a") as file:
         for framework, quantizations in report.items():
             for quantization, stats in quantizations.items():
-                logging.info(
+                print(
                     f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}"
                 )
                 print(

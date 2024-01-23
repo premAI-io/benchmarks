@@ -2,7 +2,7 @@
 
 ########################################################################################################
 # Script: bench.sh
-# Description: This script runs benchmarks llama.cpp llama benchmark.
+# Description: This script runs benchmarks TensorRT Llama benchmark.
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
@@ -31,6 +31,7 @@ print_usage() {
     echo "  -h, --help          Show this help message"
     exit 1
 }
+
 
 check_cuda() {
     if command -v nvcc &> /dev/null
@@ -68,10 +69,11 @@ check_python() {
 
 setup() {
     echo -e "\nSetting up with $SCRIPT_DIR/setup.sh..."
-    bash "$SCRIPT_DIR"/setup.sh "$1"
+    bash "$SCRIPT_DIR"/setup.sh
 }
 
 run_benchmarks() {
+    # this will change
     local PROMPT="$1"
     local REPETITIONS="$2"
     local MAX_TOKENS="$3"
@@ -80,7 +82,6 @@ run_benchmarks() {
     local MODELS_DIR="$6"
 
     # shellcheck disable=SC1091
-    source "$SCRIPT_DIR/venv/bin/activate"
     python "$SCRIPT_DIR"/bench.py \
         --prompt "$PROMPT" \
         --repetitions "$REPETITIONS" \
@@ -117,6 +118,9 @@ while [ "$#" -gt 0 ]; do
             esac
             if [ "$DEVICE" == "cuda" ]; then
                 check_cuda
+            else
+                echo "Not supported for $DEVICE"
+                exit 1
             fi
             shift 2
             ;;
@@ -143,9 +147,28 @@ REPETITIONS="${REPETITIONS:-10}"
 MAX_TOKENS="${MAX_TOKENS:-100}"
 DEVICE="${DEVICE:-'cpu'}"
 LOG_FILENAME="${LOG_FILENAME:-"benchmark_$(date +'%Y%m%d%H%M%S').log"}"
-MODELS_DIR="${MODELS_DIR:-"./models"}"
+MODELS_DIR="${MODELS_DIR:-"/mnt/models"}"
 
 check_platform
 check_python
-setup "$DEVICE"
-run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$LOG_FILENAME" "$MODELS_DIR"
+setup
+
+docker run \
+    --gpus all \
+    --ipc=host \
+    --ulimit memlock=-1 \
+    --ulimit stack=67108864 \
+    -e PYTHONUNBUFFERED=1 \
+    -v "$(pwd)/models:/mnt/models" \
+    -v "$SCRIPT_DIR:/mnt/scripts" \
+    -v "$SCRIPT_DIR"/TensorRT-LLM:/code/tensorrt_llm \
+    --env "CCACHE_DIR=/code/tensorrt_llm/cpp/.ccache" \
+    --env "CCACHE_BASEDIR=/code/tensorrt_llm" \
+    tensorrt_llm/release:latest \
+    python3 -u "/mnt/scripts/bench.py" \
+        --prompt "$PROMPT" \
+        --repetitions "$REPETITIONS" \
+        --max_tokens "$MAX_TOKENS" \
+        --log_file "$LOG_FILENAME" \
+        --models_dir "$MODELS_DIR" \
+        --device "$DEVICE"

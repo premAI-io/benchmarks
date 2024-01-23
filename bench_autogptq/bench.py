@@ -3,13 +3,12 @@ import logging
 import sys
 import time
 from collections import defaultdict
-from typing import Optional
 
 import numpy as np
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, GPTQConfig
 
-logging.getLogger("transformers").setLevel(logging.ERROR)
+logging.getLogger("auto-gptq").setLevel(logging.ERROR)
 logging.basicConfig(
     stream=sys.stdout,
     level=logging.INFO,
@@ -17,43 +16,30 @@ logging.basicConfig(
 )
 
 
-class LlamaPyTorchBenchmark:
-    def __init__(
-        self, model_path: str, precision: str, device: Optional[str] = "cpu"
-    ) -> None:
-        self.model_path = model_path
-        self.precision = precision
+class LlamaAutoGPTQBenchmark:
+    def __init__(self, model_path: str, precision: int, device: str) -> None:
+        assert precision in [
+            "fp16",
+            "fp32",
+        ], "For benchmarks supported precision are Fp-16 and FP-32."
+        self.model_path, self.precision, self.device = (
+            model_path,
+            precision,
+            "cuda:0" if device == "cuda" else device,
+        )
+        self.precision_map = {"fp16": torch.float16, "fp32": torch.float32}
         self.results = []
-        self.precision_to_dtype_map = {
-            "fp16": torch.float16,
-            "fp32": torch.float32,
-            "bf16": torch.bfloat16,
-        }
-
-        # some of the conditions where things can not be supported
-        assert precision in ["bf16", "fp16", "fp32"], ValueError(
-            "Supported precisions are: 'bf16', fp16', 'fp32'"
-        )
-        assert device in ["cpu", "cuda", "metal"], ValueError(
-            "Supported devices are: 'cpu', 'cuda', 'metal'"
-        )
-
-        if device == "cpu" and precision != "fp32":
-            raise ValueError(
-                "When device is set to CPU, fp32 is the only supported precision."
-            )
-
-        self.device = "cuda:0" if device == "cuda" else device
-        # build the params
-        self.model_args = {
-            "device_map": self.device,
-            "torch_dtype": self.precision_to_dtype_map[self.precision],
-        }
 
     def load_model(self):
-        """Loads the model into various formats and device."""
+        """Loads the model in the required precision."""
+        quantization_config = GPTQConfig(
+            bits=4, group_size=128, desc_act=False, use_exllama=False
+        )
         self.model = AutoModelForCausalLM.from_pretrained(
-            self.model_path, **self.model_args
+            self.model_path,
+            quantization_config=quantization_config,
+            torch_dtype=self.precision_map[self.precision],
+            device_map=self.device,
         )
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
         return self
@@ -85,7 +71,7 @@ class LlamaPyTorchBenchmark:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="CTransformers Benchmark.")
+    parser = argparse.ArgumentParser(description="AutoGPTQ Benchmark.")
     parser.add_argument(
         "--prompt",
         type=str,
@@ -118,22 +104,30 @@ if __name__ == "__main__":
     )
     report = defaultdict(lambda: defaultdict(float))
 
-    for precision in ("fp16", "fp32") if args.device != "cpu" else ("fp32",):
-        logging.info(
-            f"Running Transformer benchmark (pytorch backend) on Llama with precision: {precision}"
-        )
-        llama_transformers_pytorch_benchmark = LlamaPyTorchBenchmark(
-            model_path=f"{args.models_dir}/llama-2-7b-hf",
-            device=args.device,
-            precision=precision,
-        ).load_model()
-        llama_transformers_pytorch_benchmark.benchmark(
-            max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
-        )
+    for precision in (16, 32):
+        if args.device == "cpu" and precision == 16:
+            logging.info(
+                "Skipping running model on fp16 on CPU, not implemented for Half"
+            )
+            continue
+        else:
+            logging.info(
+                f"Running AutoGPTQ benchmark on Llama with {precision} bit precision"
+            )
+            llama_autogptq_benchmark = LlamaAutoGPTQBenchmark(
+                model_path=f"{args.models_dir}/llama-2-7b-autogptq",
+                device=args.device,
+                precision=f"fp{precision}",
+            ).load_model()
+            llama_autogptq_benchmark.benchmark(
+                max_tokens=args.max_tokens,
+                prompt=args.prompt,
+                repetitions=args.repetitions,
+            )
 
-        report["llama_transformers_pytorch"][precision] = {
-            "mean": np.mean(llama_transformers_pytorch_benchmark.results),
-            "std": np.std(llama_transformers_pytorch_benchmark.results),
+        report["Llama AutoGPTQ"][f"FP-{precision}"] = {
+            "mean": np.mean(llama_autogptq_benchmark.results),
+            "std": np.std(llama_autogptq_benchmark.results),
         }
     logging.info("Benchmark Report")
     with open(args.log_file, "a") as file:
