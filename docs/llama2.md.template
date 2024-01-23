@@ -74,7 +74,6 @@
 *(Data updated: `<LAST_UPDATE>`)
 
 *Note: Although benchmarking for pytorch transformers on mac is possible. But, we are not doing it, since it is very much time taking, and so makes it very less significant.
-*Note: ExllamaV2 does not run in CPUs or Apple GPU. It requires CUDA.
 *Note: AutoGPTQ does not run in CPUs or Apple GPU, it requires CUDA to run.
 *Note: AutoAWQ is not supported devices other than GPU (only supports when CUDA is available).
 *Note: Pytorch Lightning runs out of memory in metal (out of 18 GB) so benchmark not available.
