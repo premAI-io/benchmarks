@@ -2,7 +2,7 @@
 
 [![GitHub Repo](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Gadersd/llama2-burn) &nbsp;
 
-We use [Llama2-Burn project](https://github.com/Gadersd/llama2-burn), which provides a port pf the Llama2 model to [Burn](https://github.com/tracel-ai/burn). Burn is the DeepLearning Framework for Rust, which provides similar concepts and interfaces like PyTorch.
+We use [Llama2-Burn project](https://github.com/Gadersd/llama2-burn), which provides a port of the Llama2 model to [Burn](https://github.com/tracel-ai/burn). Burn is the DeepLearning Framework for Rust, which provides similar concepts and interfaces like PyTorch.
 
 
 ### 🚀 Running the Burn Benchmark.
