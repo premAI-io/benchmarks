@@ -29,5 +29,5 @@ This will take all the default values (see in the [bench.sh](/bench_candle/bench
 
 ### 👀 Some points to note:
 
-1. Candle does not support Float32 from the latest implementation. This imlementation of Candle Llama2 does not support quantized weights of int8/4 precisions.
+1. Candle does not support Float32 from the latest implementation. This implementation of Candle Llama2 does not support quantized weights of int8/4 precisions.
 2. Candle does not have support for Metal devices.
