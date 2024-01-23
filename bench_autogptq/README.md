@@ -6,7 +6,7 @@
 
 [AutoGPTQ Library](https://github.com/AutoGPTQ/AutoGPTQ) implements the [GPTQ quantization method](https://arxiv.org/abs/2210.17323). This is a point-wise layerwise quantization algorithm, where it tries to approximate the floating point parameters of each weight matrix into a quantized integers such that the error between the output from the actual float weights and the quantized weight is minimum. This quantization process relies heavily on some input samples to evaluate and enhance the quality of the quantization, hence it comes under the one-shot weight quantization method.
 
-### 🚀 Running the AutoAWQ Benchmark.
+### 🚀 Running the AutoGPTQ Benchmark.
 
 You can run the AutoAWQ benchmark using the following command:
 
