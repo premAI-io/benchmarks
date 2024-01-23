@@ -1,4 +1,4 @@
-# AutoAWQ
+# AutoGPTQ
 
 [![GitHub Repo](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AutoGPTQ/AutoGPTQ) &nbsp;
 [![ArXiv](https://img.shields.io/badge/arXiv-%230170FE.svg?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2210.17323)
