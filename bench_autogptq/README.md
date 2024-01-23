@@ -8,7 +8,7 @@
 
 ### 🚀 Running the AutoGPTQ Benchmark.
 
-You can run the AutoAWQ benchmark using the following command:
+You can run the AutoGPTQ benchmark using the following command:
 
 ```bash
 ./bench_autogptq/bench.sh \
