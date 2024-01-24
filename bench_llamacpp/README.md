@@ -2,7 +2,7 @@
 
 [![GitHub Repo](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ggerganov/llama.cpp) &nbsp;
 
-[Llama.cpp](https://github.com/ggerganov/llama.cpp) is a port of Llama 2 model written in C++. Right now it supports [different popular](https://github.com/ggerganov/llama.cpp?tab=readme-ov-file#description) LLMs. Llama.cpp supports LLMs under various quantizations. For this benchmark implementation, we are only running it under 4 and 8 bit quantized versions. Please note: This benchmark implementation uses [llama-cpp-python](https://github.com/abetlen/llama-cpp-python), which is the python binding for LLama.cpp library.
+[Llama.cpp](https://github.com/ggerganov/llama.cpp) initially started as a port for Llama 2 model written in C++. Right now it supports [different popular](https://github.com/ggerganov/llama.cpp?tab=readme-ov-file#description) LLMs. Llama.cpp supports LLMs under various quantizations. For this benchmark implementation, we are only running it under 4 and 8 bit quantized versions. Please note: This benchmark implementation uses [llama-cpp-python](https://github.com/abetlen/llama-cpp-python), which is the python binding for LLama.cpp library.
 
 ### 🚀 Running the Llama.cpp Benchmark.
 
@@ -29,3 +29,4 @@ This will take all the default values (see in the [bench.sh](/bench_llamacpp/ben
 ### 👀 Some points to note:
 
 1. This implementation uses [4-bit](https://huggingface.co/TheBloke/Llama-2-7B-GGUF/blob/main/llama-2-7b.Q4_0.gguf) and [8-bit](https://huggingface.co/TheBloke/Llama-2-7B-GGUF/blob/main/llama-2-7b.Q8_0.gguf) quantized versions of the Llama2 7B model.
+2. You can not specify GPU device, rather you have to specify the number of [GPU Layers](https://github.com/abetlen/llama-cpp-python?tab=readme-ov-file#high-level-api).
