@@ -19,7 +19,7 @@ logging.basicConfig(
 
 class LlamaAutoAWQBenchmark:
     def __init__(self, model_path: str, precision: int, device: str) -> None:
-        assert precision in ["int4"], "For benchmarks supported precision is in FP16."
+        assert precision in ["int4, int8"], "Only INT4/8 is supported for AutoAWQ."
         assert device == "cuda", "Device other than CUDA is not supported for autoawq."
 
         self.model_path, self.precision, self.device = (
