@@ -5,7 +5,7 @@
 **Environment:**
 - Model: LLAMA-2-7B
 - CUDA Version: 11.7
-- Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cuda --prompt 'Explain what is a transformer'`
+- Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cuda --prompt 'Write an essay about the transformer model architecture'`
 
 **Performance Metrics:** (unit: Tokens / second)
 | Engine                       | float32      | float16       | int8          | int4          |
@@ -37,7 +37,7 @@
 **Environment:**
 - Model: LLAMA-2-7B
 - CUDA Version: NA
-- Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cpu --prompt 'Explain what is a transformer'`
+- Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cpu --prompt 'Write an essay about the transformer model architecture'`
 
 **Performance Metrics:** (unit: Tokens / second)
 | Engine                | float32      | float16      | int8         | int4         |
@@ -55,7 +55,7 @@
 
 ### GPU (Metal)
 
-**Command:** `./benchmark.sh --repetitions 10 --max_tokens 100 --device metal --prompt 'Explain what is a transformer'`
+**Command:** `./benchmark.sh --repetitions 10 --max_tokens 512 --device metal --prompt 'Write an essay about the transformer model architecture'`
 
 **Performance Metrics:** (unit: Tokens / second)
 | Engine                | float32      | float16       | int8         | int4         |
