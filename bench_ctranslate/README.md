@@ -6,7 +6,7 @@
 
 ### 🚀 Running the ctranslate2 Benchmark.
 
-You can run the ctranslate2 benchmark using the following command:
+Running this code requires Docker. So make sure you have [Docker installed](https://docs.docker.com/engine/install/). You can run the ctranslate2 benchmark using the following command:
 
 ```bash
 ./bench_ctranslate/bench.sh \
@@ -30,3 +30,4 @@ This will take all the default values (see in the [bench.sh](/bench_ctranslate/b
 
 1. CTranslate2 does not support INT-4 precision. See this [issue](https://github.com/OpenNMT/CTranslate2/issues/1104)
 2. This implementation uses Llama2 weights from HuggingFace. So running this benchmark will assume that all the [terms and conditions](https://huggingface.co/meta-llama/Llama-2-7b) are met from user's side.
+3. CTranslate2 does not support FP16/32 for CPU and it does not support any precision for Metal device.
