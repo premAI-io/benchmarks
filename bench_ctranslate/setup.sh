@@ -8,45 +8,71 @@
 
 set -euo pipefail
 
-check_python() {
-    if command -v python &> /dev/null; then
-        PYTHON_CMD="python"
-    elif command -v python3 &> /dev/null; then
-        PYTHON_CMD="python3"
+CURRENT_DIR="$(pwd)"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+check_docker() {
+    if command -v docker &> /dev/null; then
+        return 0
     else
-        echo "Python is not installed."
+        return 1
+    fi
+}
+
+build_docker_image () {
+    if docker image inspect prem-ctranslate2:latest &> /dev/null; then
+        echo "Image prem-ctranslate2 already exists"
+    else
+        docker build -t prem-ctranslate2 "$SCRIPT_DIR/."
+    fi
+}
+
+build_and_compile_model () {
+    set -e  # Exit on error
+    echo "Running and building the model inside Docker..."
+
+    local model_build_path_32="$CURRENT_DIR/models/llama-2-7b-ctranslate2-fp32"
+    local model_build_path_16="$CURRENT_DIR/models/llama-2-7b-ctranslate2-fp16"
+    local model_build_path_08="$CURRENT_DIR/models/llama-2-7b-ctranslate2-int8"
+
+    if docker image inspect prem-ctranslate2:latest &> /dev/null; then
+        if [ ! -d "$model_build_path_32" ]; then
+            docker run -it --rm \
+                --gpus=all \
+                -v "$CURRENT_DIR"/models:/models \
+                prem-ctranslate2:latest \
+                ct2-transformers-converter --model /models/llama-2-7b-hf --quantization float32 --output_dir /models/llama-2-7b-ctranslate2-fp32 --copy_files tokenizer.model --force
+            echo "Model build for FP32 ran successfully ... "
+        fi
+
+        if [ ! -d "$model_build_path_16" ]; then
+            docker run -it --rm \
+                --gpus=all \
+                -v "$CURRENT_DIR"/models:/models \
+                prem-ctranslate2:latest \
+                ct2-transformers-converter --model /models/llama-2-7b-hf --quantization float16 --output_dir /models/llama-2-7b-ctranslate2-fp16 --copy_files tokenizer.model --force
+            echo "Model build for FP32 ran successfully ... "
+        fi
+
+        if [ ! -d "$model_build_path_08" ]; then
+            docker run -it --rm \
+                --gpus=all \
+                -v "$CURRENT_DIR"/models:/models \
+                prem-ctranslate2:latest \
+                ct2-transformers-converter --model /models/llama-2-7b-hf --quantization int8_float16 --output_dir /models/llama-2-7b-ctranslate2-int8 --copy_files tokenizer.model --force
+            echo "Model build for FP32 ran successfully ... "
+        fi
+    else
+        echo "Image does not exist locally. Exiting ... "
         exit 1
     fi
 }
 
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <models_folder>"
+
+if check_docker; then
+    build_docker_image
+    build_and_compile_model
+else
+    echo "Docker is not installed or not in the PATH"
     exit 1
-fi
-
-# Define directory paths
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-VENV_DIR="$SCRIPT_DIR/venv"
-MODELS_FOLDER="$1"
-LLAMA_HF_MODEL_DIR="$MODELS_FOLDER/llama-2-7b-hf"
-
-check_python
-
-if [ ! -d "$VENV_DIR" ]; then
-    "$PYTHON_CMD" -m venv "$VENV_DIR"
-    echo "Virtual environment '$VENV_DIR' created."
-    # shellcheck disable=SC1091
-    source "$VENV_DIR"/bin/activate
-    pip install --upgrade pip > /dev/null
-    pip install -r "$SCRIPT_DIR"/requirements.txt > /dev/null
-else
-    # shellcheck disable=SC1091
-    source "$VENV_DIR"/bin/activate
-fi
-
-if [ ! -d "$LLAMA_HF_MODEL_DIR-float16" ]; then
-    echo "Creating llama-2-7b-hf-float16 model..."
-    ct2-transformers-converter --model "$LLAMA_HF_MODEL_DIR/" --quantization float16 --output_dir "$LLAMA_HF_MODEL_DIR-float16" --copy_files tokenizer.model
-else
-    echo "Model llama-2-7b-hf-float16 already exists!"
 fi
