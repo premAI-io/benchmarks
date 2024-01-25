@@ -25,7 +25,7 @@ print_usage() {
     echo "OPTIONS:"
     echo "  -p, --prompt        Prompt for benchmarks (default: 'Write an essay about the transformer model architecture')"
     echo "  -r, --repetitions   Number of repetitions for benchmarks (default: 10)"
-    echo "  -m, --max_tokens    Maximum number of tokens for benchmarks (default: 200)"
+    echo "  -m, --max_tokens    Maximum number of tokens for benchmarks (default: 512)"
     echo "  -d, --device        Device for benchmarks (possible values: 'metal', 'cuda', and 'cpu', default: 'cuda')"
     echo "  -lf, --log_file     Logging file name."
     echo "  -md, --models_dir   Models directory."
