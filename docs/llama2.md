@@ -5,7 +5,7 @@
 **Environment:**
 - Model: LLAMA-2-7B
 - CUDA Version: 11.7
-- Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cuda --prompt 'Explain what is a transformer'`
+- Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cuda --prompt 'Write an essay about the transformer model architecture'`
 
 **Performance Metrics:** (unit: Tokens / second)
 | Engine                       | float32      | float16       | int8          | int4          |
@@ -19,7 +19,7 @@
 | transformers (pytorch)       | 44.28 ± 0.54| 40.32 ± 2.33 |      -        |      -        |
 | vllm                                 | 90.78 ± 1.60 | 90.54 ± 2.22  |      -        |      -        |
 | exllamav2                    |      -       |      -        | 116.91 ± 1.73 | 164.28 ± 4.07 |
-| ctransformers               |      -        |      -        | 80.67 ± 3.89  | 84.42 ± 4.57  |
+| ctransformers               |      -        |      -        | 76.75 ± 10.36  | 84.26 ± 5.79  |
 | AutoGPTQ                     |45.31 ± 45.31 | 33.70 ± 34.78 |      -        |      -        |
 | AutoAWQ                    |      -         |      -        |      -        | 116.94 ± 13.14|
 | DeepSpeed                    |      -        |81.44 ± 8.13|      -        |
@@ -27,7 +27,7 @@
 | Optimum Nvidia                    |110.36 ± 0.52|109.09 ± 4.26|      -        |      -        |
 | Nvidia TensorRT-LLM               |60.39 ± 0.62|101.94 ± 8.34|      -        |      -        |
 
-*(Data updated: `22th January 2024`)
+*(Data updated: `25th January 2024`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -37,7 +37,7 @@
 **Environment:**
 - Model: LLAMA-2-7B
 - CUDA Version: NA
-- Command: `./benchmark.sh --repetitions 10 --max_tokens 100 --device cpu --prompt 'Explain what is a transformer'`
+- Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cpu --prompt 'Write an essay about the transformer model architecture'`
 
 **Performance Metrics:** (unit: Tokens / second)
 | Engine                | float32      | float16      | int8         | int4         |
@@ -48,14 +48,14 @@
 | ctranslate            |      -       |      -       | 2.11 ± 0.73  |      -       |
 | tinygrad              |      -       | 4.21 ± 0.38  |      -       |      -       |
 | onnx                  |      -       |      -       |      -       |      -       |
-| ctransformers         |      -       |      -       | 13.79 ± 0.50 | 22.93 ± 0.86 |
+| ctransformers         |      -       |      -       | 13.50 ± 0.48 | 20.57 ± 2.50 |
 | transformers (pytorch)|      -       |      -       |      -       |      -       |
 | exllamav2             |      -       |      -       |      -       |      -       |
 | vllm                  |      -       |      -       |      -       |      -       |
 
 ### GPU (Metal)
 
-**Command:** `./benchmark.sh --repetitions 10 --max_tokens 100 --device metal --prompt 'Explain what is a transformer'`
+**Command:** `./benchmark.sh --repetitions 10 --max_tokens 512 --device metal --prompt 'Write an essay about the transformer model architecture'`
 
 **Performance Metrics:** (unit: Tokens / second)
 | Engine                | float32      | float16       | int8         | int4         |
@@ -66,9 +66,9 @@
 | ctranslate            |      -       |      -        |      -       |      -       |
 | tinygrad              |      -       | 29.78 ± 1.18  |      -       |      -       |
 | onnx                  |      -       |      -        |      -       |      -       |
-| ctransformers         |      -       |      -        | 21.24 ± 0.81 | 34.08 ± 4.78 |
+| ctransformers         |      -       |      -        | 20.75 ± 0.36 | 34.04 ± 2.11 |
 | transformers (pytorch)|      -       |      -        |      -       |      -       |
 | exllamav2             |      -       |      -        |      -       |      -       |
 | vllm                  |      -       |      -        |      -       |      -       |
 
-*(Data updated: `22th January 2024`)
+*(Data updated: `25th January 2024`)
