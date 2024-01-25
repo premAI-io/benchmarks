@@ -8,6 +8,17 @@
 
 set -euo pipefail
 
+check_python() {
+    if command -v python &> /dev/null; then
+        PYTHON_CMD="python"
+    elif command -v python3 &> /dev/null; then
+        PYTHON_CMD="python3"
+    else
+        echo "Python is not installed."
+        exit 1
+    fi
+}
+
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <models_folder>"
     exit 1
@@ -19,8 +30,10 @@ VENV_DIR="$SCRIPT_DIR/venv"
 MODELS_FOLDER="$1"
 LLAMA_HF_MODEL_DIR="$MODELS_FOLDER/llama-2-7b-hf"
 
+check_python
+
 if [ ! -d "$VENV_DIR" ]; then
-    python -m venv "$VENV_DIR"
+    "$PYTHON_CMD" -m venv "$VENV_DIR"
     echo "Virtual environment '$VENV_DIR' created."
     # shellcheck disable=SC1091
     source "$VENV_DIR"/bin/activate
