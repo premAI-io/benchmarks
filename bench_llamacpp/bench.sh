@@ -6,13 +6,13 @@
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
-#  -p, --prompt        Prompt for benchmarks (default: 'Write an essay about the transformer model architecture')"
-#  -r, --repetitions   Number of repetitions for benchmarks (default: 10)"
-#  -m, --max_tokens    Maximum number of tokens for benchmarks (default: 200)"
-#  -d, --device        Device for benchmarks (possible values: 'metal', 'cuda', and 'cpu', default: 'cuda')"
-#  -lf, --log_file     Logging file name."
-#  -md, --models_dir   Models directory."
-#  -h, --help          Show this help message"
+#  -p, --prompt        Prompt for benchmarks (default: 'Write an essay about the transformer model architecture'
+#  -r, --repetitions   Number of repetitions for benchmarks (default: 10)
+#  -m, --max_tokens    Maximum number of tokens for benchmarks (default: 512)
+#  -d, --device        Device for benchmarks (possible values: 'metal', 'cuda', and 'cpu', default: 'cuda')
+#  -lf, --log_file     Logging file name.
+#  -md, --models_dir   Models directory.
+#  -h, --help          Show this help message
 ########################################################################################################
 
 set -euo pipefail
