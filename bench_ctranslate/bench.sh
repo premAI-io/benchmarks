@@ -8,7 +8,7 @@
 # OPTIONS:
 #   -p, --prompt      Prompt for benchmarks (default: 'Write an essay about the transformer model architecture')
 #   -r, --repetitions Number of repetitions for benchmarks (default: 10)
-#   -m, --max_tokens  Maximum number of tokens for benchmarks (default: 200)
+#   -m, --max_tokens  Maximum number of tokens for benchmarks (default: 512)
 #   -d, --device      Device for benchmarks (possible values: 'metal', 'cuda', and 'cpu', default: 'cuda')
 #   -lf, --log_file   Logging file name.
 #   -md, --models_dir Models directory.
@@ -16,8 +16,6 @@
 ########################################################################################################
 
 set -euo pipefail
-
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 CURRENT_DIR="$(pwd)"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -27,7 +25,7 @@ print_usage() {
     echo "OPTIONS:"
     echo "  -p, --prompt        Prompt for benchmarks (default: 'Write an essay about the transformer model architecture')"
     echo "  -r, --repetitions   Number of repetitions for benchmarks (default: 10)"
-    echo "  -m, --max_tokens    Maximum number of tokens for benchmarks (default: 200)"
+    echo "  -m, --max_tokens    Maximum number of tokens for benchmarks (default: 512)"
     echo "  -d, --device        Device for benchmarks (possible values: 'metal', 'cuda', and 'cpu', default: 'cuda')"
     echo "  -lf, --log_file     Logging file name."
     echo "  -md, --models_dir   Models directory."
@@ -146,10 +144,24 @@ PROMPT="${PROMPT:-"Write an essay about the transformer model architecture"}"
 REPETITIONS="${REPETITIONS:-10}"
 MAX_TOKENS="${MAX_TOKENS:-512}"
 DEVICE="${DEVICE:-'cuda'}"
-LOG_FILENAME="${LOG_FILENAME:-"$LOGS_FOLDER/benchmark_ctranslate_$(date +'%Y%m%d%H%M%S').log"}"
-MODELS_DIR="${MODELS_DIR:-"./models"}"
+LOG_FILENAME="${LOG_FILENAME:-"/mnt/Logs/benchmark_ctranslate_$(date +'%Y%m%d%H%M%S').log"}"
+MODELS_DIR="${MODELS_DIR:-"/mnt/models"}"
 
 check_platform
 check_python
 setup "$MODELS_DIR"
-run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$LOG_FILENAME" "$MODELS_DIR"
+
+docker run -it \
+    --gpus all \
+    -e PYTHONUNBUFFERED=1 \
+    -v "$(pwd)/models:/mnt/models" \
+    -v "$SCRIPT_DIR:/mnt/scripts" \
+    -v "$LOGS_FOLDER:/mnt/Logs" \
+    prem-ctranslate2:latest \
+    python3 -u "/mnt/scripts/bench.py" \
+        --prompt "$PROMPT" \
+        --repetitions "$REPETITIONS" \
+        --max_tokens "$MAX_TOKENS" \
+        --log_file "$LOG_FILENAME" \
+        --models_dir "$MODELS_DIR" \
+        --device "$DEVICE"
