@@ -8,12 +8,13 @@
 - Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cuda --prompt 'Write an essay about the transformer model architecture'`
 
 **Performance Metrics:** (unit: Tokens / second)
+
 | Engine                       | float32      | float16        | int8          | int4          |
 |------------------------------|--------------|----------------|---------------|---------------|
 | burn                         | 13.12 ± 0.85 |      -         |      -        |      -        |
 | candle                       |      -       | 36.78 ± 2.17   |      -        |      -        |
 | llama.cpp                    |      -       |      -         | 79.15 ± 1.20  | 100.90 ± 1.46 |
-| ctranslate                   |      -       | 51.38 ± 16.01  | 36.12 ± 11.93 |      -        |
+| ctranslate                   | 35.23 ± 4.01 | 55.72 ± 16.66  | 35.73 ± 10.87 |      -        |
 | tinygrad                     |      -       | 20.32 ± 0.06   |      -        |      -        |
 | onnx                         |      -       | 54.16 ± 3.15   |      -        |      -        |
 | transformers (pytorch)       | 43.79 ± 0.61 | 46.39 ± 0.28   | 6.98 ± 0.05   | 21.72 ± 0.11  |
@@ -45,7 +46,7 @@
 | burn                  | 0.30 ± 0.09  |      -       |      -       |      -       |
 | candle                |      -       | 3.43 ± 0.02  |      -       |      -       |
 | llama.cpp             |      -       |      -       | 13.24 ± 0.62 | 21.43 ± 0.47 |
-| ctranslate            |      -       |      -       | 2.11 ± 0.73  |      -       |
+| ctranslate            |      -       |      -       | 1.87 ± 0.14  |      -       |
 | tinygrad              |      -       | 4.21 ± 0.38  |      -       |      -       |
 | onnx                  |      -       |      -       |      -       |      -       |
 | ctransformers         |      -       |      -       | 13.50 ± 0.48 | 20.57 ± 2.50 |
