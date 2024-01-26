@@ -129,10 +129,11 @@ if __name__ == "__main__":
     )
     report = defaultdict(lambda: defaultdict(float))
     compute_types = get_compute_types(args.device)
-    for compute_type in compute_types.intersection({"float16", "int8"}):
+
+    for compute_type in compute_types.intersection({"float32", "float16", "int8"}):
         logging.info(f"Running ctranslate benchmark with {compute_type}")
         ctranslate_bench = CTranslateBenchmark(
-            f"{args.models_dir}/llama-2-7b-hf-float16",
+            f"{args.models_dir}/llama-2-7b-ctranslate2-{compute_type}",
             device=args.device,
             compute_type=compute_type,
         ).load_model()
