@@ -32,14 +32,14 @@ Take a first glance of Llama-2-7B Model Performance Metrics Across Different Pre
 |------------------------------|--------------|---------------|---------------|---------------|
 | burn                         | 13.12 ± 0.85 |      -        |      -        |      -        |
 | candle                       |      -       | 36.78 ± 2.17  |      -        |      -        |
-| llama.cpp                    |      -       |      -        | 38.48 ± 1.02  | 41.99 ± 2.70  |
+| llama.cpp                    |      -       |      -        | 79.15 ± 1.20  | 100.90 ± 1.46  |
 | ctranslate                   |      -       | 51.38 ± 16.01 | 36.12 ± 11.93 |      -        |
 | tinygrad                     |      -       | 20.32 ± 0.06  |      -        |      -        |
 | onnx                         |      -       | 54.16 ± 3.15  |      -        |      -        |
-| transformers (pytorch)       | 44.28 ± 0.54| 40.32 ± 2.33 |      -        |      -        |
+| transformers (pytorch)       | 43.79 ± 0.61 | 46.39 ± 0.28  | 6.98 ± 0.05   | 21.72 ± 0.11  |
 | vllm                                 | 90.78 ± 1.60 | 90.54 ± 2.22  |      -        |      -        |
 | exllamav2                    |      -       |      -        | 116.91 ± 1.73 | 164.28 ± 4.07 |
-| ctransformers               |      -        |      -        | 80.67 ± 3.89  | 84.42 ± 4.57  |
+| ctransformers               |      -        |      -        | 76.75 ± 10.36  | 84.26 ± 5.79  |
 | AutoGPTQ                     |45.31 ± 45.31 | 33.70 ± 34.78 |      -        |      -        |
 | AutoAWQ                    |      -         |      -        |      -        | 116.94 ± 13.14|
 | DeepSpeed                    |      -        |81.44 ± 8.13|      -        |
@@ -47,7 +47,7 @@ Take a first glance of Llama-2-7B Model Performance Metrics Across Different Pre
 | Optimum Nvidia                    |110.36 ± 0.52|109.09 ± 4.26|      -        |      -        |
 | Nvidia TensorRT-LLM               |60.39 ± 0.62|101.94 ± 8.34|      -        |      -        |
 
-*(Data updated: `22th January 2024`)
+*(Data updated: `25th January 2024`)
 
 
 
