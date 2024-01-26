@@ -4,7 +4,7 @@
 [![ArXiv](https://img.shields.io/badge/arXiv-%230170FE.svg?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2306.00978)
 
 
-[AutoAWQ](https://github.com/casper-hansen/AutoAWQ) is a package that is a polished implemementation of the original work [llm-awq](https://github.com/mit-han-lab/llm-awq) from MIT. AWQ or Activation Aware Quantization is a quantization method which supports 4-bit quantization. It massively increases the inference throughput and decreases the memory requirement of the model at the same time. (For example, According to this [reference](https://huggingface.co/TheBloke/Llama-2-70B-Chat-AWQ), Llama2 70B requires 2 x 80 GB but with AutoAWQ it can be run on 1 x 48 GB GPU). You can learn more about AWQ on the research paper and the github implementations.
+[AutoAWQ](https://github.com/casper-hansen/AutoAWQ) is a package that is a polished implemementation of the original work [llm-awq](https://github.com/mit-han-lab/llm-awq) from MIT. AWQ or Activation Aware Quantization is a quantization method which supports 4-bit quantization. It massively increases the inference throughput and decreases the memory requirement of the model at the same time. (For example, according to this [reference](https://huggingface.co/TheBloke/Llama-2-70B-Chat-AWQ), Llama2 70B requires 2 x 80 GB but with AutoAWQ it can be run on 1 x 48 GB GPU). You can learn more about AWQ on the research paper and the github implementations.
 
 ### 🚀 Running the AutoAWQ Benchmark.
 
