@@ -4,7 +4,9 @@
 [![ArXiv](https://img.shields.io/badge/arXiv-%230170FE.svg?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2210.17323)
 
 
-[AutoGPTQ Library](https://github.com/AutoGPTQ/AutoGPTQ) implements the [GPTQ quantization method](https://arxiv.org/abs/2210.17323). This is a point-wise layerwise quantization algorithm, where it tries to approximate the floating point parameters of each weight matrix into a quantized integers such that the error between the output from the actual float weights and the quantized weight is minimum. This quantization process relies heavily on some input samples to evaluate and enhance the quality of the quantization, hence it comes under the one-shot weight quantization method.
+[AutoGPTQ Library](https://github.com/AutoGPTQ/AutoGPTQ) implements the [GPTQ quantization method](https://arxiv.org/abs/2210.17323). This is a layerwise post-training quantization algorithm, where it tries to approximate the floating point parameters of each weight matrix into a quantized integers such that the error between the output from the actual float weights and the quantized weight is minimum. The layer-wise weight quantization process uses the [Optimal Brain Quantization framework](https://arxiv.org/abs/2208.11580) and relies heavily on some input samples to evaluate and enhance the quality of the quantization, hence it comes under the one-shot weight quantization method.
+
+> GPTQ adopts a mixed int4/fp16 quantization scheme where weights are quantized as int4 while activations remain in float16. During inference, weights are dequantized on the fly and the actual compute is performed in float16. [source](https://huggingface.co/blog/gptq-integration)
 
 ### 🚀 Running the AutoGPTQ Benchmark.
 
@@ -30,6 +32,10 @@ This will take all the default values (see in the [bench.sh](/bench_autogptq/ben
 
 ### 👀 Some points to note:
 
-1. Technically, GPTQ can run on CPUs, but it is super slow. So we did not go for benchmarking that. To understand more, you can reference to this [issue](https://github.com/qwopqwop200/GPTQ-for-LLaMa/issues/4)
-2. The model that was used in this benchmarking process is [LLama2-GPTQ by The Bloke](https://huggingface.co/TheBloke/Llama-2-7B-GPTQ).
-3. You might wander that, although the quantization is int-4, then why do we have float32/16 benchmarking. GPTQ adopts a mixed int4/fp16 quantization scheme where weights are quantized as int4 while activations remain in float16. During inference, weights are dequantized on the fly and the actual compute is performed in float16. You can checkout this [reference](https://huggingface.co/blog/gptq-integration#a-gentle-summary-of-the-gptq-paper) to learn more. So here the memory requirement will depend on 4/8 bit quantization, but since the main operations are done on fp16/32 in dequantization, so we included under float-16/32 columns.
+1. AutoGPTQ adopts a mised int-4/float16 quantization scheme. It can also do int-4/float32 scheme. Where weights will be in INT-4 and activation will be in float16/32. So we have kept benchmarks numbers in float16 and float32, although quantization is done for INT-4.
+2. Technically, GPTQ can run on CPUs, but it is super slow. So we did not go for benchmarking that. To understand more, you can reference to this [issue](https://github.com/qwopqwop200/GPTQ-for-LLaMa/issues/4)
+3. The model that was used in this benchmarking process is [LLama2-GPTQ by The Bloke](https://huggingface.co/TheBloke/Llama-2-7B-GPTQ).
+4. INT-8 is not available right now because AutoGPTQ [integrates](https://huggingface.co/blog/gptq-integration#room-for-improvement) with the most performant W4A16 kernel (weights as int4, activations as fp16). Although quantizing to INT-8 is possible but is likely to be super slow, see [this](https://github.com/AutoGPTQ/AutoGPTQ/issues/452) and [this](https://github.com/AutoGPTQ/AutoGPTQ/issues/499) issue.
+5. AutoGPTQ [does not support](https://github.com/AutoGPTQ/AutoGPTQ/issues/366) Metal till now.
+6. AutoGPTQ [also supports ExllamaV2](https://huggingface.co/blog/gptq-integration#autogptq-library--the-one-stop-library-for-efficiently-leveraging-gptq-for-llms) and other quantization methods, but we did not used it, so that we can benchmark each methods and framework independently without any mutual intersections.
+7. Tokens/sec for INT4/FP-32 is greater than INT4/FP-16, which is not an expected behaviour, probably due to some [downcasting](https://github.com/huggingface/transformers/issues/28647) overhead.
