@@ -28,13 +28,12 @@
 
 Take a first glance of Llama-2-7B Model Performance Metrics Across Different Precision and Inference Engines
 
-
 | Engine                       | float32      | float16        | int8          | int4          |
 |------------------------------|--------------|----------------|---------------|---------------|
 | burn                         | 13.12 ± 0.85 |      -         |      -        |      -        |
 | candle                       |      -       | 36.78 ± 2.17   |      -        |      -        |
 | llama.cpp                    |      -       |      -         | 79.15 ± 1.20  | 100.90 ± 1.46 |
-| ctranslate                   | 35.23 ± 4.01 | 55.72 ± 16.66  | 35.73 ± 10.87 |      -        |
+| ctranslate                   |      -       | 51.38 ± 16.01  | 36.12 ± 11.93 |      -        |
 | tinygrad                     |      -       | 20.32 ± 0.06   |      -        |      -        |
 | onnx                         |      -       | 54.16 ± 3.15   |      -        |      -        |
 | transformers (pytorch)       | 43.79 ± 0.61 | 46.39 ± 0.28   | 6.98 ± 0.05   | 21.72 ± 0.11  |
