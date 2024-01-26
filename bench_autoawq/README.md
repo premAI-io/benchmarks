@@ -33,3 +33,4 @@ This will take all the default values (see in the [bench.sh](/bench_autoawq/benc
 1. AutoAWQ is not supported devices other than GPU (only supports when CUDA is available).
 2. We are independently benchmarking AutoAWQ (i.e. the actual AWQ quantization method here). We are not benchmarking with combinations like: AutoAWQ + VLLM or AutoAWQ + TensorRT.
 3. For doing this benchmark, the default model that was choosen was: [Llama2-AutoAWQ by The Bloke](https://huggingface.co/TheBloke/Llama-2-7B-AWQ)
+4. AutoAWQ does not support INT8 quantization properly yet. See [this issue](https://github.com/casper-hansen/AutoAWQ/issues/45).
