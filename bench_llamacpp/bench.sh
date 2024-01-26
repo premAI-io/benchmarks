@@ -6,26 +6,27 @@
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
-#   -p, --prompt      Prompt for benchmarks (default: 'Explain what is a transformer')
-#   -r, --repetitions Number of repetitions for benchmarks (default: 2)
-#   -m, --max_tokens  Maximum number of tokens for benchmarks (default: 100)
-#   -d, --device      Device for benchmarks (possible values: 'metal', 'gpu', and 'cpu', default: 'cpu')
-#   -lf, --log_file   Logging file name.
-#   -md, --models_dir Models directory.
-#   -h, --help        Show this help message
+#  -p, --prompt        Prompt for benchmarks (default: 'Write an essay about the transformer model architecture'
+#  -r, --repetitions   Number of repetitions for benchmarks (default: 10)
+#  -m, --max_tokens    Maximum number of tokens for benchmarks (default: 512)
+#  -d, --device        Device for benchmarks (possible values: 'metal', 'cuda', and 'cpu', default: 'cuda')
+#  -lf, --log_file     Logging file name.
+#  -md, --models_dir   Models directory.
+#  -h, --help          Show this help message
 ########################################################################################################
 
 set -euo pipefail
 
+CURRENT_DIR="$(pwd)"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 print_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo "OPTIONS:"
-    echo "  -p, --prompt        Prompt for benchmarks (default: 'Explain what is a transformer')"
-    echo "  -r, --repetitions   Number of repetitions for benchmarks (default: 2)"
-    echo "  -m, --max_tokens    Maximum number of tokens for benchmarks (default: 100)"
-    echo "  -d, --device        Device for benchmarks (possible values: 'metal', 'gpu', and 'cpu', default: 'cpu')"
+    echo "  -p, --prompt        Prompt for benchmarks (default: 'Write an essay about the transformer model architecture')"
+    echo "  -r, --repetitions   Number of repetitions for benchmarks (default: 10)"
+    echo "  -m, --max_tokens    Maximum number of tokens for benchmarks (default: 512)"
+    echo "  -d, --device        Device for benchmarks (possible values: 'metal', 'cuda', and 'cpu', default: 'cuda')"
     echo "  -lf, --log_file     Logging file name."
     echo "  -md, --models_dir   Models directory."
     echo "  -h, --help          Show this help message"
@@ -57,16 +58,29 @@ check_platform() {
 }
 
 check_python() {
-    if command -v python &> /dev/null
-    then
-        echo -e "\nUsing $(python --version)."
+    if command -v python &> /dev/null; then
+        PYTHON_CMD="python"
+    elif command -v python3 &> /dev/null; then
+        PYTHON_CMD="python3"
     else
-        echo -e "\nPython does not exist."
+        echo "Python is not installed."
         exit 1
     fi
 }
 
 setup() {
+
+    # Check if Logs folder exists else Make the logs folder
+    LOGS_FOLDER="$CURRENT_DIR/Logs"
+
+    if [ -d "$LOGS_FOLDER" ]; then
+        echo "Folder '$LOGS_FOLDER' already exists. Skipping."
+    else
+        # Create the folder
+        mkdir "$LOGS_FOLDER"
+        echo "'$LOGS_FOLDER' created."
+    fi
+
     echo -e "\nSetting up with $SCRIPT_DIR/setup.sh..."
     bash "$SCRIPT_DIR"/setup.sh "$1"
 }
@@ -87,7 +101,7 @@ run_benchmarks() {
         echo "LLAMA_CPP_LIB=$LLAMA_CPP_LIB"
     fi
 
-    python "$SCRIPT_DIR"/bench.py \
+    "$PYTHON_CMD" "$SCRIPT_DIR"/bench.py \
         --prompt "$PROMPT" \
         --repetitions "$REPETITIONS" \
         --max_tokens "$MAX_TOKENS" \
@@ -144,15 +158,17 @@ while [ "$#" -gt 0 ]; do
             ;;
     esac
 done
-# Set default values if not provided
-PROMPT="${PROMPT:-"Explain what is a transformer"}"
-REPETITIONS="${REPETITIONS:-10}"
-MAX_TOKENS="${MAX_TOKENS:-100}"
-DEVICE="${DEVICE:-'cpu'}"
-LOG_FILENAME="${LOG_FILENAME:-"benchmark_$(date +'%Y%m%d%H%M%S').log"}"
-MODELS_DIR="${MODELS_DIR:-"./models"}"
 
 check_platform
 check_python
 setup "$DEVICE"
+
+# Set default values if not provided
+PROMPT="${PROMPT:-"Write an essay about the transformer model architecture"}"
+REPETITIONS="${REPETITIONS:-10}"
+MAX_TOKENS="${MAX_TOKENS:-512}"
+DEVICE="${DEVICE:-'cuda'}"
+LOG_FILENAME="${LOG_FILENAME:-"$LOGS_FOLDER/benchmark_llamacpp_$(date +'%Y%m%d%H%M%S').log"}"
+MODELS_DIR="${MODELS_DIR:-"./models"}"
+
 run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$LOG_FILENAME" "$MODELS_DIR"
