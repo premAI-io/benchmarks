@@ -29,6 +29,7 @@ This will take all the default values (see in the [bench.sh](/bench_vllm/bench.s
 
 ### 👀 Some points to note:
 
-1. Running this benchmark requires HuggingFace Llama2-7B weights. So running this benchmark would assume that you already agree to the required terms and conditions and verified to download the weights.
-2. vLLM Does not supprt CPU (check [this](https://github.com/vllm-project/vllm/issues/176) issue) and it aldo does not Metal devices (check [this](https://github.com/vllm-project/vllm/issues/1441) issue).
-3. Current implementation of vLLM does not support Float32 and int4*
+1. Running this benchmark requires [HuggingFace Llama2-7B weights](https://huggingface.co/meta-llama/Llama-2-7b). So running this benchmark would assume that you already agreed to the required [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) and got verified to download the weights.
+2. vLLM Does not support CPU (check [this](https://github.com/vllm-project/vllm/issues/176) issue) and Metal devices (check [this](https://github.com/vllm-project/vllm/issues/1441) issue).
+3. Current implementation of vLLM uses [AWQ quantizatized model](https://github.com/vllm-project/vllm?tab=readme-ov-file#about) to benchmark Llama2 on INT-4 precision under vLLM.
+4. vLLM does not support INT8 currently. See this [issue](https://github.com/vllm-project/vllm/pull/1508).
