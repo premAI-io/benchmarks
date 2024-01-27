@@ -1,12 +1,23 @@
 #!/bin/bash
 
 ################################################################################
-# Script: setup.sh <DEVICE>
+# Script: setup.sh
 # Description: Automates the setup of a virtual environment and installs project
 # requirements.
 ################################################################################
 
 set -euo pipefail
+
+check_python() {
+    if command -v python &> /dev/null; then
+        PYTHON_CMD="python"
+    elif command -v python3 &> /dev/null; then
+        PYTHON_CMD="python3"
+    else
+        echo "Python is not installed."
+        exit 1
+    fi
+}
 
 # Function to install CTransformers with CUDA version check
 install_ctransformers_cuda() {
@@ -44,7 +55,8 @@ install_device_specific_ctransformers() {
             ;;
         metal)
             echo "Installing CTransformers for Metal."
-            CT_METAL=1 pip install ctransformers --no-binary ctransformers > /dev/null
+            pip uninstall ctransformers --yes
+            CT_METAL=1 pip install ctransformers --no-binary ctransformers
             ;;
         cpu)
             echo "Installing CTransformers for CPU."
@@ -64,6 +76,8 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
+check_python
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEVICE="$1"
 VENV_DIR="$SCRIPT_DIR/venv"
@@ -71,7 +85,7 @@ VENV_DIR="$SCRIPT_DIR/venv"
 # Build and activate the virtual environment.
 
 if [ ! -d "$VENV_DIR" ]; then
-    python3 -m venv "$VENV_DIR"
+    "$PYTHON_CMD" -m venv "$VENV_DIR"
     echo "Virtual environment '$VENV_DIR' created."
     # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
