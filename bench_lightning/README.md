@@ -2,7 +2,7 @@
 
 [![GitHub Repo](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Lightning-AI/lit-gpt) &nbsp;
 
-[Lit-GPT](https://github.com/Lightning-AI/lit-gpt) is a hackable implementation of different Open Source LLMs. Lit-GPT is written using [Lightning Fabric](https://lightning.ai/docs/fabric/stable/). Lightning Fabric is a fast and lightweight way to scale PyTorch models. It comes with features that enables to do distributed training and inference with ease. Lightning Fabric is based on [PyTorch Lightning](https://lightning.ai/docs/pytorch/stable/starter/introduction.html).
+[Lit-GPT](https://github.com/Lightning-AI/lit-gpt) is a hackable implementation of [different Open Source LLMs](https://github.com/Lightning-AI/lit-gpt?tab=readme-ov-file#-lit-gpt-1). Lit-GPT is written using the [Lightning Fabric](https://lightning.ai/docs/fabric/stable/) framework. Lightning Fabric is a fast and lightweight way to scale PyTorch models. It comes with features that enables to do distributed training and inference with ease. Lightning Fabric is based on [PyTorch Lightning](https://lightning.ai/docs/pytorch/stable/starter/introduction.html).
 
 
 ### 🚀 Running the Lightning Benchmark.
@@ -29,6 +29,7 @@ This will take all the default values (see in the [bench.sh](/bench_lightning/be
 
 ### 👀 Some points to note:
 
-1. This implementation runs Llama-2-7B models. Lit-GPT model implementation requires to convert HuggingFace models to lit-gpt formats. This script for model conversion can be found in [setup.sh](/bench_lightning/setup.sh) file.
-2. When running it on Metal devices, it runs out of memory. So we were able to do inference on Metal.
-3. For CPU, it is just too much slow (> 1 minute). Hence we avoided it.
+1. This implementation runs Llama-2-7B models. Lit-GPT model implementation requires converting HuggingFace models to lit-gpt formats. The model conversion can be found in the [setup.sh](/bench_lightning/setup.sh) file.
+2. Since, running this benchmark requires [HuggingFace Llama2-7B weights](https://huggingface.co/meta-llama/Llama-2-7b). So we would assume that you already agreed to the required [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) and got verified to download the weights.
+3. When running it on Metal devices, it runs out of memory. Therefore we were not able to do inference on Metal.
+4. For CPU, it is just too much slow (> 1 minute). Hence we skipped the benchmarking for CPUs.
