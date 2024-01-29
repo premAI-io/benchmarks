@@ -34,16 +34,16 @@ class LlamaTensorRTMBenchmark:
         precision: str,
         device: Optional[str] = "cuda",
     ) -> None:
-        assert precision in ["fp32", "fp16"], ValueError(
-            "Supported Precision: 'fp32' or 'fp16'"
-        )
+        # assert precision in ["fp32", "fp16", "fp08"], ValueError(
+        #     "Supported Precision: 'fp32' or 'fp16'"
+        # )
         assert device == "cuda", ValueError("Supported device: 'cuda'")
 
         self.engine_dir_path = Path(model_path)
         engine_files = list(self.engine_dir_path.glob("*.engine"))
 
-        if len(engine_files) == 0:
-            raise ValueError(".engine file does not exist. Try to build the engine.")
+        # if len(engine_files) == 0:
+        #     raise ValueError(".engine file does not exist. Try to build the engine.")
 
         self.engine_path = engine_files[0]
         self.config_path = self.engine_dir_path / "config.json"
@@ -170,12 +170,16 @@ if __name__ == "__main__":
     )
     report = defaultdict(lambda: defaultdict(float))
 
-    for precision in ("fp16", "fp32"):
+    for precision in (
+        "fp32",
+        "fp16",
+        "fp08",
+    ):
         log_and_print(
             f"Running TensorRT LLM benchmark (pytorch backend) on Llama with precision: {precision}"
         )
         llama_tensorrt_benchmark = LlamaTensorRTMBenchmark(
-            model_path=f"{args.models_dir}/llama-2-7b-nvidia_tensorrt_build_{precision[2:]}",
+            model_path=f"{args.models_dir}/llama-2-7b-nvidia_tensorrt_build_08",
             device=args.device,
             precision=precision,
             tokenizer_path=f"{args.models_dir}/llama-2-7b-hf",
