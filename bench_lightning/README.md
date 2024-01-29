@@ -29,7 +29,7 @@ This will take all the default values (see in the [bench.sh](/bench_lightning/be
 
 ### 👀 Some points to note:
 
-1. This implementation runs Llama-2-7B models. Lit-GPT model implementation requires to convert HuggingFace models to lit-gpt formats. This script for model conversion can be found in [setup.sh](/bench_lightning/setup.sh) file.
+1. This implementation runs Llama-2-7B models. Lit-GPT model implementation requires converting HuggingFace models to lit-gpt formats. The model conversion can be found in the [setup.sh](/bench_lightning/setup.sh) file.
 2. Since, running this benchmark requires [HuggingFace Llama2-7B weights](https://huggingface.co/meta-llama/Llama-2-7b). So we would assume that you already agreed to the required [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) and got verified to download the weights.
 3. When running it on Metal devices, it runs out of memory. So we were able to do inference on Metal.
 4. For CPU, it is just too much slow (> 1 minute). Hence we skipped the benchmarking for CPUs.
