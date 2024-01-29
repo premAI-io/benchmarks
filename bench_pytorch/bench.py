@@ -1,8 +1,9 @@
 import argparse
 import logging
+import os
 import sys
-import time
 from collections import defaultdict
+from time import perf_counter
 from typing import Optional
 
 import numpy as np
@@ -27,12 +28,11 @@ class LlamaPyTorchBenchmark:
         self.precision_to_dtype_map = {
             "fp16": torch.float16,
             "fp32": torch.float32,
-            "bf16": torch.bfloat16,
         }
 
         # some of the conditions where things can not be supported
-        assert precision in ["bf16", "fp16", "fp32"], ValueError(
-            "Supported precisions are: 'bf16', fp16', 'fp32'"
+        assert precision in ["fp16", "fp32", "int4", "int8"], ValueError(
+            "Supported precisions for this benchmarks are: 'fp16', 'fp32', 'int4', 'int8'"
         )
         assert device in ["cpu", "cuda", "metal"], ValueError(
             "Supported devices are: 'cpu', 'cuda', 'metal'"
@@ -44,32 +44,58 @@ class LlamaPyTorchBenchmark:
             )
 
         self.device = "cuda:0" if device == "cuda" else device
-        # build the params
-        self.model_args = {
-            "device_map": self.device,
-            "torch_dtype": self.precision_to_dtype_map[self.precision],
-        }
 
+    @torch.inference_mode()
     def load_model(self):
         """Loads the model into various formats and device."""
-        self.model = AutoModelForCausalLM.from_pretrained(
-            self.model_path, **self.model_args
-        )
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
+
+        if self.precision in ["fp16", "fp32"]:
+            model_args = {
+                "device_map": self.device,
+                "torch_dtype": self.precision_to_dtype_map[self.precision],
+            }
+            self.model = AutoModelForCausalLM.from_pretrained(
+                self.model_path, **model_args
+            )
+        elif self.precision in ["int4", "int8"] and self.device == "cuda:0":
+            from transformers import BitsAndBytesConfig
+
+            bnb_config = (
+                BitsAndBytesConfig(load_in_8bit=True)
+                if self.precision == "int8"
+                else BitsAndBytesConfig(
+                    load_in_4bit=True,
+                    bnb_4bit_use_double_quant=True,
+                    bnb_4bit_quant_type="nf4",
+                    bnb_4bit_compute_dtype=torch.float16,
+                )
+            )
+
+            if self.precision == "int8":
+                os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+            self.model = AutoModelForCausalLM.from_pretrained(
+                self.model_path, device_map=self.device, quantization_config=bnb_config
+            )
+        else:
+            raise ValueError(
+                f"Invalid configuration: {self.device}, {self.precision}"
+                "INT4/8 requires CUDA to execute."
+            )
+
         return self
 
+    @torch.inference_mode()
     def run_model(self, prompt: str, max_tokens: int) -> float:
         tokenized_input = self.tokenizer.encode(prompt, return_tensors="pt").to(
             self.device
         )
-        start = time.time()
-        output = (
-            self.model.generate(input_ids=tokenized_input, max_new_tokens=max_tokens)
-            .detach()
-            .cpu()
-            .numpy()
+        start = perf_counter()
+        output = self.model.generate(
+            input_ids=tokenized_input, max_new_tokens=max_tokens
         )
-        delta = time.time() - start
+        delta = perf_counter() - start
         return len(output[0]) / delta
 
     def benchmark(self, prompt: str, max_tokens: int, repetitions: int) -> None:
@@ -80,7 +106,7 @@ class LlamaPyTorchBenchmark:
             tokens_per_second = self.run_model(prompt, max_tokens)
             self.results.append(tokens_per_second)
         del self.model
-        if self.device == "cuda":
+        if self.device == "cuda:0":
             torch.cuda.synchronize()
 
 
@@ -118,7 +144,12 @@ if __name__ == "__main__":
     )
     report = defaultdict(lambda: defaultdict(float))
 
-    for precision in ("fp16", "fp32") if args.device != "cpu" else ("fp32",):
+    precisions_mapping = {
+        "cpu": ("fp32",),
+        "cuda": ("fp32", "fp16", "int8", "int4"),
+        "metal": ("fp32", "fp16"),
+    }
+    for precision in precisions_mapping[args.device]:
         logging.info(
             f"Running Transformer benchmark (pytorch backend) on Llama with precision: {precision}"
         )
