@@ -3,12 +3,13 @@ import logging
 import sys
 import time
 from collections import defaultdict
-from dataclasses import dataclass
 
 import numpy as np
 import torch
-from exllamav2 import ExLlamaV2Cache, model_init
+from exllamav2 import ExLlamaV2, ExLlamaV2Cache
+from exllamav2.config import ExLlamaV2Config
 from exllamav2.generator import ExLlamaV2BaseGenerator, ExLlamaV2Sampler
+from exllamav2.tokenizer import ExLlamaV2Tokenizer
 
 logging.getLogger("llama_cpp").setLevel(logging.ERROR)
 logging.basicConfig(
@@ -18,39 +19,26 @@ logging.basicConfig(
 )
 
 
-@dataclass
-class ExtraConfig:
-    model_dir: str
-    length: int = 2048
-    rope_scale: float = 1.0
-    rope_alpha: float = 1.0
-    no_flash_attn: bool = False
-    low_mem: bool = False
-    gpu_split: str = None
-
-
 class ExllamaV2Benchmark:
     def __init__(self, model_path: str) -> None:
-        self.model_path = model_path
-        self.cache = None
-        self.results = []
+        self.model_path, self.results = model_path, []
 
     def load_model(self):
-        self.model, self.tokenizer = model_init.init(
-            ExtraConfig(model_dir=self.model_path), allow_auto_split=True
-        )
+        self.config = ExLlamaV2Config()
+        self.config.model_dir = self.model_path
+        self.config.prepare()
+
+        self.model = ExLlamaV2(self.config)
+        self.cache = ExLlamaV2Cache(self.model, lazy=True)
+        self.model.load_autosplit(self.cache)
+        self.tokenizer = ExLlamaV2Tokenizer(self.config)
+
+        self.generator = ExLlamaV2BaseGenerator(self.model, self.cache, self.tokenizer)
         self.settings = ExLlamaV2Sampler.Settings()
         self.settings.temperature = 0.85
         self.settings.top_k = 50
         self.settings.top_p = 0.8
-        self.settings.token_repetition_penalty = 1.15
-
-        if not self.model.loaded:
-            self.cache = ExLlamaV2Cache(self.model)
-            self.model.load_autosplit(self.cache)
-            self.cache = None
-        self.cache = ExLlamaV2Cache(self.model)
-        self.generator = ExLlamaV2BaseGenerator(self.model, self.cache, self.tokenizer)
+        self.settings.token_repetition_penalty = 1.05
         self.settings.disallow_tokens(self.tokenizer, [self.tokenizer.eos_token_id])
         self.generator.warmup()
         return self
@@ -58,9 +46,7 @@ class ExllamaV2Benchmark:
     @torch.inference_mode()
     def run_model(self, prompt: str, max_tokens: int) -> float:
         start = time.time()
-        _ = self.generator.generate_simple(
-            prompt, self.settings, max_tokens, token_healing=True
-        )
+        _ = self.generator.generate_simple(prompt, self.settings, max_tokens, seed=1234)
         delta = time.time() - start
         return len(self.generator.sequence_ids[0]) / delta
 
