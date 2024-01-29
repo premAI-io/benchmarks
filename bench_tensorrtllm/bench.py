@@ -1,5 +1,7 @@
 import argparse
 import json
+import logging
+import sys
 import time
 from collections import defaultdict
 from pathlib import Path
@@ -10,6 +12,18 @@ import tensorrt_llm
 import torch
 from tensorrt_llm.runtime import ModelConfig, SamplingConfig
 from transformers import AutoTokenizer
+
+logging.getLogger("ctranslate2").setLevel(logging.ERROR)
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+
+
+def log_and_print(message: str) -> None:
+    print(message)
+    logging.info(message)
 
 
 class LlamaTensorRTMBenchmark:
@@ -112,7 +126,7 @@ class LlamaTensorRTMBenchmark:
             end_id=2, pad_id=2, num_beams=1, temperature=0.1
         )
         for i in range(repetitions):
-            print(
+            log_and_print(
                 f"Running repetition [{str(i+1).zfill(len(str(repetitions)))}/{repetitions}]"
             )
             tokens_per_second = self.run_model(
@@ -150,14 +164,14 @@ if __name__ == "__main__":
         help="Path to the models directory.",
     )
     args = parser.parse_args()
-    print(
+    log_and_print(
         f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} "
         + f"repetitions={args.repetitions} device={args.device}"
     )
     report = defaultdict(lambda: defaultdict(float))
 
     for precision in ("fp16", "fp32"):
-        print(
+        log_and_print(
             f"Running TensorRT LLM benchmark (pytorch backend) on Llama with precision: {precision}"
         )
         llama_tensorrt_benchmark = LlamaTensorRTMBenchmark(
@@ -171,16 +185,16 @@ if __name__ == "__main__":
             max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
         )
 
-        report["llama_transformers_pytorch"][precision] = {
+        report["llama_transformers_tensorrt"][precision] = {
             "mean": np.mean(llama_tensorrt_benchmark.results),
             "std": np.std(llama_tensorrt_benchmark.results),
         }
 
-    print("Benchmark Report")
+    log_and_print("Benchmark Report")
     with open(args.log_file, "a") as file:
         for framework, quantizations in report.items():
             for quantization, stats in quantizations.items():
-                print(
+                log_and_print(
                     f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}"
                 )
                 print(
