@@ -44,6 +44,7 @@ class LlamaAutoGPTQBenchmark:
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
         return self
 
+    @torch.inference_mode()
     def run_model(self, prompt: str, max_tokens: int) -> float:
         tokenized_input = self.tokenizer.encode(prompt, return_tensors="pt").to(
             self.device
