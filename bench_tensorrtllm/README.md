@@ -28,6 +28,5 @@ This will take all the default values (see in the [bench.sh](/bench_tensorrt_llm
 
 ### 👀 Some points to note:
 
-1. Running this benchmark requires HuggingFace Llama2-7B weights. So running this benchmark would assume that you already agree to the required terms and conditions and verified to download the weights.
+1. Running this benchmark requires [HuggingFace Llama2-7B weights](https://huggingface.co/meta-llama/Llama-2-7b). So running this benchmark would assume that you already agreed to the required [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) and got verified to download the weights.
 2. TensorRT LLM only works with CUDA. So it does not support Metal/CPU.
-3. Although TensorRT supports INT4/8 quantization, but it uses AutoGPTQ under the hood. Since we wanted to keep our implementation independent, so we skipped it.
