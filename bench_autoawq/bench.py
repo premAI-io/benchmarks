@@ -19,8 +19,8 @@ logging.basicConfig(
 
 class LlamaAutoAWQBenchmark:
     def __init__(self, model_path: str, precision: int, device: str) -> None:
-        assert precision in ["int4"], "For benchmarks supported precision is in FP16."
         assert device == "cuda", "Device other than CUDA is not supported for autoawq."
+        assert precision == "int4", "Precison other than INT4 is not supported."
 
         self.model_path, self.precision, self.device = (
             model_path,
@@ -109,7 +109,7 @@ if __name__ == "__main__":
         llama_autogptq_benchmark = LlamaAutoAWQBenchmark(
             model_path=f"{args.models_dir}/llama-2-7b-autoawq",
             device=args.device,
-            precision=f"fp{precision}",
+            precision=f"int{precision}",
         ).load_model()
         llama_autogptq_benchmark.benchmark(
             max_tokens=args.max_tokens,
