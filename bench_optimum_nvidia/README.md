@@ -31,4 +31,4 @@ This will take all the default values (see in the [bench.sh](/bench_optimum_nvid
 1. Running this benchmark requires [HuggingFace Llama2-7B weights](https://huggingface.co/meta-llama/Llama-2-7b). So running this benchmark would assume that you already agreed to the required [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) and got verified to download the weights.
 2. Optimum Nvidia uses Docker to convert the models into a specific engine format. You can find the weight conversion logic under [setup.sh](/bench_optimum_nvidia/setup.sh) file.
 3. Optimum Nvidia only supports CUDA.
-4. Current implementation readily supports Float16/32 and FP-8 precision. We do not benchmark FP-8 precision, because that it can not be compared with other frameworks. And, INT8/4 seems not to be supported.
+4. Current implementation readily supports Float16/32 and FP-8 precision. We do not benchmark FP-8 precision, because that it can not be compared with other frameworks. And, INT8/4 [does not](https://github.com/huggingface/optimum-nvidia/issues/26) seem to be supported currently.
