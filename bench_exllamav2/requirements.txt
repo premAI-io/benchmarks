@@ -1,1 +1,2 @@
 exllamav2
+tqdm

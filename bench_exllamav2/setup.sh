@@ -6,12 +6,23 @@
 # requirements.
 ################################################################################
 
+check_python() {
+    if command -v python &> /dev/null; then
+        PYTHON_CMD="python"
+    elif command -v python3 &> /dev/null; then
+        PYTHON_CMD="python3"
+    else
+        echo "Python is not installed."
+        exit 1
+    fi
+}
+
 convert_bin_to_safetensor() {
     local HF_MODEL_FOLDER_PATH="$1"
 
     # shellcheck disable=SC1091
     source "$SCRIPT_DIR/venv/bin/activate"
-    python "$SCRIPT_DIR"/convert.py \
+    "$PYTHON_CMD" "$SCRIPT_DIR"/convert.py \
         "$HF_MODEL_FOLDER_PATH"
 }
 
@@ -41,7 +52,7 @@ convert_safetensor_to_exllamav2() {
     else
         mkdir -p "$EXLLAMA_WEIGHTS_FOLDER"
         echo "Going for conversion to exllamav2 format from .safetensors in $QUANTIZATION bit quantization."
-        python "$SCRIPT_DIR/exllamav2/convert.py" \
+        "$PYTHON_CMD" "$SCRIPT_DIR/exllamav2/convert.py" \
         -i "$HF_WEIGHTS_FOLDER" \
         -o "$EXLLAMA_WEIGHTS_FOLDER" \
         -c "$SCRIPT_DIR/wikitext-test.parquet" \
@@ -54,6 +65,8 @@ convert_safetensor_to_exllamav2() {
 }
 
 
+check_python
+
 CURRENT_DIR="$(pwd)"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -62,7 +75,7 @@ MODELS_DIR="${MODELS_DIR:-"models/llama-2-7b-hf"}"
 EXLLAMA_BASE_MODEL_DIR="${EXLLAMA_BASE_MODEL_DIR:-"./models/llama-2-7b-exllamav2"}"
 
 if [ ! -d "$VENV_DIR" ]; then
-    python -m venv "$VENV_DIR"
+    "$PYTHON_CMD" -m venv "$VENV_DIR"
     echo "Virtual environment '$VENV_DIR' created."
     # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
