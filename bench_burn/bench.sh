@@ -123,6 +123,7 @@ run_benchmarks() {
     )
     mean=$(echo "$benchmark_output" | grep -oP '\d+\.\d+ ± \d+\.\d+' | awk -F ' ± ' '{print $1}')
     std=$(echo "$benchmark_output" | grep -oP '\d+\.\d+ ± \d+\.\d+' | awk -F ' ± ' '{print $2}')
+    echo "burn, float16 : $(printf "%.2f" "$mean") ± $(printf "%.2f" "$std")"
     echo "burn, float16 : $(printf "%.2f" "$mean") ± $(printf "%.2f" "$std")" >> "$LOG_FILENAME"
 }
 # Parse command-line arguments
