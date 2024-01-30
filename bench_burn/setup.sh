@@ -39,6 +39,8 @@ check_and_create_directory() {
     fi
 }
 
+check_python
+
 if [ ! -d "$VENV_DIR" ]; then
     "$PYTHON_CMD" -m venv "$VENV_DIR"
     echo "Virtual environment '$VENV_DIR' created."
