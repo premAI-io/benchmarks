@@ -2,7 +2,7 @@
 
 [![GitHub Repo](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Gadersd/llama2-burn) &nbsp;
 
-We use [Llama2-Burn project](https://github.com/Gadersd/llama2-burn), which provides a port of the Llama2 model to [Burn](https://github.com/tracel-ai/burn). Burn is the DeepLearning Framework for Rust, which provides similar concepts and interfaces like PyTorch.
+[Burn](https://github.com/tracel-ai/burn) is a new comprehensive dynamic Deep Learning Framework built using Rust with extreme flexibility, compute efficiency and portability as its primary goals. For this benchmark implementation, we used a [forked version](https://github.com/premAI-io/llama2-burn) of the [Llama2-Burn project](https://github.com/Gadersd/llama2-burn)
 
 
 ### 🚀 Running the Burn Benchmark.
@@ -24,10 +24,10 @@ To get started quickly you can simply run:
 ```bash
 ./bench_burn/bench.sh -d cuda
 ```
-This will take all the default values (see in the [bench.sh](/bench_burn/bench.sh) file) and do the benchmarks. You can find all the benchmarks results for Burn [here](/docs/llama2.md).
+This will take all the default values (see in the [bench.sh](/bench_burn/bench.sh) file) and do the benchmarks. You can find all the benchmarks results for Burn [here](/docs/llama2.md). The HuggingFace Llama 2 weights through a conversion process before benchmarking. See [setup.sh](/bench_burn/setup.sh) to know more.
 
 
 ### 👀 Some points to note:
 
-1. For CUDA and Metal, Burn runs for only Float32 precision.
-2. You need to download weights of LLama-2 7B from HuggingFace. This repo already does it. However it assumes that you already have accepted the [terms and condition](https://huggingface.co/meta-llama/Llama-2-7b-hf) before running or downloading the model and runnning this benchmark.
+1. Running this benchmark requires [HuggingFace Llama2-7B weights](https://huggingface.co/meta-llama/Llama-2-7b). So running this benchmark would assume that you already agreed to the required [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) and got verified to download the weights.
+2. For CUDA and Metal, Burn runs for only Float32 precision.
