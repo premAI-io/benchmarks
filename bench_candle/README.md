@@ -29,5 +29,5 @@ This will take all the default values (see in the [bench.sh](/bench_candle/bench
 
 ### 👀 Some points to note:
 
-1. Candle does not support Float32 from the latest implementation. This implementation of Candle Llama2 does not support quantized weights of int8/4 precisions.
+1. Running this benchmark requires [HuggingFace Llama2-7B weights](https://huggingface.co/meta-llama/Llama-2-7b). So running this benchmark would assume that you already agreed to the required [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) and got verified to download the weights.
 2. Candle does not have support for Metal devices.
