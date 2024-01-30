@@ -2,7 +2,7 @@
 
 [![GitHub Repo](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Gadersd/llama2-burn) &nbsp;
 
-We use [Llama2-Burn project](https://github.com/Gadersd/llama2-burn), which provides a port pf the Llama2 model to [Burn](https://github.com/tracel-ai/burn). Burn is the DeepLearning Framework for Rust, which provides similar concepts and interfaces like PyTorch.
+We use [Llama2-Burn project](https://github.com/Gadersd/llama2-burn), which provides a port of the Llama2 model to [Burn](https://github.com/tracel-ai/burn). Burn is the DeepLearning Framework for Rust, which provides similar concepts and interfaces like PyTorch.
 
 
 ### 🚀 Running the Burn Benchmark.
@@ -16,7 +16,7 @@ For running this benchmark, make sure you have [Rust installed](https://www.rust
   --repetitions <value> \       # Number of repititions to be made for the prompt.
   --log_file <file_path> \      # A .log file underwhich we want to write the results.
   --device <cpu/cuda/metal> \   # The device in which we want to benchmark.
-  --models_dir <path_to_models> # The directory in which AWQ model weights are present
+  --models_dir <path_to_models> # The directory in which model weights are present
 ```
 
 To get started quickly you can simply run:
