@@ -30,4 +30,5 @@ This will take all the default values (see in the [bench.sh](/bench_burn/bench.s
 ### 👀 Some points to note:
 
 1. Running this benchmark requires [HuggingFace Llama2-7B weights](https://huggingface.co/meta-llama/Llama-2-7b). So running this benchmark would assume that you already agreed to the required [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) and got verified to download the weights.
-2. For CUDA and Metal, Burn runs for only Float32 precision.
+2. For CUDA and CPU, Burn runs for only Float32 precision.
+3. The current implementation of Llama2-Burn does not support Metal.
