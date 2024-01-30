@@ -8,6 +8,17 @@
 
 set -euo pipefail
 
+check_python() {
+    if command -v python &> /dev/null; then
+        PYTHON_CMD="python"
+    elif command -v python3 &> /dev/null; then
+        PYTHON_CMD="python3"
+    else
+        echo "Python is not installed."
+        exit 1
+    fi
+}
+
 install_vllm_cuda() {
     CUDA_VERSION=$(nvcc --version | grep "release" | sed -n 's/.*release \(.*\),.*/\1/p')
 
@@ -38,7 +49,7 @@ install_vllm_cuda() {
 
 get_python_version() {
     # Fetch Python version
-    PY_VER=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
+    PY_VER=$("$PYTHON_CMD" -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
 
     case $PY_VER in
         3.10) echo "cp310";;
@@ -81,6 +92,8 @@ install_device_specific_vllm() {
 
 # Main script starts here.
 
+check_python
+
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <DEVICE>"
     exit 1
@@ -93,7 +106,7 @@ VENV_DIR="$SCRIPT_DIR/venv"
 # Build and activate the virtual environment.
 
 if [ ! -d "$VENV_DIR" ]; then
-    python -m venv "$VENV_DIR"
+    "$PYTHON_CMD" -m venv "$VENV_DIR"
     echo "Virtual environment '$VENV_DIR' created."
     # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
