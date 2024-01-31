@@ -172,3 +172,12 @@ In our upcoming versions, we will be adding support for the following:
 4. Add support for batching. Since batching is very important while deploying LLMs. So coming versions will benchmark LLMs on batched inputs.
 
 If you feel like there is something more to add, feel free to open an issue or a PR. We would be super happy to take contributions from the community.
+
+
+## 🏆 Introducing Prem Grant Program
+
+![Alt Text](https://blog.premai.io/content/images/size/w1200/2024/01/IMG.jpg)
+
+🌟 Exciting news, AI enthusiasts! Prem is thrilled to launch the Prem Grant Program, exclusively designed for forward-thinking AI startups ready to reshape the future. With this program, you get six months of free access to OpenAI, Anthropic, Cohere, Llama2, Mistral (or any other open-source model) APIs, opening doors to endless AI possibilities at zero cost. Enjoy free fine-tuning, seamless model deployment, and expert ML support. This is more than a grant; it's an invite to lead the AI revolution. Don't miss out – apply now and let's build the future of AI together with Prem! 🌟
+
+Read more about the Prem Startup grant program [here](https://blog.premai.io/announcing-our-startup-grants-program/). You can directly apply to the program from [here](https://docs.google.com/forms/d/e/1FAIpQLSdv1WuZ5aC7raefnupMTla5z_-7p1XD9D28HK0nZ7JkKkQwRQ/viewform).
