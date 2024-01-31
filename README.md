@@ -19,6 +19,8 @@
     <li><a href="#-getting-started">Getting started</a></li>
     <li><a href="#-usage">Usage</a></li>
     <li><a href="#-contribute">Contribute</a></li>
+    <li><a href="#-roadmap">Roadmap</a></li>
+    <li><a href="#-introducing-prem-grant-program">Introducing Prem Grant Program</a></li>
   </ol>
 </details>
 
