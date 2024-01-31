@@ -31,3 +31,4 @@ This will take all the default values (see in the [bench.sh](/bench_candle/bench
 
 1. Running this benchmark requires [HuggingFace Llama2-7B weights](https://huggingface.co/meta-llama/Llama-2-7b). So running this benchmark would assume that you already agreed to the required [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) and got verified to download the weights.
 2. Candle does not have support for Metal devices.
+3. Candles does support [quantized models](https://github.com/huggingface/candle/blob/main/candle-examples/examples/quantized/main.rs). The benchmarks for quantized candles model will be available in the next versions.
