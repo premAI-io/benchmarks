@@ -2,7 +2,7 @@
 
 [![GitHub Repo](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/huggingface/candle) &nbsp;
 
-[Candle](https://github.com/huggingface/candle) is a minimalistic Machine /Deep Learning framework written on Rust by [huggingface](https://github.com/huggingface). It tries to provide a simpler interface to implement models along with GPU support. This is a modified implementation of [Llama2-Candle example](https://github.com/huggingface/candle/blob/main/candle-examples/examples/llama/main.rs) to analyse the benchmark performance across different devices and precision.
+[Candle](https://github.com/huggingface/candle) is a minimalistic Machine/Deep Learning framework written on Rust by [huggingface](https://github.com/huggingface). It tries to provide a simpler interface to implement models along with GPU support. This is a modified implementation of [Llama2-Candle example](https://github.com/huggingface/candle/blob/main/candle-examples/examples/llama/main.rs) to analyse the benchmark performance across different devices and precision.
 
 
 ### 🚀 Running the Candle Benchmark.
