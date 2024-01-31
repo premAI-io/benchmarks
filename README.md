@@ -56,6 +56,7 @@ Take a first glance of Llama-2-7B Model Performance Metrics Across Different Pre
 
 - Also if you want to see more detailed information about each of the benchmark, you can find those details the respective benchmark folders.
 
+- If you want to compare side by side which inference engines supports which precision and device, you can check out the [ml_engines.md](/docs/ml_engines.md) file. Please note that this file is incomplete and a better comparision of engines will be added in the later versions.
 
 ## 🚀 Getting Started
 
@@ -109,7 +110,7 @@ For a comprehensive execution of all benchmarks, use the overarching `benchmark.
 
 Again, customize the parameters according to your preferences, ensuring that <file_path> and <path_to_models> point to the correct locations.
 
-Feel free to adjust the parameters as needed for your specific benchmarking requirements.
+Feel free to adjust the parameters as needed for your specific benchmarking requirements. Please note that, running all the benchmarks collectively can requires lot of storage (around 500 GB). Please make sure that you have enough storage to run all of them at once.
 
 ## 🤝 Contribute
 
