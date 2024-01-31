@@ -47,6 +47,7 @@ Take a first glance of Llama-2-7B Model Performance Metrics Across Different Pre
 | [PyTorch Lightning](/bench_lightning/)      | 24.85 ± 0.07 | 44.56 ± 2.89   | 10.50 ± 0.12  | 24.83 ± 0.05  |
 | [Optimum Nvidia](/bench_optimum_nvidia/)    | 110.36 ± 0.52| 109.09 ± 4.26  |      -        |      -        |
 | [Nvidia TensorRT-LLM](/bench_tensorrtllm/)  | 55.19 ± 1.03 | 85.03 ± 0.62   | 167.66 ± 2.05 | 235.18 ± 3.20 |
+
 *(Data updated: `31th January 2024`)
 
 
