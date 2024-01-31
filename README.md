@@ -1,7 +1,7 @@
 <div align="center">
 
   <h1 align="center">🕹️ Benchmarks</h1>
-    <p align="center">Performance Comparison of MLOps Engines, Frameworks, and Languages on Mainstream AI Models.</p>
+    <p align="center">A fully reproducible Performance Comparison of MLOps Engines, Frameworks, and Languages on Mainstream AI Models.</p>
 </div>
 
 [![GitHub contributors](https://img.shields.io/github/contributors/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/graphs/contributors)
@@ -26,7 +26,7 @@
 
 ## 📊 Quick glance towards performance metrics for Llama-2-7B
 
-Take a first glance of Llama-2-7B Model Performance Metrics Across Different Precision and Inference Engines
+Take a first glance of Llama-2-7B Model Performance Metrics Across Different Precision and Inference Engines.
 
 
 | Engine                                      | float32      | float16        | int8          | int4          |
@@ -56,6 +56,9 @@ Take a first glance of Llama-2-7B Model Performance Metrics Across Different Pre
 
 - Also if you want to see more detailed information about each of the benchmark, you can find those details the respective benchmark folders.
 
+- If you want to compare side by side which inference engines supports which precision and device, you can check out the [ml_engines.md](/docs/ml_engines.md) file. Please note that this file is incomplete and a better comparision of engines will be added in the later versions.
+
+Benchmarks can also be considered as a repository of hackable scripts, that contains the code and all the knowledge base to run the popular inference engines.
 
 ## 🚀 Getting Started
 
@@ -109,7 +112,7 @@ For a comprehensive execution of all benchmarks, use the overarching `benchmark.
 
 Again, customize the parameters according to your preferences, ensuring that <file_path> and <path_to_models> point to the correct locations.
 
-Feel free to adjust the parameters as needed for your specific benchmarking requirements.
+Feel free to adjust the parameters as needed for your specific benchmarking requirements. Please note that, running all the benchmarks collectively can requires lot of storage (around 500 GB). Please make sure that you have enough storage to run all of them at once.
 
 ## 🤝 Contribute
 
@@ -157,3 +160,15 @@ pre-commit install
 ```
 
 The existing pre-commit configuration will be used for automatic checks before each commit, ensuring code quality and adherence to defined standards.
+
+
+## 🗾 Roadmap
+
+In our upcoming versions, we will be adding support for the following:
+
+1. Add more metrics on memory consumption. This includes how much RAM/GPU memory is consumed when we run the benchmarks.
+2. Add support for more models. Upcoming versions will support popular LLMs like [Mamba](https://huggingface.co/state-spaces/mamba-2.8b), [Mistral](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2), [Mixtral](https://huggingface.co/mistralai/Mixtral-8x7B-v0.1), [Phi2](https://huggingface.co/microsoft/phi-2) etc.
+3. Add ways to understand and articulate on change of generation quality with the change of frameworks and precision. We will try to add ways to understand how the generation quality of an LLM changes when we change the precision of the models or use a different inference engine framework.
+4. Add support for batching. Since batching is very important while deploying LLMs. So coming versions will benchmark LLMs on batched inputs.
+
+If you feel like there is something more to add, feel free to open an issue or a PR. We would be super happy to take contributions from the community.
