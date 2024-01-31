@@ -3,10 +3,11 @@ import logging
 import sys
 import time
 from collections import defaultdict
-from typing import Optional
 
 import numpy as np
+import torch
 from vllm import LLM
+from vllm.model_executor.parallel_utils import parallel_state
 
 logging.getLogger("vllm").setLevel(logging.ERROR)
 logging.basicConfig(
@@ -17,29 +18,29 @@ logging.basicConfig(
 
 
 class LlamaVLLMBenchmark:
-    def __init__(self, model_path: str, device: str):
+    def __init__(self, model_path: str, device: str, precision: str):
         # VLLM is not supported for CPU issue: https://github.com/vllm-project/vllm/issues/176
         # VLLM also not supports Metal, issue: https://github.com/vllm-project/vllm/issues/1441
 
         assert device == "cuda", ValueError("Supported device is cuda only.")
+        assert precision in ["fp16", "fp32", "int4"], ValueError(
+            "supported precision are: fp16, fp32 and int4"
+        )
 
+        self.model_path, self.precision, self.device = model_path, precision, device
         self.results = []
-        self.model_path = model_path
+        self.precision_map = {"fp16": "float16", "fp32": "float32"}
 
     def load_model(self):
-        self.model = LLM(model=self.model_path)
+        if self.precision != "int4":
+            self.model = LLM(model=self.model_path)
+            self.model.dtype = self.precision_map[precision]
+        else:
+            self.model = LLM(model=self.model_path, quantization="AWQ")
         return self
 
-    def run_model(
-        self, prompt: str, max_tokens: int, precision: Optional[str] = "fp16"
-    ) -> float:
-        assert precision in ["fp16", "fp32"], ValueError(
-            "supported precision are: fp16 and fp32"
-        )
-        precision_map = {"fp16": "float16", "fp32": "float32"}
+    def run_model(self, prompt: str, max_tokens: int) -> float:
         self.model.max_num_seqs = max_tokens
-        self.model.dtype = precision_map[precision]
-
         start = time.time()
         output = self.model.generate(prompts=[prompt])
         delta = time.time() - start
@@ -50,14 +51,18 @@ class LlamaVLLMBenchmark:
         prompt: str,
         max_tokens: int,
         repetitions: int,
-        precision: Optional[str] = "fp16",
     ) -> None:
         for i in range(repetitions):
             logging.info(
                 f"Running repetition [{str(i+1).zfill(len(str(repetitions)))}/{repetitions}]"
             )
-            tokens_per_second = self.run_model(prompt, max_tokens, precision=precision)
+            tokens_per_second = self.run_model(prompt, max_tokens)
             self.results.append(tokens_per_second)
+
+        del self.model
+        if self.device == "cuda":
+            parallel_state.destroy_model_parallel()
+            torch.cuda.synchronize()
 
 
 if __name__ == "__main__":
@@ -93,14 +98,22 @@ if __name__ == "__main__":
         + f"repetitions={args.repetitions} device={args.device}"
     )
     report = defaultdict(lambda: defaultdict(float))
-    llama_vllm_bench = LlamaVLLMBenchmark(
-        f"{args.models_dir}/llama-2-7b-hf", device=args.device
-    ).load_model()
-    for precision in ("fp16", "fp32"):
+
+    for precision in ("fp32", "fp16", "int4"):
         logging.info(f"Running VLLM benchmark on Llama on {precision} precision.")
+
+        llama_vllm_bench = LlamaVLLMBenchmark(
+            f"{args.models_dir}/llama-2-7b-hf"
+            if precision != "int4"
+            else f"{args.models_dir}/llama-2-7b-autoawq",
+            device=args.device,
+            precision=precision,
+        ).load_model()
+
         llama_vllm_bench.benchmark(
             max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
         )
+
         report["llama_vllm"][precision] = {
             "mean": np.mean(llama_vllm_bench.results),
             "std": np.std(llama_vllm_bench.results),
