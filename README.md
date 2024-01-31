@@ -31,7 +31,7 @@ Take a first glance of Llama-2-7B Model Performance Metrics Across Different Pre
 
 | Engine                       | float32      | float16        | int8          | int4          |
 |------------------------------|--------------|----------------|---------------|---------------|
-| burn                         | 13.12 ± 0.85 |      -         |      -        |      -        |
+| burn                         | 10.04 ± 0.64 |      -         |      -        |      -        |
 | candle                       |      -       | 36.78 ± 2.17   |      -        |      -        |
 | llama.cpp                    |      -       |      -         | 79.15 ± 1.20  | 100.90 ± 1.46 |
 | ctranslate                   | 35.23 ± 4.01 | 55.72 ± 16.66  | 35.73 ± 10.87 |      -        |
