@@ -26,8 +26,8 @@ build_docker_image () {
     local repo_name="optimum-nvidia"
 
     # Check if the Docker image exists
-    if docker image inspect prem/optimum-nvidia:latest &> /dev/null; then
-        echo "Image 'prem/optimum-nvidia:latest' already exists."
+    if docker image inspect prem/optimum-nvidia:base &> /dev/null; then
+        echo "Image 'prem/optimum-nvidia:base' already exists."
         exit 0
     else
 
@@ -47,8 +47,8 @@ build_docker_image () {
 build_and_compile_model () {
     echo "Running and building the model inside Docker..."
 
-    if docker image inspect prem/optimum-nvidia:latest &> /dev/null; then
-        echo "Image 'prem/optimum-nvidia:latest' already exists."
+    if docker image inspect prem/optimum-nvidia:base &> /dev/null; then
+        echo "Image 'prem/optimum-nvidia:base' already exists."
         exit 0
     elif docker image inspect prem/optimum-nvidia:base &> /dev/null; then
         local model_build_path="$CURRENT_DIR/models/llama-2-7b-optimum_nvidia_build"

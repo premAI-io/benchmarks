@@ -2,14 +2,14 @@
 
 ########################################################################################################
 # Script: bench.sh
-# Description: This script runs benchmarks Nvidia-Optimum Llama benchmark.
+# Description: This script runs benchmarks Nvidia-Optimum Llama-2 benchmark.
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
-#   -p, --prompt      Prompt for benchmarks (default: 'Explain what is a transformer')
-#   -r, --repetitions Number of repetitions for benchmarks (default: 2)
-#   -m, --max_tokens  Maximum number of tokens for benchmarks (default: 100)
-#   -d, --device      Device for benchmarks (possible values: 'metal', 'gpu', and 'cpu', default: 'cpu')
+#   -p, --prompt      Prompt for benchmarks (default: 'Write an essay about the transformer model architecture')
+#   -r, --repetitions Number of repetitions for benchmarks (default: 10)
+#   -m, --max_tokens  Maximum number of tokens for benchmarks (default: 512)
+#   -d, --device      Device for benchmarks (possible values: 'metal', 'cuda', and 'cpu', default: 'cuda')
 #   -lf, --log_file   Logging file name.
 #   -md, --models_dir Models directory.
 #   -h, --help        Show this help message
@@ -17,21 +17,21 @@
 
 set -euo pipefail
 
+CURRENT_DIR="$(pwd)"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 print_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo "OPTIONS:"
-    echo "  -p, --prompt        Prompt for benchmarks (default: 'Explain what is a transformer')"
-    echo "  -r, --repetitions   Number of repetitions for benchmarks (default: 2)"
-    echo "  -m, --max_tokens    Maximum number of tokens for benchmarks (default: 100)"
-    echo "  -d, --device        Device for benchmarks (possible values: 'metal', 'gpu', and 'cpu', default: 'cpu')"
+    echo "  -p, --prompt        Prompt for benchmarks (default: 'Write an essay about the transformer model architecture')"
+    echo "  -r, --repetitions   Number of repetitions for benchmarks (default: 10)"
+    echo "  -m, --max_tokens    Maximum number of tokens for benchmarks (default: 512)"
+    echo "  -d, --device        Device for benchmarks (possible values: 'metal', 'cuda', and 'cpu', default: 'cuda')"
     echo "  -lf, --log_file     Logging file name."
     echo "  -md, --models_dir   Models directory."
     echo "  -h, --help          Show this help message"
     exit 1
 }
-
 check_cuda() {
     if command -v nvcc &> /dev/null
     then
@@ -67,6 +67,18 @@ check_python() {
 }
 
 setup() {
+
+    # Check if Logs folder exists else Make the logs folder
+    LOGS_FOLDER="$CURRENT_DIR/Logs"
+
+    if [ -d "$LOGS_FOLDER" ]; then
+        echo "Folder '$LOGS_FOLDER' already exists. Skipping."
+    else
+        # Create the folder
+        mkdir "$LOGS_FOLDER"
+        echo "'$LOGS_FOLDER' created."
+    fi
+
     echo -e "\nSetting up with $SCRIPT_DIR/setup.sh..."
     bash "$SCRIPT_DIR"/setup.sh
 }
@@ -140,18 +152,19 @@ while [ "$#" -gt 0 ]; do
             ;;
     esac
 done
-# Set default values if not provided
-PROMPT="${PROMPT:-"Explain what is a transformer"}"
-REPETITIONS="${REPETITIONS:-10}"
-MAX_TOKENS="${MAX_TOKENS:-100}"
-DEVICE="${DEVICE:-'cpu'}"
-LOG_FILENAME="${LOG_FILENAME:-"benchmark_$(date +'%Y%m%d%H%M%S').log"}"
-MODELS_DIR="${MODELS_DIR:-"/build"}"
 
 check_platform
 check_python
 setup
-# run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$LOG_FILENAME" "$MODELS_DIR"
+
+# Set default values if not provided
+PROMPT="${PROMPT:-"Write an essay about the transformer model architecture"}"
+REPETITIONS="${REPETITIONS:-10}"
+MAX_TOKENS="${MAX_TOKENS:-512}"
+DEVICE="${DEVICE:-'cuda'}"
+LOG_FILENAME="${LOG_FILENAME:-"/mnt/Logs/benchmark_optimum_nvidia_$(date +'%Y%m%d%H%M%S').log"}"
+MODELS_DIR="${MODELS_DIR:-"/build"}"
+
 
 docker run \
     --gpus all \
@@ -161,6 +174,7 @@ docker run \
     -e PYTHONUNBUFFERED=1 \
     -v "$(pwd)/models:/mnt/models" \
     -v "$(pwd)/models/llama-2-7b-optimum_nvidia_build:/build" \
+    -v "$LOGS_FOLDER:/mnt/Logs" \
     -v "$SCRIPT_DIR:/mnt/scripts" \
     -it prem/optimum-nvidia:base \
     python3 -u "/mnt/scripts/bench.py" \
