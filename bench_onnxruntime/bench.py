@@ -54,7 +54,9 @@ class ONNXBenchmark:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="llama.cpp Benchmark Llama model.")
+    parser = argparse.ArgumentParser(
+        description="ONXX Runtime Benchmark for Llama model."
+    )
     parser.add_argument(
         "--prompt",
         type=str,
