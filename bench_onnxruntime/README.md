@@ -32,3 +32,4 @@ This will take all the default values (see in the [bench.sh](/bench_onnxruntime/
 1. ONNX Runtime requires HuggingFace Llama2-7B weights. And it converts those weights into ONNX format using this [setup.sh](/bench_onnxruntime/setup.sh) script. So running this benchmark would assume that you already agree to the required terms and conditions and verified to download the weights.
 2. ONNX Runtime GPU only support Float16 precision format.
 3. Running LLama 2 using ONNX Runtime in CPU/Metal is too memory intensive, so benchmarking is skipped for those.
+4. Please note that, you might not be able to fix the current implementation of onnx benchmark. Since it requires some specific depedencies and anaconda support. Fix will be reflected in the upcoming versions.
