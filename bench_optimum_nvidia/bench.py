@@ -17,7 +17,10 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
-# Optimum-Nvidia is meant for Nvidia GPU usage. Not any other platform is supported.
+
+def log_and_print(message: str) -> None:
+    print(message)
+    logging.info(message)
 
 
 class LlamaOptimumNvidiaBenchmark:
@@ -69,7 +72,7 @@ class LlamaOptimumNvidiaBenchmark:
 
     def benchmark(self, prompt: str, max_tokens: int, repetitions: int) -> None:
         for i in range(repetitions):
-            print(
+            log_and_print(
                 f"Running repetition [{str(i+1).zfill(len(str(repetitions)))}/{repetitions}]"
             )
             tokens_per_second = self.run_model(prompt, max_tokens)
@@ -107,14 +110,14 @@ if __name__ == "__main__":
         help="Path to the models directory.",
     )
     args = parser.parse_args()
-    print(
+    log_and_print(
         f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} "
         + f"repetitions={args.repetitions} device={args.device}"
     )
     report = defaultdict(lambda: defaultdict(float))
 
     for precision in ("fp16", "fp32"):
-        print(f"Running Optimum-Nvidia on Llama with precision: {precision}")
+        log_and_print(f"Running Optimum-Nvidia on Llama with precision: {precision}")
         llama_transformers_pytorch_benchmark = LlamaOptimumNvidiaBenchmark(
             model_path=args.models_dir,
             device=args.device,
@@ -128,11 +131,11 @@ if __name__ == "__main__":
             "mean": np.mean(llama_transformers_pytorch_benchmark.results),
             "std": np.std(llama_transformers_pytorch_benchmark.results),
         }
-    print("Benchmark Report")
+    log_and_print("Benchmark Report")
     with open(args.log_file, "a") as file:
         for framework, quantizations in report.items():
             for quantization, stats in quantizations.items():
-                print(
+                log_and_print(
                     f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}"
                 )
                 print(
