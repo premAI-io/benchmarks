@@ -31,3 +31,4 @@ This will take all the default values (see in the [bench.sh](/bench_tinygrad/ben
 
 1. The current implementation of TinyGrad only supports Float16 for CUDA, CPU and Metal.
 2. This benchmark implementation expects the Raw Llama 2 weights from Meta AI to run LLama2 Model. So it assumes that you already accepted all the [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) before running it.
+3. Please note, the current implementation won't work if tried to reproduce. There are certain conflicts with the main tinygrad repo. This will be fixed in the upcoming versions.
