@@ -11,7 +11,7 @@
 
 | Engine                       | float32      | float16        | int8          | int4          |
 |------------------------------|--------------|----------------|---------------|---------------|
-| burn                         | 13.12 ± 0.85 |      -         |      -        |      -        |
+| burn                         | 10.04 ± 0.64 |      -         |      -        |      -        |
 | candle                       |      -       | 36.78 ± 2.17   |      -        |      -        |
 | llama.cpp                    |      -       |      -         | 79.15 ± 1.20  | 100.90 ± 1.46 |
 | ctranslate                   | 35.23 ± 4.01 | 55.72 ± 16.66  | 35.73 ± 10.87 |      -        |
@@ -26,9 +26,9 @@
 | DeepSpeed                    |      -       | 81.44 ± 8.13   |      -        |               |
 | PyTorch Lightning            | 24.85 ± 0.07 | 44.56 ± 2.89   | 10.50 ± 0.12  | 24.83 ± 0.05  |
 | Optimum Nvidia               | 110.36 ± 0.52| 109.09 ± 4.26  |      -        |      -        |
-| Nvidia TensorRT-LLM          | 60.39 ± 0.62 | 101.94 ± 8.34  |      -        |      -        |
+| Nvidia TensorRT-LLM          | 55.19 ± 1.03 | 85.03 ± 0.62   | 167.66 ± 2.05 | 235.18 ± 3.20 |
 
-*(Data updated: `29th January 2024`)
+*(Data updated: `31th January 2024`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -43,7 +43,7 @@
 **Performance Metrics:** (unit: Tokens / second)
 | Engine                | float32      | float16      | int8         | int4         |
 |-----------------------|--------------|--------------|--------------|--------------|
-| burn                  | 0.30 ± 0.09  |      -       |      -       |      -       |
+| burn                  | 0.21 ± 0.12  |      -       |      -       |      -       |
 | candle                |      -       | 3.43 ± 0.02  |      -       |      -       |
 | llama.cpp             |      -       |      -       | 13.24 ± 0.62 | 21.43 ± 0.47 |
 | ctranslate            |      -       |      -       | 1.87 ± 0.14  |      -       |
@@ -72,4 +72,4 @@
 | exllamav2             |      -       |      -        |      -       |      -       |
 | vllm                  |      -       |      -        |      -       |      -       |
 
-*(Data updated: `29th January 2024`)
+*(Data updated: `31th January 2024`)

@@ -1,5 +1,7 @@
 import argparse
 import json
+import logging
+import sys
 import time
 from collections import defaultdict
 from pathlib import Path
@@ -11,6 +13,18 @@ import torch
 from tensorrt_llm.runtime import ModelConfig, SamplingConfig
 from transformers import AutoTokenizer
 
+logging.getLogger("tensorrt_llm").setLevel(logging.ERROR)
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+
+
+def log_and_print(message: str) -> None:
+    print(message)
+    logging.info(message)
+
 
 class LlamaTensorRTMBenchmark:
     def __init__(
@@ -20,29 +34,30 @@ class LlamaTensorRTMBenchmark:
         precision: str,
         device: Optional[str] = "cuda",
     ) -> None:
-        assert precision in ["fp32", "fp16"], ValueError(
-            "Supported Precision: 'fp32' or 'fp16'"
+        assert device == "cuda", ValueError("Device other CUDA is not Supported")
+        assert precision in ["fp32", "fp16", "int8", "int4"], ValueError(
+            "Supported Precision: 'fp32', 'fp16', 'int8' and 'int4'"
         )
-        assert device == "cuda", ValueError("Supported device: 'cuda'")
 
         self.engine_dir_path = Path(model_path)
         engine_files = list(self.engine_dir_path.glob("*.engine"))
 
         if len(engine_files) == 0:
-            raise ValueError(".engine file does not exist. Try to build the engine.")
+            raise ValueError(f"Model path: {model_path} does not consist .engine file")
 
         self.engine_path = engine_files[0]
         self.config_path = self.engine_dir_path / "config.json"
 
-        self.precision, self.device = precision, device
+        self.precision, self.device, self.tokenizer_path = (
+            precision,
+            device,
+            tokenizer_path,
+        )
         self.results = []
-        self.tokenizer_path = tokenizer_path
 
-    def load_model(self):
+    def load_model(self) -> None:
         with open(self.config_path) as f:
             config = json.load(f)
-
-        # set the precision here
 
         use_gpt_attention_plugin = config["plugin_config"]["gpt_attention_plugin"]
         remove_input_padding = config["plugin_config"]["remove_input_padding"]
@@ -77,14 +92,15 @@ class LlamaTensorRTMBenchmark:
         )
 
         torch.cuda.set_device(runtime_rank % runtime_mapping.gpus_per_node)
-
         self.tokenizer = AutoTokenizer.from_pretrained(self.tokenizer_path)
+
         with open(self.engine_path, "rb") as f:
             engine_buffer = f.read()
 
         self.model = tensorrt_llm.runtime.GenerationSession(
             model_config, engine_buffer, runtime_mapping
         )
+
         return self
 
     def run_model(self, input_ids, input_lengths, sampling_config):
@@ -112,7 +128,7 @@ class LlamaTensorRTMBenchmark:
             end_id=2, pad_id=2, num_beams=1, temperature=0.1
         )
         for i in range(repetitions):
-            print(
+            log_and_print(
                 f"Running repetition [{str(i+1).zfill(len(str(repetitions)))}/{repetitions}]"
             )
             tokens_per_second = self.run_model(
@@ -150,18 +166,18 @@ if __name__ == "__main__":
         help="Path to the models directory.",
     )
     args = parser.parse_args()
-    print(
+    log_and_print(
         f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} "
         + f"repetitions={args.repetitions} device={args.device}"
     )
     report = defaultdict(lambda: defaultdict(float))
-
-    for precision in ("fp16", "fp32"):
-        print(
+    for precision in ["fp32", "fp16", "int8", "int4"]:
+        log_and_print(
             f"Running TensorRT LLM benchmark (pytorch backend) on Llama with precision: {precision}"
         )
+
         llama_tensorrt_benchmark = LlamaTensorRTMBenchmark(
-            model_path=f"{args.models_dir}/llama-2-7b-nvidia_tensorrt_build_{precision[2:]}",
+            model_path=f"{args.models_dir}/llama-2-7b-nvidia_tensorrt_build_{precision}",
             device=args.device,
             precision=precision,
             tokenizer_path=f"{args.models_dir}/llama-2-7b-hf",
@@ -171,16 +187,16 @@ if __name__ == "__main__":
             max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
         )
 
-        report["llama_transformers_pytorch"][precision] = {
+        report["llama_tensorrt_llm"][precision] = {
             "mean": np.mean(llama_tensorrt_benchmark.results),
             "std": np.std(llama_tensorrt_benchmark.results),
         }
 
-    print("Benchmark Report")
+    log_and_print("Benchmark Report")
     with open(args.log_file, "a") as file:
         for framework, quantizations in report.items():
             for quantization, stats in quantizations.items():
-                print(
+                log_and_print(
                     f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}"
                 )
                 print(
