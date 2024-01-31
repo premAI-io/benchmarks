@@ -25,10 +25,10 @@
 | AutoAWQ                      |      -       |      -         |      -        | 109.20 ± 3.28 |
 | DeepSpeed                    |      -       | 81.44 ± 8.13   |      -        |               |
 | PyTorch Lightning            | 24.85 ± 0.07 | 44.56 ± 2.89   | 10.50 ± 0.12  | 24.83 ± 0.05  |
-| Optimum Nvidia               | 110.36 ± 0.52| 109.09 ± 4.26  |      -        |      -        |
+| Optimum Nvidia               | 100.42 ± 0.03| 99.81 ± 1.76   |      -        |      -        |
 | Nvidia TensorRT-LLM          | 60.39 ± 0.62 | 101.94 ± 8.34  |      -        |      -        |
 
-*(Data updated: `29th January 2024`)
+*(Data updated: `31th January 2024`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -72,4 +72,4 @@
 | exllamav2             |      -       |      -        |      -       |      -       |
 | vllm                  |      -       |      -        |      -       |      -       |
 
-*(Data updated: `29th January 2024`)
+*(Data updated: `31th January 2024`)
