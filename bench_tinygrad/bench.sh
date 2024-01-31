@@ -2,7 +2,7 @@
 
 ########################################################################################################
 # Script: bench.sh
-# Description: This script runs benchmarks PyTorch-Transformers llama benchmark.
+# Description: This script runs benchmarks TinyGrad llama benchmark.
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
