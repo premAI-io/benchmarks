@@ -2,7 +2,7 @@
 
 [![GitHub Repo](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/tinygrad/tinygrad) &nbsp;
 
-TinyGrad is a minimalistic deep learning framework, very similar to [PyTorch](https://github.com/pytorch/pytorch). It's simplicity is inspired from the [micrograd](https://github.com/karpathy/micrograd) implementation by [Andrej Karpathy](https://karpathy.ai/). TinyGrad leverages uses different methods like lazy computation and kernel fusion techniques to run different operations. It supports various accelerators out of the box, including CPU, GPU etc. This benchmark implementation uses the [Llama 2 example](https://github.com/tinygrad/tinygrad/blob/master/examples/llama.py) written inside tinygrad/examples.
+TinyGrad is a minimalistic deep learning framework, very similar to [PyTorch](https://github.com/pytorch/pytorch). It's simplicity is inspired from the [micrograd](https://github.com/karpathy/micrograd) implementation by [Andrej Karpathy](https://karpathy.ai/). TinyGrad leverages different methods like lazy computation and kernel fusion techniques to run different operations. It supports various accelerators out of the box, including CPU, GPU etc. This benchmark implementation uses the [Llama 2 example](https://github.com/tinygrad/tinygrad/blob/master/examples/llama.py) written inside tinygrad/examples.
 
 
 ### 🚀 Running the TinyGrad Benchmark.
