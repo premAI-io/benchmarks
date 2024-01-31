@@ -8,6 +8,17 @@
 
 set -euo pipefail
 
+check_python() {
+    if command -v python &> /dev/null; then
+        PYTHON_CMD="python"
+    elif command -v python3 &> /dev/null; then
+        PYTHON_CMD="python3"
+    else
+        echo "Python is not installed."
+        exit 1
+    fi
+}
+
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <models_folder>"
     exit 1
@@ -28,8 +39,10 @@ check_and_create_directory() {
     fi
 }
 
+check_python
+
 if [ ! -d "$VENV_DIR" ]; then
-    python -m venv "$VENV_DIR"
+    "$PYTHON_CMD" -m venv "$VENV_DIR"
     echo "Virtual environment '$VENV_DIR' created."
     # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
@@ -47,7 +60,7 @@ if [ ! -e "$BURN_MODEL_FOLDER/$BURN_MODEL_NAME.cfg" ]; then
 
     if [ ! -d "$BURN_MODEL_FOLDER/params" ]; then
         echo "Dumping model from $BURN_MODEL_INPUT_DIR to $BURN_MODEL_FOLDER"
-        python "$BURN_FOLDER/llama-py/dump_model.py" "$BURN_MODEL_INPUT_DIR" "$BURN_MODEL_INPUT_DIR/tokenizer.model"
+        "$PYTHON_CMD" "$BURN_FOLDER/llama-py/dump_model.py" "$BURN_MODEL_INPUT_DIR" "$BURN_MODEL_INPUT_DIR/tokenizer.model"
         mv "$(pwd)/params" "$BURN_MODEL_FOLDER"
         cp "$BURN_MODEL_INPUT_DIR/tokenizer.model" "$BURN_MODEL_FOLDER"
     else
