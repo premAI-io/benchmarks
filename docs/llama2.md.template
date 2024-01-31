@@ -25,8 +25,8 @@
 | AutoAWQ                      |      -       |      -         |      -        | 109.20 ± 3.28 |
 | DeepSpeed                    |      -       | 81.44 ± 8.13   |      -        |               |
 | PyTorch Lightning            | 24.85 ± 0.07 | 44.56 ± 2.89   | 10.50 ± 0.12  | 24.83 ± 0.05  |
-| Optimum Nvidia               | 100.42 ± 0.03| 99.81 ± 1.76   |      -        |      -        |
-| Nvidia TensorRT-LLM          | 60.39 ± 0.62 | 101.94 ± 8.34  |      -        |      -        |
+| Optimum Nvidia               | 110.36 ± 0.52| 109.09 ± 4.26  |      -        |      -        |
+| Nvidia TensorRT-LLM          | 55.19 ± 1.03 | 85.03 ± 0.62   | 167.66 ± 2.05 | 235.18 ± 3.20 |
 
 *(Data updated: `<LAST_UPDATE>`)
 
