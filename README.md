@@ -1,7 +1,7 @@
 <div align="center">
 
   <h1 align="center">🕹️ Benchmarks</h1>
-    <p align="center">Performance Comparison of MLOps Engines, Frameworks, and Languages on Mainstream AI Models.</p>
+    <p align="center">A fully reproducible Performance Comparison of MLOps Engines, Frameworks, and Languages on Mainstream AI Models.</p>
 </div>
 
 [![GitHub contributors](https://img.shields.io/github/contributors/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/graphs/contributors)
@@ -31,8 +31,8 @@ Take a first glance of Llama-2-7B Model Performance Metrics Across Different Pre
 
 | Engine                       | float32      | float16        | int8          | int4          |
 |------------------------------|--------------|----------------|---------------|---------------|
-| burn                         | 10.04 ± 0.64 |      -         |      -        |      -        |
-| candle                       |      -       | 36.78 ± 2.17   |      -        |      -        |
+| [burn](/bench_burn/)                         | 10.04 ± 0.64 |      -         |      -        |      -        |
+| [candle](/bench_candle/)                       |      -       | 36.78 ± 2.17   |      -        |      -        |
 | llama.cpp                    |      -       |      -         | 79.15 ± 1.20  | 100.90 ± 1.46 |
 | ctranslate                   | 35.23 ± 4.01 | 55.72 ± 16.66  | 35.73 ± 10.87 |      -        |
 | tinygrad                     |      -       | 20.32 ± 0.06   |      -        |      -        |
