@@ -30,3 +30,4 @@ This will take all the default values (see in the [bench.sh](/bench_tensorrt_llm
 
 1. Running this benchmark requires [HuggingFace Llama2-7B weights](https://huggingface.co/meta-llama/Llama-2-7b). So running this benchmark would assume that you already agreed to the required [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) and got verified to download the weights.
 2. TensorRT LLM only works with CUDA. So it does not support Metal/CPU.
+3. For benchmarking quantized models on INT4/8 precision, TensorRT-LLM does not fully quantizes the model to INT8/4, rather it applies Mixed Precison quantization technique. So instead of INT4/8 we use Float16-INT4/8 quantized models. You can learn more about it in the [TensorRT-LLM Llama2 example](https://github.com/NVIDIA/TensorRT-LLM/blob/release/0.5.0/examples/llama/README.md).
