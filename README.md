@@ -28,7 +28,7 @@
 
 ## 📊 Quick glance towards performance metrics for Llama-2-7B
 
-Take a first glance of Llama-2-7B Model Performance Metrics Across Different Precision and Inference Engines.
+Take a first glance of Llama-2-7B Model Performance Metrics Across Different Precision and Inference Engines. Metric used: `tokens/sec`
 
 
 | Engine                                      | float32      | float16        | int8          | int4          |
@@ -102,7 +102,7 @@ Navigate to the benchmark folder and execute the `bench.sh` script with the desi
 ./bench_{bench_name}/bench.sh --prompt <value> --max_tokens <value> --repetitions <value> --log_file <file_path> --device <cpu/cuda/metal> --models_dir <path_to_models>
 ```
 
-Replace <value> with the specific values for your benchmark, and <file_path> and <path_to_models> with the appropriate file and directory paths.
+Replace `<value>` with the specific values for your benchmark, and `<file_path>` and `<path_to_models>` with the appropriate file and directory paths.
 
 ### Run All Benchmarks Collectively
 
