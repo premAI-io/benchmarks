@@ -32,7 +32,7 @@ install_vllm_cuda() {
 
    if [ "$CUDA_MAJOR" -gt 12 ] || { [ "$CUDA_MAJOR" -eq 12 ] && [ "$CUDA_MINOR" -ge 2 ]; }; then
         echo "Detected CUDA version >= 12.2"
-        pip install vllm torch > /dev/null
+        pip install vllm torch huggingface-cli > /dev/null
     else
         echo "Detected CUDA version < 12.2"
         PY_VERSION=$(get_python_version)
@@ -44,6 +44,7 @@ install_vllm_cuda() {
         # Download vllm for CUDA 11.8 and specified Python version
         pip install https://github.com/vllm-project/vllm/releases/download/v0.2.2/vllm-0.2.2+cu118-"$PY_VERSION"-"$PY_VERSION"-manylinux1_x86_64.whl
         pip install torch --upgrade --index-url https://download.pytorch.org/whl/cu118
+        pip install huggingface-cli
     fi
 }
 
@@ -90,6 +91,16 @@ install_device_specific_vllm() {
     esac
 }
 
+download_awq_weights() {
+    # download the sample file if not exists
+    if [ ! -d "$AWQ_WEIGHTS_FOLDER" ]; then
+        huggingface-cli download TheBloke/Llama-2-7B-AWQ --local-dir ./models/llama-2-7b-autoawq --exclude "*.git*" "*.md" "Notice" "LICENSE"
+    else
+        echo "Weights already downloaded!"
+    fi
+}
+
+
 # Main script starts here.
 
 check_python
@@ -116,3 +127,5 @@ else
     # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
 fi
+
+download_awq_weights
