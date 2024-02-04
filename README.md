@@ -12,6 +12,7 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 
+
 <details>
   <summary>Table of Contents</summary>
   <ol>
@@ -40,7 +41,7 @@ Take a first glance of Llama-2-7B Model Performance Metrics Across Different Pre
 | [tinygrad](/bench_tinygrad/)                |      -       | 20.32 ± 0.06   |      -        |      -        |
 | [onnx](/bench_onnxruntime/)                 |      -       | 54.16 ± 3.15   |      -        |      -        |
 | [transformers (pytorch)](/bench_pytorch/)   | 43.79 ± 0.61 | 46.39 ± 0.28   | 6.98 ± 0.05   | 21.72 ± 0.11  |
-| [vllm](/bench_vllm/)                        | 90.78 ± 1.60 | 90.54 ± 2.22   |      -        |      -        |
+| [vllm](/bench_vllm/)                        | 90.78 ± 1.60 | 90.54 ± 2.22   |      -        | 114.69 ± 11.20|
 | [exllamav2](/bench_exllamav2/)              |      -       |      -         | 121.63 ± 0.74 | 130.16 ± 0.35 |
 | [ctransformers](/bench_ctransformers/)      |      -       |      -         | 76.75 ± 10.36 | 84.26 ± 5.79  |
 | [AutoGPTQ](/bench_autogptq/)                | 42.01 ± 1.03 | 30.24 ± 0.41   |      -        |      -        |
@@ -50,11 +51,11 @@ Take a first glance of Llama-2-7B Model Performance Metrics Across Different Pre
 | [Optimum Nvidia](/bench_optimum_nvidia/)    | 110.36 ± 0.52| 109.09 ± 4.26  |      -        |      -        |
 | [Nvidia TensorRT-LLM](/bench_tensorrtllm/)  | 55.19 ± 1.03 | 85.03 ± 0.62   | 167.66 ± 2.05 | 235.18 ± 3.20 |
 
-*(Data updated: `31th January 2024`)
+*(Data updated: `04th February 2024`)
 
 
 
-- The above benchmarking is done on A100-80GB GPU. You can find more details for other devices like CPU/Metal under [docs](docs/llama2.md) folder.
+-- The above benchmarking is done on A100-80GB GPU. You can find more details for other devices like CPU/Metal under [docs](docs/llama2.md) folder.
 
 - Also if you want to see more detailed information about each of the benchmark, you can find those details the respective benchmark folders.
 
