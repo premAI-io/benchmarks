@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-AWQ_WEIGHTS_FOLDER="${AWQ_WEIGHTS_FOLDER:-"./models/llama-2-7b-awq"}"
+AWQ_WEIGHTS_FOLDER="${AWQ_WEIGHTS_FOLDER:-"../models/llama-2-7b-awq"}"
 
 check_python() {
     if command -v python &> /dev/null; then
