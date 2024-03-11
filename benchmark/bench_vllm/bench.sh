@@ -168,6 +168,6 @@ REPETITIONS="${REPETITIONS:-10}"
 MAX_TOKENS="${MAX_TOKENS:-512}"
 DEVICE="${DEVICE:-'cuda'}"
 LOG_FILENAME="${LOG_FILENAME:-"$LOGS_FOLDER/benchmark_vllm_$(date +'%Y%m%d%H%M%S').log"}"
-MODELS_DIR="${MODELS_DIR:-"./models"}"
+MODELS_DIR="${MODELS_DIR:-"../models"}"
 
 run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$LOG_FILENAME" "$MODELS_DIR"
