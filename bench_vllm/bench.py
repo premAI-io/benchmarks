@@ -1,4 +1,5 @@
 import argparse
+import gc
 import logging
 import sys
 import time
@@ -36,7 +37,9 @@ class LlamaVLLMBenchmark:
             self.model = LLM(model=self.model_path)
             self.model.dtype = self.precision_map[precision]
         else:
-            self.model = LLM(model=self.model_path, quantization="AWQ")
+            self.model = LLM(
+                model=self.model_path, quantization="AWQ", tensor_parallel_size=1
+            )
         return self
 
     def run_model(self, prompt: str, max_tokens: int) -> float:
@@ -59,10 +62,15 @@ class LlamaVLLMBenchmark:
             tokens_per_second = self.run_model(prompt, max_tokens)
             self.results.append(tokens_per_second)
 
-        del self.model
         if self.device == "cuda":
             parallel_state.destroy_model_parallel()
+            del self.model
+            gc.collect()
+            torch.cuda.empty_cache()
+            torch.distributed.destroy_process_group()
             torch.cuda.synchronize()
+        else:
+            del self.model
 
 
 if __name__ == "__main__":
