@@ -57,11 +57,12 @@ check_platform() {
 }
 
 check_python() {
-    if command -v python &> /dev/null
-    then
-        echo -e "\nUsing $(python --version)."
+    if command -v python &> /dev/null; then
+        PYTHON_CMD="python"
+    elif command -v python3 &> /dev/null; then
+        PYTHON_CMD="python3"
     else
-        echo -e "\nPython does not exist."
+        echo "Python is not installed."
         exit 1
     fi
 }
@@ -93,7 +94,7 @@ run_benchmarks() {
     local MODELS_DIR="$6"
 
     # shellcheck disable=SC1091
-    python "$SCRIPT_DIR"/bench.py \
+    "$PYTHON_CMD" "$SCRIPT_DIR"/bench.py \
         --prompt "$PROMPT" \
         --repetitions "$REPETITIONS" \
         --max_tokens "$MAX_TOKENS" \
@@ -176,7 +177,7 @@ docker run \
     -v "$(pwd)/models/llama-2-7b-optimum_nvidia_build:/build" \
     -v "$LOGS_FOLDER:/mnt/Logs" \
     -v "$SCRIPT_DIR:/mnt/scripts" \
-    -it prem/optimum-nvidia:base \
+    -it huggingface/optimum-nvidia:latest \
     python3 -u "/mnt/scripts/bench.py" \
         --prompt "$PROMPT" \
         --repetitions "$REPETITIONS" \
