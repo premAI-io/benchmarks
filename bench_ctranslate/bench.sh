@@ -153,7 +153,6 @@ setup "$MODELS_DIR"
 
 docker run -it \
     --gpus all \
-    -e PYTHONUNBUFFERED=1 \
     -v "$(pwd)/models:/mnt/models" \
     -v "$SCRIPT_DIR:/mnt/scripts" \
     -v "$LOGS_FOLDER:/mnt/Logs" \
