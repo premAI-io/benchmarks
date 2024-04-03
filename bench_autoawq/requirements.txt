@@ -1,6 +1,6 @@
 torch==2.2.2
-accelerate
-transformers
-optimum
-autoawq
-autoawq-kernels
+accelerate==0.28.0
+transformers==4.38.2
+optimum==1.18.0
+autoawq==0.2.4
+autoawq-kernels==0.0.6
