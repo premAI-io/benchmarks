@@ -1,2 +1,3 @@
 exllamav2
 tqdm
+tokenizers
