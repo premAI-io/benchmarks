@@ -1,2 +1,3 @@
-exllamav2
-tqdm
+exllamav2==0.0.17
+tqdm==4.66.2
+tokenizers==0.15.2

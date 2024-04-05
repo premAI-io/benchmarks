@@ -9,7 +9,7 @@ import torch
 from exllamav2 import ExLlamaV2, ExLlamaV2Cache
 from exllamav2.config import ExLlamaV2Config
 from exllamav2.generator import ExLlamaV2BaseGenerator, ExLlamaV2Sampler
-from exllamav2.tokenizer import ExLlamaV2Tokenizer
+from exllamav2.tokenizer.tokenizer import ExLlamaV2Tokenizer
 
 logging.getLogger("llama_cpp").setLevel(logging.ERROR)
 logging.basicConfig(

@@ -26,6 +26,7 @@ To get started quickly you can simply run:
 ```
 This will take all the default values (see in the [bench.sh](/bench_vllm/bench.sh) file) and perform the benchmarks. You can find all the benchmarks results for vLLM [here](/docs/llama2.md).
 
+**Note:** vLLM seems to very dependent on cuda versions. So it is recommended to either have cuda version `>= 12.0`. We also do have support for cuda version `< 12.0`.
 
 ### 👀 Some points to note:
 

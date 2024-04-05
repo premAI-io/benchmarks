@@ -21,6 +21,8 @@ check_python() {
     fi
 }
 
+check_python
+
 install_vllm_cuda() {
     CUDA_VERSION=$(nvcc --version | grep "release" | sed -n 's/.*release \(.*\),.*/\1/p')
 
@@ -32,9 +34,9 @@ install_vllm_cuda() {
     CUDA_MAJOR=$(echo "$CUDA_VERSION" | cut -d. -f1)
     CUDA_MINOR=$(echo "$CUDA_VERSION" | cut -d. -f2)
 
-   if [ "$CUDA_MAJOR" -gt 12 ] || { [ "$CUDA_MAJOR" -eq 12 ] && [ "$CUDA_MINOR" -ge 2 ]; }; then
+   if [ "$CUDA_MAJOR" -ge 12 ] || { [ "$CUDA_MAJOR" -eq 12 ] && [ "$CUDA_MINOR" -ge 0 ]; }; then
         echo "Detected CUDA version >= 12.2"
-        pip install vllm torch huggingface-cli > /dev/null
+        "$PYTHON_CMD" -m pip install vllm
     else
         echo "Detected CUDA version < 12.2"
         PY_VERSION=$(get_python_version)
@@ -44,9 +46,9 @@ install_vllm_cuda() {
         fi
         echo "Installing vllm for CUDA 11.8 with Python version: $PY_VERSION"
         # Download vllm for CUDA 11.8 and specified Python version
-        pip install https://github.com/vllm-project/vllm/releases/download/v0.2.2/vllm-0.2.2+cu118-"$PY_VERSION"-"$PY_VERSION"-manylinux1_x86_64.whl
-        pip install torch --upgrade --index-url https://download.pytorch.org/whl/cu118
-        pip install huggingface-cli
+        "$PYTHON_CMD" -m pip install https://github.com/vllm-project/vllm/releases/download/v0.2.2/vllm-0.2.2+cu118-"$PY_VERSION"-"$PY_VERSION"-manylinux1_x86_64.whl
+        "$PYTHON_CMD" -m pip install torch --upgrade --index-url https://download.pytorch.org/whl/cu118
+        "$PYTHON_CMD" -m pip install huggingface-cli==0.1
     fi
 }
 
@@ -105,8 +107,6 @@ download_awq_weights() {
 
 # Main script starts here.
 
-check_python
-
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <DEVICE>"
     exit 1
@@ -123,7 +123,7 @@ if [ ! -d "$VENV_DIR" ]; then
     echo "Virtual environment '$VENV_DIR' created."
     # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
-    pip install --upgrade pip > /dev/null
+    "$PYTHON_CMD" -m pip install --upgrade pip > /dev/null
     install_device_specific_vllm "$DEVICE"
 else
     # shellcheck disable=SC1091
