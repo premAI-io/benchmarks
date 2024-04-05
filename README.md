@@ -34,11 +34,9 @@ Take a first glance of Llama-2-7B Model Performance Metrics Across Different Pre
 
 | Engine                                      | float32      | float16        | int8          | int4          |
 |---------------------------------------------|--------------|----------------|---------------|---------------|
-| [burn](/bench_burn/)                        | 10.04 ± 0.64 |      -         |      -        |      -        |
 | [candle](/bench_candle/)                    |      -       | 36.78 ± 2.17   |      -        |      -        |
 | [llama.cpp](/bench_llamacpp/)               |      -       |      -         | 79.15 ± 1.20  | 100.90 ± 1.46 |
 | [ctranslate](/bench_ctranslate/)            | 35.23 ± 4.01 | 55.72 ± 16.66  | 35.73 ± 10.87 |      -        |
-| [tinygrad](/bench_tinygrad/)                |      -       | 20.32 ± 0.06   |      -        |      -        |
 | [onnx](/bench_onnxruntime/)                 |      -       | 54.16 ± 3.15   |      -        |      -        |
 | [transformers (pytorch)](/bench_pytorch/)   | 43.79 ± 0.61 | 46.39 ± 0.28   | 6.98 ± 0.05   | 21.72 ± 0.11  |
 | [vllm](/bench_vllm/)                        | 90.78 ± 1.60 | 90.54 ± 2.22   |      -        | 114.69 ± 11.20|
@@ -51,7 +49,7 @@ Take a first glance of Llama-2-7B Model Performance Metrics Across Different Pre
 | [Optimum Nvidia](/bench_optimum_nvidia/)    | 110.36 ± 0.52| 109.09 ± 4.26  |      -        |      -        |
 | [Nvidia TensorRT-LLM](/bench_tensorrtllm/)  | 55.19 ± 1.03 | 85.03 ± 0.62   | 167.66 ± 2.05 | 235.18 ± 3.20 |
 
-*(Data updated: `04th February 2024`)
+*(Data updated: `05th April 2024`)
 
 
 

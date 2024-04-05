@@ -11,11 +11,9 @@
 
 | Engine                                      | float32      | float16        | int8          | int4          |
 |---------------------------------------------|--------------|----------------|---------------|---------------|
-| [burn](/bench_burn/)                        | 10.04 ± 0.64 |      -         |      -        |      -        |
 | [candle](/bench_candle/)                    |      -       | 36.78 ± 2.17   |      -        |      -        |
 | [llama.cpp](/bench_llamacpp/)               |      -       |      -         | 79.15 ± 1.20  | 100.90 ± 1.46 |
 | [ctranslate](/bench_ctranslate/)            | 35.23 ± 4.01 | 55.72 ± 16.66  | 35.73 ± 10.87 |      -        |
-| [tinygrad](/bench_tinygrad/)                |      -       | 20.32 ± 0.06   |      -        |      -        |
 | [onnx](/bench_onnxruntime/)                 |      -       | 54.16 ± 3.15   |      -        |      -        |
 | [transformers (pytorch)](/bench_pytorch/)   | 43.79 ± 0.61 | 46.39 ± 0.28   | 6.98 ± 0.05   | 21.72 ± 0.11  |
 | [vllm](/bench_vllm/)                        | 90.78 ± 1.60 | 90.54 ± 2.22   |      -        | 114.69 ± 11.20|
@@ -28,7 +26,7 @@
 | [Optimum Nvidia](/bench_optimum_nvidia/)    | 110.36 ± 0.52| 109.09 ± 4.26  |      -        |      -        |
 | [Nvidia TensorRT-LLM](/bench_tensorrtllm/)  | 55.19 ± 1.03 | 85.03 ± 0.62   | 167.66 ± 2.05 | 235.18 ± 3.20 |
 
-*(Data updated: `04th February 2024`)
+*(Data updated: `05th April 2024`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -43,11 +41,9 @@
 **Performance Metrics:** (unit: Tokens / second)
 | Engine                                 | float32      | float16      | int8         | int4         |
 |----------------------------------------|--------------|--------------|--------------|--------------|
-| [burn](/bench_burn/)                   | 0.21 ± 0.12  |      -       |      -       |      -       |
 | [candle](/bench_candle/)               |      -       | 3.43 ± 0.02  |      -       |      -       |
 | [llama.cpp](/bench_llamacpp/)          |      -       |      -       | 13.24 ± 0.62 | 21.43 ± 0.47 |
 | [ctranslate](/bench_ctranslate/)       |      -       |      -       | 1.87 ± 0.14  |      -       |
-| [tinygrad](/bench_tinygrad/)           |      -       | 4.21 ± 0.38  |      -       |      -       |
 | [ctransformers](/bench_ctransformers/) |      -       |      -       | 13.50 ± 0.48 | 20.57 ± 2.50 |
 
 
@@ -59,7 +55,6 @@
 | Engine                                  | float32      | float16       | int8         | int4         |
 |-----------------------------------------|--------------|---------------|--------------|--------------|
 | [llama.cpp](/bench_llamacpp/)           |      -       |      -        | 30.11 ± 0.45 | 44.27 ± 0.12 |
-| [tinygrad](/bench_tinygrad/)            |      -       | 29.78 ± 1.18  |      -       |      -       |
 | [ctransformers](/bench_ctransformers/)  |      -       |      -        | 20.75 ± 0.36 | 34.04 ± 2.11 |
 
-*(Data updated: `04th February 2024`)
+*(Data updated: `05th April 2024`)
