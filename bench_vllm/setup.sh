@@ -48,7 +48,7 @@ install_vllm_cuda() {
         # Download vllm for CUDA 11.8 and specified Python version
         "$PYTHON_CMD" -m pip install https://github.com/vllm-project/vllm/releases/download/v0.2.2/vllm-0.2.2+cu118-"$PY_VERSION"-"$PY_VERSION"-manylinux1_x86_64.whl
         "$PYTHON_CMD" -m pip install torch --upgrade --index-url https://download.pytorch.org/whl/cu118
-        "$PYTHON_CMD" -m pip install huggingface-cli
+        "$PYTHON_CMD" -m pip install huggingface-cli==0.1
     fi
 }
 
