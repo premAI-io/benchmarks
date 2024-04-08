@@ -9,9 +9,13 @@
 set -euo pipefail
 
 # Main script starts here.
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CURRENT_DIR="$(pwd)"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 VENV_DIR="$SCRIPT_DIR/venv"
-AWQ_WEIGHTS_FOLDER="${AWQ_WEIGHTS_FOLDER:-"./models/llama-2-7b-awq"}"
+
+# Set default folder paths for AWQ weights
+LLAMA2_AWQ_WEIGHTS_FOLDER="$CURRENT_DIR/models/llama-2-7b-autoawq"
+MISTRAL_AWQ_WEIGHTS_FOLDER="$CURRENT_DIR/models/mistral-v0.1-7b-autoawq"
 
 check_python() {
     if command -v python &> /dev/null; then
@@ -25,11 +29,29 @@ check_python() {
 }
 
 download_awq_weights() {
-    # download the sample file if not exists
-    if [ ! -d "$AWQ_WEIGHTS_FOLDER" ]; then
-        huggingface-cli download TheBloke/Llama-2-7B-AWQ --local-dir ./models/llama-2-7b-autoawq --exclude "*.git*" "*.md" "Notice" "LICENSE"
+    local MODEL_NAME="$1"
+
+    # Set download directory based on MODEL_NAME
+    if [ "$MODEL_NAME" = "llama" ]; then
+        DOWNLOAD_DIR="$LLAMA2_AWQ_WEIGHTS_FOLDER"
+        MODEL_IDENTIFIER="TheBloke/Llama-2-7B-AWQ"
+    elif [ "$MODEL_NAME" = "mistral" ]; then
+        DOWNLOAD_DIR="$MISTRAL_AWQ_WEIGHTS_FOLDER"
+        MODEL_IDENTIFIER="TheBloke/Mistral-7B-v0.1-AWQ"
     else
-        echo "Weights already downloaded!"
+        echo "Invalid MODEL_NAME. Supported values: 'llama', 'mistral'"
+        exit 1
+    fi
+
+    # Check if weights folder exists
+    echo "$DOWNLOAD_DIR"
+
+    if [ ! -d "$DOWNLOAD_DIR" ]; then
+        # Download weights using huggingface-cli
+        echo "Downloading weights to $DOWNLOAD_DIR..."
+        huggingface-cli download "$MODEL_IDENTIFIER" --local-dir "$DOWNLOAD_DIR" --exclude "*.git*" "*.md" "Notice" "LICENSE"
+    else
+        echo "Weights already downloaded"
     fi
 }
 
@@ -38,13 +60,31 @@ check_python
 if [ ! -d "$VENV_DIR" ]; then
     "$PYTHON_CMD" -m venv "$VENV_DIR"
     echo "Virtual environment '$VENV_DIR' created."
-    # shellcheck disable=SC1091
-    source "$VENV_DIR/bin/activate"
+
+    # Activate virtual environment using specified activation scripts
+    if [ -f "$VENV_DIR/bin/activate" ]; then
+        "$VENV_DIR/bin/activate"
+    elif [ -f "$VENV_DIR/Scripts/activate" ]; then
+        "$VENV_DIR/Scripts/activate"
+    else
+        echo "Error: Unable to find virtual environment activation script."
+        exit 1
+    fi
+
     "$PYTHON_CMD" -m pip install --upgrade pip > /dev/null
     "$PYTHON_CMD" -m pip install -r "$SCRIPT_DIR/requirements.txt" --no-cache-dir > /dev/null
 else
-    # shellcheck disable=SC1091
-    source "$VENV_DIR/bin/activate"
+    # Activate virtual environment using specified activation scripts
+    if [ -f "$VENV_DIR/bin/activate" ]; then
+        "$VENV_DIR/bin/activate"
+    elif [ -f "$VENV_DIR/Scripts/activate" ]; then
+        "$VENV_DIR/Scripts/activate"
+    else
+        echo "Error: Unable to find virtual environment activation script."
+        exit 1
+    fi
 fi
 
-download_awq_weights
+
+MODEL_NAME="${1:-"llama"}"  # Use the first argument as MODEL_NAME if provided
+download_awq_weights "$MODEL_NAME"
