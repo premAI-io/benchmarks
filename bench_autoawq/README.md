@@ -8,16 +8,15 @@
 
 ### 🚀 Running the AutoAWQ Benchmark.
 
-You can run the AutoAWQ benchmark using the following command:
+We can run the AutoAWQ benchmark for two models: [Llama2](https://huggingface.co/meta-llama/Llama-2-7b) and [Mistral-7B v0.1](https://huggingface.co/mistralai/Mistral-7B-v0.1) Here is how we run benchmark for AutoAWQ.
 
 ```bash
 ./bench_autoawq/bench.sh \
-  --prompt <value> \            # Enter a prompt string
-  --max_tokens <value> \        # Maximum number of tokens to output
-  --repetitions <value> \       # Number of repititions to be made for the prompt.
-  --log_file <file_path> \      # A .log file underwhich we want to write the results.
-  --device <cpu/cuda/metal> \   # The device in which we want to benchmark.
-  --models_dir <path_to_models> # The directory in which AWQ model weights are present
+  --prompt <value> \               # Enter a prompt string
+  --max_tokens <value> \           # Maximum number of tokens to output
+  --repetitions <value> \          # Number of repititions to be made for the prompt.
+  --device <cpu/cuda/metal> \      # The device in which we want to benchmark.
+  --model_name <name-of-the-model> # The name of the model. (options: 'llama' for Llama2 and 'mistral' for Mistral-7B-v0.1)
 ```
 
 To get started quickly you can simply run:
@@ -25,7 +24,8 @@ To get started quickly you can simply run:
 ```bash
 ./bench_autoawq/bench.sh -d cuda
 ```
-This will take all the default values (see in the [bench.sh](/bench_autoawq/bench.sh) file) and do the benchmarks. You can find all the benchmarks results for AutoAWQ [here](/docs/llama2.md).
+
+This will take all the default values (see in the [bench.sh](/bench_autoawq/bench.sh) file) and do the benchmarks for Llama 2 model. You can find all the benchmarks results for AutoAWQ [here](/docs/llama2.md). You can also do a minimal benchmarking for Mistral 7
 
 
 ### 👀 Some points to note:
