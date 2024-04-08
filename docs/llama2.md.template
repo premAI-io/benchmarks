@@ -9,6 +9,9 @@
 
 **Performance Metrics:** (unit: Tokens / second)
 
+
+
+
 | Engine                                      | float32      | float16        | int8          | int4          |
 |---------------------------------------------|--------------|----------------|---------------|---------------|
 | [candle](/bench_candle/)                    |      -       | 36.78 ± 2.17   |      -        |      -        |
@@ -28,6 +31,11 @@
 
 *(Data updated: `<LAST_UPDATE>`)
 
+**Performance Metrics:** GPU Consumption (unit: Megabytes)
+
+| Engine                                      | float32      | float16        | int8          | int4          |
+|---------------------------------------------|--------------|----------------|---------------|---------------|
+| [AutoAWQ](/bench_autoawq/)                  |      -       |      -         |      -        | 109.20 ± 3.28 |
 
 ## M2 MAX 32GB Inference Bench:
 
