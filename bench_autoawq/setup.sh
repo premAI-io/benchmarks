@@ -14,8 +14,8 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 VENV_DIR="$SCRIPT_DIR/venv"
 
 # Set default folder paths for AWQ weights
-LLAMA2_AWQ_WEIGHTS_FOLDER="$CURRENT_DIR/models/llama-2-7b-autoawq"
-MISTRAL_AWQ_WEIGHTS_FOLDER="$CURRENT_DIR/models/mistral-v0.1-7b-autoawq"
+LLAMA2_AWQ_WEIGHTS_FOLDER="$CURRENT_DIR/models/llama-2-7b-chat-autoawq"
+MISTRAL_AWQ_WEIGHTS_FOLDER="$CURRENT_DIR/models/mistral-7b-v0.1-instruct-autoawq"
 
 check_python() {
     if command -v python &> /dev/null; then
@@ -34,10 +34,10 @@ download_awq_weights() {
     # Set download directory based on MODEL_NAME
     if [ "$MODEL_NAME" = "llama" ]; then
         DOWNLOAD_DIR="$LLAMA2_AWQ_WEIGHTS_FOLDER"
-        MODEL_IDENTIFIER="TheBloke/Llama-2-7B-AWQ"
+        MODEL_IDENTIFIER="TheBloke/Llama-2-7B-Chat-AWQ"
     elif [ "$MODEL_NAME" = "mistral" ]; then
         DOWNLOAD_DIR="$MISTRAL_AWQ_WEIGHTS_FOLDER"
-        MODEL_IDENTIFIER="TheBloke/Mistral-7B-v0.1-AWQ"
+        MODEL_IDENTIFIER="TheBloke/Mistral-7B-Instruct-v0.1-AWQ"
     else
         echo "Invalid MODEL_NAME. Supported values: 'llama', 'mistral'"
         exit 1
@@ -63,9 +63,11 @@ if [ ! -d "$VENV_DIR" ]; then
 
     # Activate virtual environment using specified activation scripts
     if [ -f "$VENV_DIR/bin/activate" ]; then
-        "$VENV_DIR/bin/activate"
+        # shellcheck disable=SC1091
+        source "$VENV_DIR/bin/activate"
     elif [ -f "$VENV_DIR/Scripts/activate" ]; then
-        "$VENV_DIR/Scripts/activate"
+        # shellcheck disable=SC1091
+        source "$VENV_DIR/Scripts/activate"
     else
         echo "Error: Unable to find virtual environment activation script."
         exit 1
@@ -76,9 +78,11 @@ if [ ! -d "$VENV_DIR" ]; then
 else
     # Activate virtual environment using specified activation scripts
     if [ -f "$VENV_DIR/bin/activate" ]; then
-        "$VENV_DIR/bin/activate"
+        # shellcheck disable=SC1091
+        source "$VENV_DIR/bin/activate"
     elif [ -f "$VENV_DIR/Scripts/activate" ]; then
-        "$VENV_DIR/Scripts/activate"
+        # shellcheck disable=SC1091
+        source "$VENV_DIR/Scripts/activate"
     else
         echo "Error: Unable to find virtual environment activation script."
         exit 1
