@@ -152,7 +152,7 @@ done
 
 check_platform
 check_python
-setup "$@"
+setup "$MODEL_NAME"
 
 # Set default values if not provided
 PROMPT="${PROMPT:-"Write an essay about the transformer model architecture"}"
