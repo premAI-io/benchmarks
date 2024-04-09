@@ -7,9 +7,25 @@
 - CUDA Version: 11.7
 - Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cuda --prompt 'Write an essay about the transformer model architecture'`
 
-**Performance Metrics:** (unit: Tokens / second)
+
+**Performance Metrics for Mistral 7B v0.1 Instruct:** (unit: Tokens / second)
 
 
+| Engine                                      | float32      | float16        | int8          | int4          |
+|---------------------------------------------|--------------|----------------|---------------|---------------|
+| [AutoAWQ](/bench_autoawq/)                  |      -       |      -         |      -        | 63.31 ± 2.11  |
+
+
+**GPU Memory consumption Metrics for Mistral 7B v0.1 Instruct:** (unit: MB)
+
+| Engine                                      | float32      | float16        | int8          | int4          |
+|---------------------------------------------|--------------|----------------|---------------|---------------|
+| [AutoAWQ](/bench_autoawq/)                  |      -       |      -         |      -        | 7149.19       |
+
+*(Data updated: `<LAST_UPDATE>`)
+
+
+**Performance Metrics for Llama 2:** (unit: Tokens / second)
 
 
 | Engine                                      | float32      | float16        | int8          | int4          |
@@ -23,7 +39,7 @@
 | [exllamav2](/bench_exllamav2/)              |      -       |      -         | 121.63 ± 0.74 | 130.16 ± 0.35 |
 | [ctransformers](/bench_ctransformers/)      |      -       |      -         | 76.75 ± 10.36 | 84.26 ± 5.79  |
 | [AutoGPTQ](/bench_autogptq/)                | 42.01 ± 1.03 | 30.24 ± 0.41   |      -        |      -        |
-| [AutoAWQ](/bench_autoawq/)                  |      -       |      -         |      -        | 109.20 ± 3.28 |
+| [AutoAWQ](/bench_autoawq/)                  |      -       |      -         |      -        | 64.50 ± 2.06  |
 | [DeepSpeed](/bench_deepspeed/)              |      -       | 81.44 ± 8.13   |      -        |               |
 | [PyTorch Lightning](/bench_lightning/)      | 24.85 ± 0.07 | 44.56 ± 2.89   | 10.50 ± 0.12  | 24.83 ± 0.05  |
 | [Optimum Nvidia](/bench_optimum_nvidia/)    | 110.36 ± 0.52| 109.09 ± 4.26  |      -        |      -        |
