@@ -1,103 +1,119 @@
 import logging
 import os
 import sys
-from collections import defaultdict
 
-import numpy as np
-import torch
 from awq import AutoAWQForCausalLM
 from transformers import AutoTokenizer
 
 sys.path.append(os.getcwd())
 
-
 from common.base import BaseBenchmarkClass  # noqa
-from common.cli import get_common_cli_arguments, get_logger  # noqa
-
-logger = get_logger(benchmark_name="auto-gptq", logging_level=logging.INFO)
+from common.utils import launch_cli, make_report  # noqa
 
 
 class AutoAWQBenchmark(BaseBenchmarkClass):
-    def __init__(self, model_path: str, precision: int, device: str) -> None:
-        assert device == "cuda", "Device other than CUDA is not supported for autoawq."
-        assert precision == "int4", "Precision other than INT4 is not supported."
+    def __init__(
+        self,
+        model_path: str,
+        model_name: str,
+        benchmark_name: str,
+        precision: str,
+        device: str,
+        experiment_name: str,
+    ) -> None:
+        super().__init__(
+            model_name=model_name,
+            model_path=model_path,
+            benchmark_name=benchmark_name,
+            experiment_name=experiment_name,
+            precision=precision,
+            device=device,
+        )
 
-        super().__init__(model_path=model_path, precision=precision, device=device)
-        self.logger = logger
+        # Have to do this step
+        # since tokenizer in autoawq is not the instruction tuned one for the instruction tuned model
 
-    def load_model(self):
+        if model_name == "llama":
+            self.tokenizer_folder = os.path.join(
+                os.getcwd(), "models", "llama-2-7b-chat-hf"
+            )
+        else:
+            self.tokenizer_folder = os.path.join(
+                os.getcwd(), "models", "mistral-7b-v0.1-instruct-hf"
+            )
+
+    def load_model_and_tokenizer(self):
         self.model = AutoAWQForCausalLM.from_quantized(
             self.model_path, fuse_layers=True, safetensors=True, strict=False
         )
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
+
+        self.tokenizer = AutoTokenizer.from_pretrained(self.tokenizer_folder)
         return self
 
-    def run_model(self, input_token_or_prompt: str, max_tokens: int):
+    def preprocess(self, prompt: str, chat_mode: bool = True):
+        if chat_mode:
+            prompt = [{"role": "user", "content": prompt}]
+            prompt = self.tokenizer.apply_chat_template(prompt, tokenize=False)
+
+        tokenized_input = self.tokenizer.encode(text=prompt)
+        tensor = self.tokenizer.encode(prompt, return_tensors="pt").to(self.device)
+        return {
+            "prompt": prompt,
+            "input_tokens": tokenized_input,
+            "tensor": tensor,
+            "num_input_tokens": len(tokenized_input),
+        }
+
+    def run_model(self, inputs: dict, max_tokens: int, temperature: float) -> dict:
+        tensor = inputs["tensor"]
+        num_input_tokens = inputs["num_input_tokens"]
+
         output = (
             self.model.generate(
-                input_ids=input_token_or_prompt, max_new_tokens=max_tokens
+                input_ids=tensor,
+                max_new_tokens=max_tokens,
+                temperature=temperature,
+                do_sample=True,
             )
             .detach()
-            .tolist()
+            .tolist()[0]
         )
-        return output[0]
 
-    def on_exit(self):
-        del self.model
-        torch.cuda.synchronize()
+        output_tokens = (
+            output[num_input_tokens:] if len(output) > num_input_tokens else output
+        )
+
+        return {"output_tokens": output_tokens, "num_output_tokens": len(output_tokens)}
+
+    def postprocess(self, output: dict) -> str:
+        output_tokens = output["output_tokens"]
+        return self.tokenizer.decode(output_tokens, skip_special_tokens=True)
 
 
 if __name__ == "__main__":
-    parser = get_common_cli_arguments(description="AWQ Benchmark.")
+    parser = launch_cli(description="AWQ Benchmark.")
     args = parser.parse_args()
 
-    logger.info(
-        f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} "
-        + f"repetitions={args.repetitions} device={args.device}"
-    )
-
-    report = defaultdict(lambda: defaultdict(float))
     model_folder = os.path.join(os.getcwd(), "models")
     model_name = (
-        f"{args.model_name}-2-7b-autoawq"
+        f"{args.model_name}-2-7b-chat-autoawq"
         if args.model_name == "llama"
-        else f"{args.model_name}-v0.1-7b-autoawq"
+        else f"{args.model_name}-7b-v0.1-instruct-autoawq"
     )
 
-    precision = 4
+    runner_dict = {
+        "cuda": [
+            {"precision": "int4", "model_path": os.path.join(model_folder, model_name)}
+        ]
+    }
 
     if args.device == "cpu":
-        logger.info("Skipping running model on int4 on CPU, not implemented for Half")
+        logging.info("Skipping running model on int4 on CPU, not implemented for Half")
         pass
     else:
-        logger.info(
-            f"Running AutoGPT benchmark on {args.model_name} with {precision} bit precision"
+        make_report(
+            args=args,
+            benchmark_class=AutoAWQBenchmark,
+            runner_dict=runner_dict,
+            benchmark_name="AutoAWQ",
         )
-        autogptq_benchmark = AutoAWQBenchmark(
-            model_path=f"{model_folder}/{model_name}",
-            device=args.device,
-            precision=f"int{precision}",
-        ).load_model()
-        autogptq_benchmark.benchmark_cuda(
-            max_tokens=args.max_tokens,
-            prompt=args.prompt,
-            repetitions=args.repetitions,
-        )
-
-        report[f"{args.model_name} AutoAWQ (token/sec)"][f"INT-{precision}"] = {
-            "mean": np.mean(autogptq_benchmark.tps_results),
-            "std": np.std(autogptq_benchmark.tps_results),
-        }
-
-        report[f"{args.model_name} AutoAWQ memory-usage in MB"][f"INT-{precision}"] = {
-            "mean": np.mean(autogptq_benchmark.memory_usage_results),
-            "std": np.std(autogptq_benchmark.memory_usage_results),
-        }
-
-        logger.info("Benchmark Report")
-
-        for framework, quantizations in report.items():
-            for quantization, stats in quantizations.items():
-                logger.info(
-                    f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}"
-                )
