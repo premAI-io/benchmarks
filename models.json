@@ -1,22 +1,12 @@
 [
     {
-        "url": "https://huggingface.co/TheBloke/Llama-2-7B-GGUF/resolve/main/llama-2-7b.Q8_0.gguf",
-        "file": "llama-2-7b.Q8_0.gguf",
-        "folder": "./models/llama-2-7b-gguf"
+        "url": "https://prem-models.s3.eu-central-1.amazonaws.com/llama-v2/Llama-2-7b-chat-hf.zip",
+        "file": "llama-2-7b-chat-hf.zip",
+        "folder": "./models/llama-2-7b-chat-hf"
     },
     {
-        "url": "https://huggingface.co/TheBloke/Llama-2-7B-GGUF/resolve/main/llama-2-7b.Q4_0.gguf",
-        "file": "llama-2-7b.Q4_0.gguf",
-        "folder": "./models/llama-2-7b-gguf"
-    },
-    {
-        "url": "https://prem-models.s3.eu-central-1.amazonaws.com/llama-v2/llama-2-7b-hf.zip",
-        "file": "llama-2-7b-hf.zip",
-        "folder": "./models/llama-2-7b-hf"
-    },
-    {
-        "url": "https://prem-models.s3.eu-central-1.amazonaws.com/llama-v2/llama-2-7b-raw.zip",
-        "file": "llama-2-7b-raw.zip",
-        "folder": "./models/llama-2-7b-raw"
+        "url": "https://prem-models.s3.eu-central-1.amazonaws.com/mistral-0.1/Mistral-7B-Instruct-v0.1.zip",
+        "file": "mistral-7b-v0.1-instruct.zip",
+        "folder": "./models/mistral-7b-v0.1-instruct-hf"
     }
 ]
