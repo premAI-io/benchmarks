@@ -24,7 +24,7 @@ def get_logger(
         logfile_name = (
             f"benchmark_{benchmark_name}_{datetime.now().strftime('%Y%m%d%H%M%S')}.log"
         )
-        log_file_path = os.path.join(os.getcwd(), "Logs", logfile_name)
+        log_file_path = os.path.join(os.getcwd(), "logs", logfile_name)
 
     file_handler = logging.FileHandler(log_file_path)
     file_handler.setFormatter(formatter)
