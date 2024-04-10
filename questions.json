@@ -1,0 +1,32 @@
+[
+    {
+        "prompt": "I'm making pancakes for breakfast. I added a cup of flour, a teaspoon of salt, and a few tablespoons of sugar to a bowl. I stirred it together, then added a cup of milk, a beaten egg, and a few tablespoons of oil, and stirred until just mixed. Then I put 1/4 a cup on a hot frying pan, and flipped it when brown. But they're terrible! Why? List the main reason. Answer as much precise as possible with one sentence.",
+        "max_tokens": 512,
+        "temperature": 0.1,
+        "expected": "baking soda is missing. a leavening agent should be added"
+    },
+    {
+        "prompt": "42 birds are sitting on a tree branch. A hunter passes, shoots one dead, and misses two. How many birds are left on the branch? Answer as much precise as possible with one sentence.",
+        "max_tokens": 512,
+        "temperature": 0.1,
+        "expected": "0. all the birds flew away after the first shot"
+    },
+    {
+        "prompt": "How many mistakes can you find in the following sentence? Sentence: Its to much to loose if your talking about hundred’s of dollars. Answer as much precise as possible with one sentence.",
+        "max_tokens": 512,
+        "temperature": 0.1,
+        "expected": "5 mistakes: it's too much to lose if you're talking about hundreds of dollars"
+    },
+    {
+        "prompt": "You are an expert on agricultural chemical compounds. Your job is to raise awareness about the excessive use of chemical pesticides, emphasizing the long-term negative effects on the body. Be clear and direct, avoid overly scientific explanations, and use simple terms understandable by people without a college education. Answer as much precise as possible with one sentence.",
+        "max_tokens": 512,
+        "temperature": 0.1,
+        "expected": "Using too many chemical pesticides on our crops can lead to serious health problems over time, including cancer and damage to our nervous system."
+    },
+    {
+        "prompt": "During the Manhattan Project, John von Neumann suggested how to maximize the destruction caused by a detonating bomb. Which was his idea? Answer as much precise as possible with one sentence.",
+        "max_tokens": 512,
+        "temperature": 0.1,
+        "expected": "John von Neumann suggested detonating the bomb at a high altitude instead of on the ground to maximize the blast radius and thus the area of destruction."
+    }
+]
