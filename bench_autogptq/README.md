@@ -10,16 +10,15 @@
 
 ### 🚀 Running the AutoGPTQ Benchmark.
 
-You can run the AutoGPTQ benchmark using the following command:
+We can run the AutoAWQ benchmark for two models: [Llama2-chat](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GPTQ) and [Mistral-7B v0.1-instruct](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GPTQ) Here is how we run benchmark for AutoAWQ.
 
 ```bash
-./bench_autogptq/bench.sh \
-  --prompt <value> \            # Enter a prompt string
-  --max_tokens <value> \        # Maximum number of tokens to output
-  --repetitions <value> \       # Number of repititions to be made for the prompt.
-  --log_file <file_path> \      # A .log file underwhich we want to write the results.
-  --device <cpu/cuda/metal> \   # The device in which we want to benchmark.
-  --models_dir <path_to_models> # The directory in which GPTQ model weights are present
+./bench_autoawq/bench.sh \
+  --prompt <value> \               # Enter a prompt string
+  --max_tokens <value> \           # Maximum number of tokens to output
+  --repetitions <value> \          # Number of repititions to be made for the prompt.
+  --device <cpu/cuda/metal> \      # The device in which we want to benchmark.
+  --model_name <name-of-the-model> # The name of the model. (options: 'llama' for Llama2 and 'mistral' for Mistral-7B-v0.1)
 ```
 
 To get started quickly you can simply run:
