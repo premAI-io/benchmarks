@@ -53,7 +53,8 @@ class BaseBenchmarkClass(ABC):
         # Make an experiment folder for each of the benchmark
         self.log_folder = os.path.join(os.getcwd(), "logs", model_name, experiment_name)
         self._log_file_path = os.path.join(self.log_folder, "performance.log")
-        os.makedirs(self.log_folder)
+        if not os.path.isdir(self.log_folder):
+            os.makedirs(self.log_folder)
 
         self.logger = get_logger(
             benchmark_name=benchmark_name, log_file_path=self._log_file_path
