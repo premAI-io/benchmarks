@@ -1,112 +1,119 @@
-import argparse
-import logging
+import os
 import sys
-import time
-from collections import defaultdict
-from typing import Optional
 
-import numpy as np
 from ctransformers import AutoModelForCausalLM
+from transformers import AutoTokenizer
 
-logging.getLogger("ctransformers").setLevel(logging.ERROR)
-logging.basicConfig(
-    stream=sys.stdout,
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
+sys.path.append(os.getcwd())
+
+from common.base import BaseBenchmarkClass  # noqa
+from common.utils import launch_cli, make_report  # noqa
 
 
-class LlamaCTransformersBenchmark:
+class CTransformersBenchmark(BaseBenchmarkClass):
     def __init__(
         self,
         model_path: str,
-        device: Optional[str] = "cpu",
+        model_name: str,
+        benchmark_name: str,
+        precision: str,
+        device: str,
+        experiment_name: str,
     ) -> None:
-        self.model_path, self.device = model_path, device
-        self.results = []
-        self.device = device
+        super().__init__(
+            model_path=model_path,
+            model_name=model_name,
+            benchmark_name=benchmark_name,
+            precision=precision,
+            device=device,
+            experiment_name=experiment_name,
+        )
 
-    def load_model(self):
-        # FIXME: Not sure how to get num layers for each model to know how many to fit into VRAM.
+        if model_name == "llama":
+            self.tokenizer_folder = os.path.join(
+                os.getcwd(), "models", "llama-2-7b-chat-hf"
+            )
+        else:
+            self.tokenizer_folder = os.path.join(
+                os.getcwd(), "models", "mistral-7b-v0.1-instruct-hf"
+            )
+
+    def load_model_and_tokenizer(self):
+        self.tokenizer = AutoTokenizer.from_pretrained(self.tokenizer_folder)
+
+        model_file_mapping = {
+            "llama": {
+                "int4": "llama-2-7b-chat.Q4_K_M.gguf",
+                "int8": "llama-2-7b-chat.Q8_0.gguf",
+            },
+            "mistral": {
+                "int4": "mistral-7b-instruct-v0.1.Q4_K_M.gguf",
+                "int8": "mistral-7b-instruct-v0.1.Q8_0.gguf",
+            },
+        }
+
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_path,
-            model_type="llama",
+            model_file=model_file_mapping[self.model_name][self.precision],
+            model_type=self.model_name,
             gpu_layers=50 if self.device in ["cuda", "metal"] else 0,
+            # context_length=1024 (This exceeds the memory without changing the quality)
         )
         return self
 
-    def run_model(self, prompt: str, max_tokens: int) -> float:
-        start = time.time()
-        output = self.model(prompt, max_new_tokens=max_tokens)
-        delta = time.time() - start
-        tokens = len(self.model.tokenize(output))
-        return tokens / delta
+    def preprocess(self, prompt: str, chat_mode: bool = True):
+        if chat_mode:
+            prompt = [{"role": "user", "content": prompt}]
+            prompt = self.tokenizer.apply_chat_template(prompt, tokenize=False)
 
-    def benchmark(self, prompt: str, max_tokens: int, repetitions: int) -> None:
-        for i in range(repetitions):
-            logging.info(
-                f"Running repetition [{str(i+1).zfill(len(str(repetitions)))}/{repetitions}]"
-            )
-            tokens_per_second = self.run_model(prompt, max_tokens)
-            self.results.append(tokens_per_second)
+        tokenized_input = self.tokenizer.encode(text=prompt)
+        return {
+            "prompt": prompt,
+            "input_tokens": tokenized_input,
+            "tensor": None,
+            "num_input_tokens": len(tokenized_input),
+        }
+
+    def run_model(self, inputs: dict, max_tokens: int, temperature: float) -> dict:
+        prompt = inputs["prompt"]
+        output = self.model(
+            prompt, stream=False, max_new_tokens=max_tokens, temperature=temperature
+        )
+        generated_tokens = self.tokenizer.encode(output)
+
+        # Note: CTransformers produces tokens after the input tokens
+        return {
+            "output_prompt": output,
+            "output_tokens": generated_tokens,
+            "num_output_tokens": len(generated_tokens),
+        }
+
+    def postprocess(self, output: dict) -> str:
+        output_tokens = output["output_tokens"]
+        return self.tokenizer.decode(output_tokens, skip_special_tokens=True)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="CTransformers Benchmark.")
-    parser.add_argument(
-        "--prompt",
-        type=str,
-        help="The prompt for the model.",
-    )
-    parser.add_argument("--max_tokens", type=int, help="The maximum number of tokens.")
-    parser.add_argument(
-        "--repetitions",
-        type=int,
-        help="The number of repetitions for the benchmark.",
-    )
-    parser.add_argument(
-        "--device",
-        help="Device to use for the benchmark.",
-    )
-    parser.add_argument(
-        "--log_file",
-        type=str,
-        help="Path to the log file for writing logs (in append mode).",
-    )
-    parser.add_argument(
-        "--models_dir",
-        type=str,
-        help="Path to the models directory.",
-    )
+    parser = launch_cli(description="CTransformers Benchmark.")
     args = parser.parse_args()
-    logging.info(
-        f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} "
-        + f"repetitions={args.repetitions} device={args.device}"
-    )
-    report = defaultdict(lambda: defaultdict(float))
-    for quantize in ("Q8_0", "Q4_0"):
-        logging.info(f"Running CTransformer benchmark on Llama with {quantize}")
-        llama_ctransformers_bench = LlamaCTransformersBenchmark(
-            f"{args.models_dir}/llama-2-7b-gguf/llama-2-7b.{quantize}.gguf",
-            device=args.device,
-        ).load_model()
-        llama_ctransformers_bench.benchmark(
-            max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
-        )
-        q = "int8" if quantize == "Q8_0" else "int4"
-        report["llama_ctransformers"][q] = {
-            "mean": np.mean(llama_ctransformers_bench.results),
-            "std": np.std(llama_ctransformers_bench.results),
-        }
 
-    logging.info("Benchmark report")
-    with open(args.log_file, "a") as file:
-        for framework, quantizations in report.items():
-            for quantization, stats in quantizations.items():
-                logging.info(
-                    f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}"
-                )
-                print(
-                    f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}",
-                    file=file,
-                )
+    model_folder = os.path.join(os.getcwd(), "models")
+    model_name = (
+        f"{args.model_name}-2-7b-chat-gguf"
+        if args.model_name == "llama"
+        else f"{args.model_name}-7b-v0.1-instruct-gguf"
+    )
+
+    runner_dict = {
+        "cuda": [
+            {"precision": "int4", "model_path": os.path.join(model_folder, model_name)},
+            {"precision": "int8", "model_path": os.path.join(model_folder, model_name)},
+        ]
+    }
+
+    make_report(
+        args=args,
+        benchmark_class=CTransformersBenchmark,
+        runner_dict=runner_dict,
+        benchmark_name="CTransformers",
+    )
