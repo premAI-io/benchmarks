@@ -32,7 +32,6 @@ print_usage() {
     exit 1
 }
 
-CURRENT_DIR="$(pwd)"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
@@ -74,15 +73,6 @@ check_python() {
 
 setup() {
     local MODEL_NAME="${1:-llama}"
-    LOGS_FOLDER="$CURRENT_DIR/Logs"
-
-    if [ ! -d "$LOGS_FOLDER" ]; then
-        mkdir -p "$LOGS_FOLDER"
-        echo "'$LOGS_FOLDER' created."
-    else
-        echo "Folder '$LOGS_FOLDER' already exists. Skipping."
-    fi
-
     echo -e "\nSetting up with $SCRIPT_DIR/setup.sh..."
     bash "$SCRIPT_DIR/setup.sh" "$MODEL_NAME"
 }
