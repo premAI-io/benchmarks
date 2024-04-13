@@ -53,7 +53,8 @@ class BaseBenchmarkClass(ABC):
         # Make an experiment folder for each of the benchmark
         self.log_folder = os.path.join(os.getcwd(), "logs", model_name, experiment_name)
         self._log_file_path = os.path.join(self.log_folder, "performance.log")
-        os.makedirs(self.log_folder)
+        if not os.path.isdir(self.log_folder):
+            os.makedirs(self.log_folder)
 
         self.logger = get_logger(
             benchmark_name=benchmark_name, log_file_path=self._log_file_path
@@ -74,7 +75,9 @@ class BaseBenchmarkClass(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def preprocess(self, prompt: str, chat_mode: bool = False):
+    def preprocess(
+        self, prompt: str, chat_mode: bool = True, for_benchmarks: bool = True
+    ):
         """
         Should return a dict
             - prompt: (str) The prompt
@@ -115,11 +118,31 @@ class BaseBenchmarkClass(ABC):
     def on_exit(self):
         pass
 
+    def get_chat_template_with_instruction(
+        self, prompt: str, for_benchmarks: bool = True
+    ):
+        if not for_benchmarks:
+            system_content = "You answers should always be to the point, precise and not more than 2 sentences strictly"
+            if self.model_name == "mistral":
+                template = [
+                    {"role": "user", "content": system_content},
+                    {"role": "assistant", "content": "Sure, noted."},
+                    {"role": "user", "content": prompt},
+                ]
+            else:
+                template = [
+                    {"role": "system", "content": system_content},
+                    {"role": "user", "content": prompt},
+                ]
+            return template
+        else:
+            return [{"role": "user", "content": prompt}]
+
     def _benchmark_cuda(self, prompt: str, max_tokens: int, temperature: float):
         start_event = torch.cuda.Event(enable_timing=True)
         end_event = torch.cuda.Event(enable_timing=True)
 
-        inputs = self.preprocess(prompt=prompt)
+        inputs = self.preprocess(prompt=prompt, for_benchmarks=True)
 
         with self.memory_tracker.track():
             torch.cuda.synchronize()
@@ -161,15 +184,20 @@ class BaseBenchmarkClass(ABC):
         self.on_exit()
 
     def get_answers(self):
+        try:
+            self.model is not None
+        except AttributeError as e:  # noqa
+            self.load_model_and_tokenizer()
+
         self.logger.info("=> Running quality checks for LLM")
 
         for question in tqdm(self.questions, total=len(self.questions)):
             prompt = question["prompt"]
             max_tokens = question["max_tokens"]
             temperature = question["temperature"]
-            expected = question["expected"]
+            expected = question["expected"][self.model_name]
 
-            inputs = self.preprocess(prompt=prompt)
+            inputs = self.preprocess(prompt=prompt, for_benchmarks=False)
             output_dict = self.run_model(
                 inputs=inputs, max_tokens=max_tokens, temperature=temperature
             )
@@ -177,7 +205,7 @@ class BaseBenchmarkClass(ABC):
 
             self.answers.append(
                 {
-                    "question": question,
+                    "question": prompt,
                     "max_token": max_tokens,
                     "temperature": temperature,
                     "actual": output,
