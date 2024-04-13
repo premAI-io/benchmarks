@@ -1,64 +1,49 @@
-import argparse
-import logging
 import os
 import sys
-from collections import defaultdict
-from time import perf_counter
-from typing import Optional
 
-import numpy as np
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-logging.getLogger("transformers").setLevel(logging.ERROR)
-logging.basicConfig(
-    stream=sys.stdout,
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
+sys.path.append(os.getcwd())
+
+from common.base import BaseBenchmarkClass  # noqa
+from common.utils import launch_cli, make_report  # noqa
 
 
-class LlamaPyTorchBenchmark:
+class PyTorchBenchmark(BaseBenchmarkClass):
     def __init__(
-        self, model_path: str, precision: str, device: Optional[str] = "cpu"
+        self,
+        model_path: str,
+        model_name: str,
+        benchmark_name: str,
+        precision: str,
+        device: str,
+        experiment_name: str,
     ) -> None:
-        self.model_path = model_path
-        self.precision = precision
-        self.results = []
-        self.precision_to_dtype_map = {
-            "fp16": torch.float16,
-            "fp32": torch.float32,
-        }
-
-        # some of the conditions where things can not be supported
-        assert precision in ["fp16", "fp32", "int4", "int8"], ValueError(
-            "Supported precisions for this benchmarks are: 'fp16', 'fp32', 'int4', 'int8'"
+        super().__init__(
+            model_name=model_name,
+            model_path=model_path,
+            benchmark_name=benchmark_name,
+            experiment_name=experiment_name,
+            precision=precision,
+            device=device,
         )
-        assert device in ["cpu", "cuda", "metal"], ValueError(
-            "Supported devices are: 'cpu', 'cuda', 'metal'"
-        )
-
-        if device == "cpu" and precision != "fp32":
-            raise ValueError(
-                "When device is set to CPU, fp32 is the only supported precision."
-            )
-
-        self.device = "cuda:0" if device == "cuda" else device
 
     @torch.inference_mode()
-    def load_model(self):
-        """Loads the model into various formats and device."""
+    def load_model_and_tokenizer(self):
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
+        precision_dtype_mapping = {"float16": torch.float16, "float32": torch.float32}
 
-        if self.precision in ["fp16", "fp32"]:
+        if self.precision in ["float16", "float32"]:
+            device = "cuda:0" if self.device == "cuda" else self.device
             model_args = {
-                "device_map": self.device,
-                "torch_dtype": self.precision_to_dtype_map[self.precision],
+                "device_map": device,
+                "torch_dtype": precision_dtype_mapping[self.precision],
             }
             self.model = AutoModelForCausalLM.from_pretrained(
                 self.model_path, **model_args
             )
-        elif self.precision in ["int4", "int8"] and self.device == "cuda:0":
+        elif self.precision in ["int4", "int8"] and self.device in ["cuda:0", "cuda"]:
             from transformers import BitsAndBytesConfig
 
             bnb_config = (
@@ -83,97 +68,83 @@ class LlamaPyTorchBenchmark:
                 f"Invalid configuration: {self.device}, {self.precision}"
                 "INT4/8 requires CUDA to execute."
             )
-
         return self
 
-    @torch.inference_mode()
-    def run_model(self, prompt: str, max_tokens: int) -> float:
-        tokenized_input = self.tokenizer.encode(prompt, return_tensors="pt").to(
-            self.device
-        )
-        start = perf_counter()
-        output = self.model.generate(
-            input_ids=tokenized_input, max_new_tokens=max_tokens
-        )
-        delta = perf_counter() - start
-        return len(output[0]) / delta
-
-    def benchmark(self, prompt: str, max_tokens: int, repetitions: int) -> None:
-        for i in range(repetitions):
-            logging.info(
-                f"Running repetition [{str(i+1).zfill(len(str(repetitions)))}/{repetitions}]"
+    def preprocess(self, prompt: str, chat_mode: bool = True, for_benchmarks=True):
+        if chat_mode:
+            template = self.get_chat_template_with_instruction(
+                prompt=prompt, for_benchmarks=for_benchmarks
             )
-            tokens_per_second = self.run_model(prompt, max_tokens)
-            self.results.append(tokens_per_second)
-        del self.model
+            prompt = self.tokenizer.apply_chat_template(template, tokenize=False)
+
+        tokenized_input = self.tokenizer.encode(text=prompt)
+        tensor = self.tokenizer.encode(prompt, return_tensors="pt").to(self.device)
+        return {
+            "prompt": prompt,
+            "input_tokens": tokenized_input,
+            "tensor": tensor,
+            "num_input_tokens": len(tokenized_input),
+        }
+
+    def run_model(self, inputs: dict, max_tokens: int, temperature: float) -> dict:
+        tensor = inputs["tensor"]
+        num_input_tokens = inputs["num_input_tokens"]
+
+        output = (
+            self.model.generate(
+                input_ids=tensor,
+                max_new_tokens=max_tokens,
+                temperature=temperature,
+                do_sample=True,
+                pad_token_id=self.tokenizer.eos_token_id,
+            )
+            .detach()
+            .tolist()[0]
+        )
+
+        output_tokens = (
+            output[num_input_tokens:] if len(output) > num_input_tokens else output
+        )
+        return {"output_tokens": output_tokens, "num_output_tokens": len(output_tokens)}
+
+    def postprocess(self, output: dict) -> str:
+        output_tokens = output["output_tokens"]
+        return self.tokenizer.decode(output_tokens, skip_special_tokens=True)
+
+    def on_exit(self):
         if self.device == "cuda:0":
+            del self.model
             torch.cuda.synchronize()
+        else:
+            del self.model
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="CTransformers Benchmark.")
-    parser.add_argument(
-        "--prompt",
-        type=str,
-        help="The prompt for the model.",
-    )
-    parser.add_argument("--max_tokens", type=int, help="The maximum number of tokens.")
-    parser.add_argument(
-        "--repetitions",
-        type=int,
-        help="The number of repetitions for the benchmark.",
-    )
-    parser.add_argument(
-        "--device",
-        help="Device to use for the benchmark.",
-    )
-    parser.add_argument(
-        "--log_file",
-        type=str,
-        help="Path to the log file for writing logs (in append mode).",
-    )
-    parser.add_argument(
-        "--models_dir",
-        type=str,
-        help="Path to the models directory.",
+    parser = launch_cli(
+        description="HuggingFace Transformers Benchmark (PyTorch backend)"
     )
     args = parser.parse_args()
-    logging.info(
-        f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} "
-        + f"repetitions={args.repetitions} device={args.device}"
+    model_folder = os.path.join(os.getcwd(), "models")
+    model_name = (
+        f"{args.model_name}-2-7b-chat-hf"
+        if args.model_name == "llama"
+        else f"{args.model_name}-7b-v0.1-instruct-hf"
     )
-    report = defaultdict(lambda: defaultdict(float))
-
+    model_path = os.path.join(model_folder, model_name)
     precisions_mapping = {
-        "cpu": ("fp32",),
-        "cuda": ("fp32", "fp16", "int8", "int4"),
-        "metal": ("fp32", "fp16"),
+        "cpu": ("float32",),
+        "cuda": ("float32", "float16", "int8", "int4"),
+        "metal": ("float32", "float16"),
     }
-    for precision in precisions_mapping[args.device]:
-        logging.info(
-            f"Running Transformer benchmark (pytorch backend) on Llama with precision: {precision}"
-        )
-        llama_transformers_pytorch_benchmark = LlamaPyTorchBenchmark(
-            model_path=f"{args.models_dir}/llama-2-7b-hf",
-            device=args.device,
-            precision=precision,
-        ).load_model()
-        llama_transformers_pytorch_benchmark.benchmark(
-            max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
-        )
-
-        report["llama_transformers_pytorch"][precision] = {
-            "mean": np.mean(llama_transformers_pytorch_benchmark.results),
-            "std": np.std(llama_transformers_pytorch_benchmark.results),
-        }
-    logging.info("Benchmark Report")
-    with open(args.log_file, "a") as file:
-        for framework, quantizations in report.items():
-            for quantization, stats in quantizations.items():
-                logging.info(
-                    f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}"
-                )
-                print(
-                    f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}",
-                    file=file,
-                )
+    runner_dict = {}
+    for device, precisions in precisions_mapping.items():
+        runner_dict[device] = [
+            {"precision": precision, "model_path": model_path}
+            for precision in precisions
+        ]
+    make_report(
+        args=args,
+        benchmark_class=PyTorchBenchmark,
+        runner_dict=runner_dict,
+        benchmark_name="HF-Transformers (PyTorch Backend)",
+    )
