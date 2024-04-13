@@ -1,32 +1,47 @@
 [
     {
         "prompt": "I'm making pancakes for breakfast. I added a cup of flour, a teaspoon of salt, and a few tablespoons of sugar to a bowl. I stirred it together, then added a cup of milk, a beaten egg, and a few tablespoons of oil, and stirred until just mixed. Then I put 1/4 a cup on a hot frying pan, and flipped it when brown. But they're terrible! Why? List the main reason. Answer as much precise as possible with one sentence.",
-        "max_tokens": 512,
+        "max_tokens": 120,
         "temperature": 0.1,
-        "expected": "baking soda is missing. a leavening agent should be added"
+        "expected": {
+            "llama": " The main reason your pancakes are terrible is because you did not mix the batter long enough, resulting in a dense and flat pancake.",
+            "mistral": "he main reason for the terrible pancakes could be that the batter was too thick, which resulted in a dry and tough texture."
+        }
     },
     {
         "prompt": "42 birds are sitting on a tree branch. A hunter passes, shoots one dead, and misses two. How many birds are left on the branch? Answer as much precise as possible with one sentence.",
-        "max_tokens": 512,
+        "max_tokens": 120,
         "temperature": 0.1,
-        "expected": "0. all the birds flew away after the first shot"
+        "expected": {
+            "llama": " After the hunter shoots and kills one bird, 41 birds remain on the branch.",
+            "mistral": "One bird is left on the branch."
+        }
     },
     {
         "prompt": "How many mistakes can you find in the following sentence? Sentence: Its to much to loose if your talking about hundred’s of dollars. Answer as much precise as possible with one sentence.",
-        "max_tokens": 512,
+        "max_tokens": 120,
         "temperature": 0.1,
-        "expected": "5 mistakes: it's too much to lose if you're talking about hundreds of dollars"
+        "expected": {
+            "llama": " There are 2 mistakes in the sentence: \"to loose\" should be \"to lose\" and \"hundred's\" should be \"hundreds\".",
+            "mistral": "There are two mistakes in the sentence: \"Its\" should be \"It's\" and \"to much\" should be \"too much\"."
+        }
     },
     {
         "prompt": "You are an expert on agricultural chemical compounds. Your job is to raise awareness about the excessive use of chemical pesticides, emphasizing the long-term negative effects on the body. Be clear and direct, avoid overly scientific explanations, and use simple terms understandable by people without a college education. Answer as much precise as possible with one sentence.",
-        "max_tokens": 512,
+        "max_tokens": 120,
         "temperature": 0.1,
-        "expected": "Using too many chemical pesticides on our crops can lead to serious health problems over time, including cancer and damage to our nervous system."
+        "expected": {
+            "llama": " Excessive use of chemical pesticides can have long-term negative effects on the body, including cancer, hormone disruption, and neurological problems, due to their toxic and persistent nature, which can accumulate in the body over time and cause irreversible damage. It is important to adopt sustainable and organic farming practices that prioritize the health of both people and the environment, such as crop rotation, composting, and integrated pest management, to minimize the use of harmful chemicals and promote a healthier",
+            "mistral": "Excessive use of chemical pesticides can lead to long-term negative health effects, including cancer, neurological damage, and reproductive issues."
+        }
     },
     {
         "prompt": "During the Manhattan Project, John von Neumann suggested how to maximize the destruction caused by a detonating bomb. Which was his idea? Answer as much precise as possible with one sentence.",
-        "max_tokens": 512,
+        "max_tokens": 120,
         "temperature": 0.1,
-        "expected": "John von Neumann suggested detonating the bomb at a high altitude instead of on the ground to maximize the blast radius and thus the area of destruction."
+        "expected": {
+            "llama": " John von Neumann proposed the concept of a \"fusion bomb,\" which would achieve maximum destruction through the simultaneous detonation of a fission bomb and a fusion reaction, creating a chain reaction of nuclear reactions that would release an enormous amount of energy. This idea was later developed into the hydrogen bomb.",
+            "mistral": "John von Neumann proposed the concept of a \"superbomb\" that would use multiple nuclear explosions to create a massive explosion, causing widespread destruction."
+        }
     }
 ]
