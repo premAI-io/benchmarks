@@ -12,21 +12,17 @@
 | Engine                                      | float32      | float16        | int8          | int4          |
 |---------------------------------------------|--------------|----------------|---------------|---------------|
 | [transformers (pytorch)](/bench_pytorch/)   | 37.37 ± 0.45 | 34.42 ± 0.45   | 7.07 ± 0.08   | 18.88 ± 0.08  |
+| [AutoAWQ](/bench_autoawq/)                  |      -       |      -         |      -        | 63.59 ± 1.86  |
 
 **Performance Metrics:** GPU Memory Consumption (unit: MB)
 
 | Engine                                      | float32  | float16  | int8     | int4     |
 |---------------------------------------------|----------|----------|----------|----------|
 | [transformers (pytorch)](/bench_pytorch/)   | 29114.76 | 41324.38 | 21384.66 | 12830.38 |
-
+| [AutoAWQ](/bench_autoawq/)                  |      -   |      -   |      -   | 7149.19  |
 
 *(Data updated: `<LAST_UPDATE>`)
 
-**Performance Metrics:** GPU Consumption (unit: Megabytes)
-
-| Engine                                      | float32      | float16        | int8          | int4          |
-|---------------------------------------------|--------------|----------------|---------------|---------------|
-| [AutoAWQ](/bench_autoawq/)                  |      -       |      -         |      -        | 109.20 ± 3.28 |
 
 ## M2 MAX 32GB Inference Bench:
 
