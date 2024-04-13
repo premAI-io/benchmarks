@@ -1,6 +1,7 @@
 import os
 import sys
 
+import torch
 from ctransformers import AutoModelForCausalLM
 from transformers import AutoTokenizer
 
@@ -61,10 +62,12 @@ class CTransformersBenchmark(BaseBenchmarkClass):
         )
         return self
 
-    def preprocess(self, prompt: str, chat_mode: bool = True):
+    def preprocess(self, prompt: str, chat_mode: bool = True, for_benchmarks=True):
         if chat_mode:
-            prompt = [{"role": "user", "content": prompt}]
-            prompt = self.tokenizer.apply_chat_template(prompt, tokenize=False)
+            template = self.get_chat_template_with_instruction(
+                prompt=prompt, for_benchmarks=for_benchmarks
+            )
+            prompt = self.tokenizer.apply_chat_template(template, tokenize=False)
 
         tokenized_input = self.tokenizer.encode(text=prompt)
         return {
@@ -92,6 +95,13 @@ class CTransformersBenchmark(BaseBenchmarkClass):
         output_tokens = output["output_tokens"]
         return self.tokenizer.decode(output_tokens, skip_special_tokens=True)
 
+    def on_exit(self):
+        if self.device in ["cuda:0", "cuda"]:
+            del self.model
+            torch.cuda.synchronize()
+        else:
+            del self.model
+
 
 if __name__ == "__main__":
     parser = launch_cli(description="CTransformers Benchmark.")
@@ -116,4 +126,5 @@ if __name__ == "__main__":
         benchmark_class=CTransformersBenchmark,
         runner_dict=runner_dict,
         benchmark_name="CTransformers",
+        is_bench_pytorch=False,
     )
