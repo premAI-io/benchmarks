@@ -12,7 +12,6 @@
 #   -d, --device        Device for benchmarks (possible values: 'metal', 'cuda', and 'cpu', default: 'cuda')
 #   -n, --model_name    The name of the model to benchmark (possible values: 'llama' for using Llama2, 'mistral' for using Mistral 7B v0.1)
 #   -lf, --log_file     Logging file name.
-#   -md, --models_dir   Models directory.
 #   -h, --help          Show this help message
 ########################################################################################################
 
@@ -27,12 +26,10 @@ print_usage() {
     echo "  -d, --device        Device for benchmarks (possible values: 'metal', 'cuda', and 'cpu', default: 'cuda')"
     echo "  -n, --model_name    The name of the model to benchmark (possible values: 'llama' for using Llama2, 'mistral' for using Mistral 7B v0.1)"
     echo "  -lf, --log_file     Logging file name."
-    echo "  -md, --models_dir   Models directory."
     echo "  -h, --help          Show this help message"
     exit 1
 }
 
-CURRENT_DIR="$(pwd)"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
@@ -74,15 +71,6 @@ check_python() {
 
 setup() {
     local MODEL_NAME="${1:-llama}"
-    LOGS_FOLDER="$CURRENT_DIR/Logs"
-
-    if [ ! -d "$LOGS_FOLDER" ]; then
-        mkdir -p "$LOGS_FOLDER"
-        echo "'$LOGS_FOLDER' created."
-    else
-        echo "Folder '$LOGS_FOLDER' already exists. Skipping."
-    fi
-
     echo -e "\nSetting up with $SCRIPT_DIR/setup.sh..."
     bash "$SCRIPT_DIR/setup.sh" "$MODEL_NAME"
 }
