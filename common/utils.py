@@ -13,22 +13,22 @@ def get_logger(
     benchmark_name: str, log_file_path: str = None, logging_level=logging.INFO
 ):
     logger = logging.getLogger(benchmark_name)
-    logger.setLevel(logging_level)
+    if not logger.handlers:  # Check if handlers have already been added
+        logger.setLevel(logging_level)
 
-    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-    stream_handler = logging.StreamHandler(sys.stdout)
-    stream_handler.setFormatter(formatter)
-    logger.addHandler(stream_handler)
+        formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 
-    if log_file_path is None:
-        logfile_name = (
-            f"benchmark_{benchmark_name}_{datetime.now().strftime('%Y%m%d%H%M%S')}.log"
-        )
-        log_file_path = os.path.join(os.getcwd(), "logs", logfile_name)
+        stream_handler = logging.StreamHandler(sys.stdout)
+        stream_handler.setFormatter(formatter)
+        logger.addHandler(stream_handler)
 
-    file_handler = logging.FileHandler(log_file_path)
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
+        if log_file_path is None:
+            logfile_name = f"benchmark_{benchmark_name}_{datetime.now().strftime('%Y%m%d%H%M%S')}.log"
+            log_file_path = os.path.join(os.getcwd(), "logs", logfile_name)
+
+        file_handler = logging.FileHandler(log_file_path)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
 
     return logger
 
