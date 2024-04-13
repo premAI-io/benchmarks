@@ -66,7 +66,9 @@ def launch_cli(description: str):
     return parser
 
 
-def make_report(args, benchmark_class, runner_dict, benchmark_name):
+def make_report(
+    args, benchmark_class, runner_dict, benchmark_name, is_bench_pytorch: bool = False
+):
     experiment_name = f"{benchmark_name}-{str(datetime.now())}"
     report = defaultdict(lambda: defaultdict(float))
     all_answers = {}
@@ -124,3 +126,54 @@ def make_report(args, benchmark_class, runner_dict, benchmark_name):
         json.dump(all_answers, json_file)
 
         logger.info("Benchmarking Fininshed")
+    markdown_content = make_markdown(
+        input_json_path=benchmark.answers_json_path, is_bench_pytorch=is_bench_pytorch
+    )
+
+    with open(os.path.join(benchmark.log_folder, "quality.md"), "w") as readme_file:
+        readme_file.write("\n".join(markdown_content))
+
+    print("README.md has been created with the table.")
+
+
+def make_markdown(input_json_path: str, is_bench_pytorch: bool = False):
+    with open(input_json_path, "r") as file:
+        data = json.load(file)
+
+    precisions = list(data.keys())
+    markdown_content = []
+
+    # Helper function to create a markdown table row
+    def create_row(items):
+        return "| " + " | ".join(items) + " |"
+
+    # Build headers based on the mode
+    if is_bench_pytorch:
+        headers = ["Question"] + precisions
+    else:
+        headers = ["Question"] + precisions + ["Ground Truth"]
+
+    markdown_content.append(create_row(headers))
+    markdown_content.append(create_row(["---"] * len(headers)))
+
+    # Build the Markdown
+    for idx, question in enumerate(data[precisions[0]]):
+        question_text = question.get(
+            "prompt" if is_bench_pytorch else "question", ""
+        ).replace("\n", " ")
+
+        answers = [
+            data[precision][idx]["actual"].replace("\n", "<br>")
+            for precision in precisions
+        ]
+        row_items = [question_text] + answers
+
+        if not is_bench_pytorch:
+            ground_truths = [
+                data[precision][idx]["expected"].replace("\n", "<br>")
+                for precision in precisions
+            ]
+            row_items += ground_truths
+        markdown_content.append(create_row(row_items))
+
+    return markdown_content
