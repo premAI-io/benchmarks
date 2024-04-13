@@ -142,9 +142,10 @@ if __name__ == "__main__":
             {"precision": precision, "model_path": model_path}
             for precision in precisions
         ]
-    make_report(
+    report = make_report(
         args=args,
         benchmark_class=PyTorchBenchmark,
         runner_dict=runner_dict,
         benchmark_name="HF-Transformers (PyTorch Backend)",
+        is_bench_pytorch=True,
     )
