@@ -186,7 +186,7 @@ class BaseBenchmarkClass(ABC):
     def get_answers(self):
         try:
             self.model is not None
-        except AttributeError as _:  # noqa
+        except AttributeError as e:  # noqa
             self.load_model_and_tokenizer()
 
         self.logger.info("=> Running quality checks for LLM")
@@ -195,7 +195,7 @@ class BaseBenchmarkClass(ABC):
             prompt = question["prompt"]
             max_tokens = question["max_tokens"]
             temperature = question["temperature"]
-            expected = question["expected"]
+            expected = question["expected"][self.model_name]
 
             inputs = self.preprocess(prompt=prompt, for_benchmarks=False)
             output_dict = self.run_model(
@@ -205,7 +205,7 @@ class BaseBenchmarkClass(ABC):
 
             self.answers.append(
                 {
-                    "question": question,
+                    "question": prompt,
                     "max_token": max_tokens,
                     "temperature": temperature,
                     "actual": output,
