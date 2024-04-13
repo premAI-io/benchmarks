@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 
+import torch
 from awq import AutoAWQForCausalLM
 from transformers import AutoTokenizer
 
@@ -50,10 +51,12 @@ class AutoAWQBenchmark(BaseBenchmarkClass):
         self.tokenizer = AutoTokenizer.from_pretrained(self.tokenizer_folder)
         return self
 
-    def preprocess(self, prompt: str, chat_mode: bool = True):
+    def preprocess(self, prompt: str, chat_mode: bool = True, for_benchmarks=True):
         if chat_mode:
-            prompt = [{"role": "user", "content": prompt}]
-            prompt = self.tokenizer.apply_chat_template(prompt, tokenize=False)
+            template = self.get_chat_template_with_instruction(
+                prompt=prompt, for_benchmarks=for_benchmarks
+            )
+            prompt = self.tokenizer.apply_chat_template(template, tokenize=False)
 
         tokenized_input = self.tokenizer.encode(text=prompt)
         tensor = self.tokenizer.encode(prompt, return_tensors="pt").to(self.device)
@@ -89,6 +92,13 @@ class AutoAWQBenchmark(BaseBenchmarkClass):
         output_tokens = output["output_tokens"]
         return self.tokenizer.decode(output_tokens, skip_special_tokens=True)
 
+    def on_exit(self):
+        if self.device == "cuda:0":
+            del self.model
+            torch.cuda.synchronize()
+        else:
+            del self.model
+
 
 if __name__ == "__main__":
     parser = launch_cli(description="AWQ Benchmark.")
@@ -116,4 +126,5 @@ if __name__ == "__main__":
             benchmark_class=AutoAWQBenchmark,
             runner_dict=runner_dict,
             benchmark_name="AutoAWQ",
+            is_bench_pytorch=False,
         )
