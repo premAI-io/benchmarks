@@ -56,4 +56,4 @@ Please note, we consider the outputs from the raw (float32 precision) from [Hugg
 
 1. Since, ctransformers only supports quantized model. So it does not have benchmarking for float32/16.
 2. You can not specify GPU device, rather you have to specify the number of [GPU Layers](https://github.com/marella/ctransformers?tab=readme-ov-file#gpu).
-3. The device support for CTransformer is model specific. For example, Llama 2 supports CUDA/Metal/CPU, but models like Falcon or MPT only runs on CUDA. You can check out the model support [here](https://github.com/marella/ctransformers?tab=readme-ov-file#supported-models).
+3. The device support for CTransformer is model specific. For example, Llama 2 7B chat, Mistral v0.1 instruct supports CUDA/Metal/CPU, but models like Falcon or MPT only runs on CUDA. You can check out the model support [here](https://github.com/marella/ctransformers?tab=readme-ov-file#supported-models).
