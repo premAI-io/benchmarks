@@ -1,15 +1,14 @@
-import os 
-import sys 
+import os
+import sys
 
 import mii
-import torch 
-import numpy as np
-from transformers import AutoTokenizer 
+from transformers import AutoTokenizer
 
 sys.path.append(os.getcwd())
 
 from common.base import BaseBenchmarkClass  # noqa
 from common.utils import launch_cli, make_report  # noqa
+
 
 class DeepSpeedBenchmark(BaseBenchmarkClass):
     def __init__(
@@ -30,17 +29,25 @@ class DeepSpeedBenchmark(BaseBenchmarkClass):
             experiment_name=experiment_name,
         )
 
-        assert precision == "float16", ValueError("Precision other than 'float16' is not supported in DeepSpeed")
-        assert device == "cuda", ValueError("Supported device is only cuda for DeepSpeed")
-    
+        assert precision == "float16", ValueError(
+            "Precision other than 'float16' is not supported in DeepSpeed"
+        )
+        assert device == "cuda", ValueError(
+            "Supported device is only cuda for DeepSpeed"
+        )
+
     def load_model_and_tokenizer(self):
         self.model = mii.pipeline(self.model_path)
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
-        return self 
+        return self
 
-    def preprocess(self, prompt: str, chat_mode: bool = True, for_benchmarks: bool = True):
+    def preprocess(
+        self, prompt: str, chat_mode: bool = True, for_benchmarks: bool = True
+    ):
         if chat_mode:
-            template = self.get_chat_template_with_instruction(prompt=prompt, for_benchmarks=for_benchmarks)
+            template = self.get_chat_template_with_instruction(
+                prompt=prompt, for_benchmarks=for_benchmarks
+            )
             prompt = self.tokenizer.apply_chat_template(template, tokenize=False)
 
         tokenized_input = self.tokenizer.encode(text=prompt)
@@ -54,17 +61,20 @@ class DeepSpeedBenchmark(BaseBenchmarkClass):
 
     def run_model(self, inputs: dict, max_tokens: int, temperature: float) -> dict:
         prompt = inputs["prompt"]
-        output = self.model([prompt], max_new_tokens=max_tokens, temperature=temperature)[0].generated_text
-        
+        output = self.model(
+            [prompt], max_new_tokens=max_tokens, temperature=temperature
+        )[0].generated_text
+
         output_tokens = self.tokenizer.encode(text=output)
         return {
             "output_prompt": output,
             "output_tokens": output_tokens,
-            "num_output_tokens": len(output_tokens)
+            "num_output_tokens": len(output_tokens),
         }
 
     def postprocess(self, output: dict) -> str:
         return output["output_prompt"]
+
 
 if __name__ == "__main__":
     parser = launch_cli(description="DeepSpeed Benchmark.")
@@ -79,7 +89,10 @@ if __name__ == "__main__":
 
     runner_dict = {
         "cuda": [
-            {"precision": "float16", "model_path": os.path.join(model_folder, model_name)}
+            {
+                "precision": "float16",
+                "model_path": os.path.join(model_folder, model_name),
+            }
         ]
     }
 
@@ -88,5 +101,5 @@ if __name__ == "__main__":
         benchmark_class=DeepSpeedBenchmark,
         runner_dict=runner_dict,
         benchmark_name="DeepSpeed",
-        is_bench_pytorch=False 
+        is_bench_pytorch=False,
     )
