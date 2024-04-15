@@ -57,4 +57,4 @@ Please note, we consider the outputs from the raw (float32 precision) from [Hugg
 
 1. AutoAWQ is not supported devices other than GPU (only supports when CUDA is available).
 2. We are independently benchmarking AutoAWQ (i.e. the actual AWQ quantization method here). We are not benchmarking with combinations like: AutoAWQ + VLLM or AutoAWQ + TensorRT.
-3. AutoAWQ does not support INT8 quantization properly yet. See [this issue](https://github.com/casper-hansen/AutoAWQ/issues)
+3. AutoAWQ does not support INT8 quantization properly yet. See [this issue](https://github.com/casper-hansen/AutoAWQ/issues/45) and [this PR](https://github.com/casper-hansen/AutoAWQ/pull/71)
