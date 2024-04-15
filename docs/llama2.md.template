@@ -6,6 +6,9 @@
 - Model: Llama 2 7B Chat
 - CUDA Version: 12.1
 - Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cuda --model llama --prompt 'Write an essay about the transformer model architecture'`
+- Model: Llama 2 7B Chat
+- CUDA Version: 12.1
+- Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cuda --model llama --prompt 'Write an essay about the transformer model architecture'`
 
 **Performance Metrics:** (unit: Tokens / second)
 
