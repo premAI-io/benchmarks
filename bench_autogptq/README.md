@@ -10,7 +10,7 @@
 
 ## 🚀 Running the AutoGPTQ Benchmark.
 
-We can run the AutoGPTQ benchmark for two models: [Llama2](https://huggingface.co/meta-llama/Llama-2-7b) and [Mistral-7B v0.1](https://huggingface.co/mistralai/Mistral-7B-v0.1) Here is how we run benchmark for AutoGPTQ.
+We can run the AutoGPTQ benchmark for two models: [Llama2](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GPTQ) and [Mistral-7B v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1) Here is how we run benchmark for AutoGPTQ.
 
 ```bash
 ./bench_autogptq/bench.sh \
@@ -59,8 +59,7 @@ Please note, we consider the outputs from the raw (float32 precision) from [Hugg
 
 1. AutoGPTQ adopts a mised int-4/float16 quantization scheme. It can also do int-4/float32 scheme. Where weights will be in INT-4 and activation will be in float16/32. So we have kept benchmarks numbers in float16 and float32, although quantization is done for INT-4.
 2. Technically, GPTQ can run on CPUs, but it is super slow. So we did not go for benchmarking that. To understand more, you can reference to this [issue](https://github.com/qwopqwop200/GPTQ-for-LLaMa/issues/4)
-3. The model that was used in this benchmarking process is [LLama2-GPTQ by The Bloke](https://huggingface.co/TheBloke/Llama-2-7B-GPTQ).
-4. INT-8 is not available right now because AutoGPTQ [integrates](https://huggingface.co/blog/gptq-integration#room-for-improvement) with the most performant W4A16 kernel (weights as int4, activations as fp16). Although quantizing to INT-8 is possible but is likely to be super slow, see [this](https://github.com/AutoGPTQ/AutoGPTQ/issues/452) and [this](https://github.com/AutoGPTQ/AutoGPTQ/issues/499) issue.
-5. AutoGPTQ [does not support](https://github.com/AutoGPTQ/AutoGPTQ/issues/366) Metal till now.
-6. AutoGPTQ [also supports ExllamaV2](https://huggingface.co/blog/gptq-integration#autogptq-library--the-one-stop-library-for-efficiently-leveraging-gptq-for-llms) and other quantization methods, but we did not used it, so that we can benchmark each methods and framework independently without any mutual intersections.
-7. Tokens/sec for INT4/FP-32 is greater than INT4/FP-16, which is not an expected behaviour, probably due to some [downcasting](https://github.com/huggingface/transformers/issues/28647) overhead.
+3. INT-8 is not available right now because AutoGPTQ [integrates](https://huggingface.co/blog/gptq-integration#room-for-improvement) with the most performant W4A16 kernel (weights as int4, activations as fp16). Although quantizing to INT-8 is possible but is likely to be super slow, see [this](https://github.com/AutoGPTQ/AutoGPTQ/issues/452) and [this](https://github.com/AutoGPTQ/AutoGPTQ/issues/499) issue.
+4. AutoGPTQ [does not support](https://github.com/AutoGPTQ/AutoGPTQ/issues/366) Metal till now.
+5. AutoGPTQ [also supports ExllamaV2](https://huggingface.co/blog/gptq-integration#autogptq-library--the-one-stop-library-for-efficiently-leveraging-gptq-for-llms) and other quantization methods, but we did not used it, so that we can benchmark each methods and framework independently without any mutual intersections.
+6. Tokens/sec for INT4/FP-32 is greater than INT4/FP-16, which is not an expected behaviour, probably due to some [downcasting](https://github.com/huggingface/transformers/issues/28647) overhead.
