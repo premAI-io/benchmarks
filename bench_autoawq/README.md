@@ -8,7 +8,7 @@
 
 ## 🚀 Running the AutoAWQ Benchmark.
 
-We can run the AutoAWQ benchmark for two models: [Llama2](https://huggingface.co/TheBloke/Llama-2-7B-Chat-AWQ) and [Mistral-7B v0.1](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-AWQ) Here is how we run benchmark for AutoAWQ.
+We can run the AutoAWQ benchmark for two models: [Llama2 7B Chat](https://huggingface.co/TheBloke/Llama-2-7B-Chat-AWQ) and [Mistral-7B v0.1 Instruct](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-AWQ) Here is how we run benchmark for AutoAWQ.
 
 ```bash
 ./bench_autoawq/bench.sh \
