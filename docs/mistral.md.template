@@ -12,6 +12,7 @@
 | Engine                                      | float32      | float16        | int8          | int4          |
 |---------------------------------------------|--------------|----------------|---------------|---------------|
 | [transformers (pytorch)](/bench_pytorch/)   | 39.27 ± 0.54 | 37.57 ± 0.36   | 5.03 ± 0.08   | 19.70 ± 0.30  |
+| [AutoAWQ](/bench_autoawq/)                  |      -       |      -         |      -        | 63.12 ± 2.19  |
 | [AutoGPTQ](/bench_autogptq/)                | 39.11 ± 0.42 | 42.94 ± 0.80   |               |               |
 
 **Performance Metrics:** GPU Memory Consumption (unit: MB)
@@ -20,6 +21,7 @@
 |---------------------------------------------|----------|----------|----------|----------|
 | [transformers (pytorch)](/bench_pytorch/)   | 31069.31 | 46030.39 | 23957.86 | 13935.58 |
 | [AutoGPTQ](/bench_autogptq/)                | 13400.80 | 6633.29  |          |          |
+| [AutoAWQ](/bench_autoawq/)                  |      -   |      -   |      -   | 6572.47  |
 
 
 *(Data updated: `<LAST_UPDATE>`)
