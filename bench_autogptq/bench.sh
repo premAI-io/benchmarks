@@ -2,7 +2,7 @@
 
 ########################################################################################################
 # Script: bench.sh
-# Description: This script runs benchmarks AutoAWQ llama benchmark.
+# Description: This script runs benchmarks AutoGPTQ benchmark.
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
