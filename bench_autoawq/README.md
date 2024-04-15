@@ -8,7 +8,7 @@
 
 ## 🚀 Running the AutoAWQ Benchmark.
 
-We can run the AutoAWQ benchmark for two models: [Llama2](https://huggingface.co/meta-llama/Llama-2-7b) and [Mistral-7B v0.1](https://huggingface.co/mistralai/Mistral-7B-v0.1) Here is how we run benchmark for AutoAWQ.
+We can run the AutoAWQ benchmark for two models: [Llama2](https://huggingface.co/TheBloke/Llama-2-7B-Chat-AWQ) and [Mistral-7B v0.1](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-AWQ) Here is how we run benchmark for AutoAWQ.
 
 ```bash
 ./bench_autoawq/bench.sh \
@@ -57,5 +57,4 @@ Please note, we consider the outputs from the raw (float32 precision) from [Hugg
 
 1. AutoAWQ is not supported devices other than GPU (only supports when CUDA is available).
 2. We are independently benchmarking AutoAWQ (i.e. the actual AWQ quantization method here). We are not benchmarking with combinations like: AutoAWQ + VLLM or AutoAWQ + TensorRT.
-3. For doing this benchmark, the default model that was choosen was: [Llama2-AutoAWQ by The Bloke](https://huggingface.co/TheBloke/Llama-2-7B-AWQ)
-4. AutoAWQ does not support INT8 quantization properly yet. See [this issue](https://github.com/casper-hansen/AutoAWQ/issues)
+3. AutoAWQ does not support INT8 quantization properly yet. See [this issue](https://github.com/casper-hansen/AutoAWQ/issues)
