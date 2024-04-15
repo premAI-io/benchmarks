@@ -16,6 +16,8 @@
 |---------------------------------------------|--------------|----------------|---------------|---------------|
 | [transformers (pytorch)](/bench_pytorch/)   | 37.37 ± 0.45 | 34.42 ± 0.45   | 7.07 ± 0.08   | 18.88 ± 0.08  |
 | [AutoAWQ](/bench_autoawq/)                  |      -       |      -         |      -        | 63.59 ± 1.86  |
+| [AutoGPTQ](/bench_autogptq/)                | 34.36 ± 0.51 | 36.63 ± 0.61   |               |               |
+
 
 **Performance Metrics:** GPU Memory Consumption (unit: MB)
 
@@ -23,6 +25,8 @@
 |---------------------------------------------|----------|----------|----------|----------|
 | [transformers (pytorch)](/bench_pytorch/)   | 29114.76 | 41324.38 | 21384.66 | 12830.38 |
 | [AutoAWQ](/bench_autoawq/)                  |      -   |      -   |      -   | 7149.19  |
+| [AutoGPTQ](/bench_autogptq/)                | 10718.54 | 5706.35  |          |          |
+
 
 *(Data updated: `<LAST_UPDATE>`)
 
