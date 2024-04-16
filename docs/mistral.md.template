@@ -14,6 +14,7 @@
 | [transformers (pytorch)](/bench_pytorch/)   | 39.27 ± 0.54 | 37.57 ± 0.36   | 5.03 ± 0.08   | 19.70 ± 0.30  |
 | [AutoAWQ](/bench_autoawq/)                  |      -       |      -         |      -        | 63.12 ± 2.19  |
 | [AutoGPTQ](/bench_autogptq/)                | 39.11 ± 0.42 | 42.94 ± 0.80   |               |               |
+| [ctransformers](/bench_ctransformers/)      |      -       |      -         | 86.14 ± 1.40  | 87.22 ± 1.54  |
 
 **Performance Metrics:** GPU Memory Consumption (unit: MB)
 
@@ -22,31 +23,7 @@
 | [transformers (pytorch)](/bench_pytorch/)   | 31069.31 | 46030.39 | 23957.86 | 13935.58 |
 | [AutoGPTQ](/bench_autogptq/)                | 13400.80 | 6633.29  |          |          |
 | [AutoAWQ](/bench_autoawq/)                  |      -   |      -   |      -   | 6572.47  |
-
-
-*(Data updated: `<LAST_UPDATE>`)
-# ⚙️ Benchmarking ML Engines
-
-## A100 80GB Inference Bench:
-
-**Environment:**
-- Model: Mistral 7B v0.1 Instruct
-- CUDA Version: 12.1
-- Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cuda --model mistral --prompt 'Write an essay about the transformer model architecture'`
-
-**Performance Metrics:** (unit: Tokens / second)
-
-| Engine                                        | float32      | float16        | int8          | int4          |
-|-----------------------------------------------|--------------|----------------|---------------|---------------|
-| [HF Transformers (pytorch)](/bench_pytorch/)  | 39.27 ± 0.54 | 37.57 ± 0.36   | 5.03 ± 0.08   | 19.70 ± 0.30  |
-| [AutoGPTQ](/bench_autogptq/)                  |       -      |       -        | 86.14 ± 1.40  | 87.22 ± 1.54  |
-
-**Performance Metrics:** GPU Memory Consumption (unit: MB)
-
-| Engine                                        | float32  | float16  | int8     | int4     |
-|-----------------------------------------------|----------|----------|----------|----------|
-| [HF Transformers (pytorch)](/bench_pytorch/)  | 31069.31 | 46030.39 | 23957.86 | 13935.58 |
-| [AutoGPTQ](/bench_autogptq/)                  |     -    |     -    | 10255.07 | 6966.74  |
+| [ctransformers](/bench_ctransformers/)      |      -   |      -   | 10255.07 | 6966.74  |
 
 
 *(Data updated: `<LAST_UPDATE>`)
