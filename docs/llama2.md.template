@@ -5,15 +5,9 @@
 **Environment:**
 - Model: Llama 2 7B Chat
 - CUDA Version: 12.1
-- Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cuda --model llama --prompt 'Write an essay about the transformer model architecture'`
+- Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cuda --prompt 'Write an essay about the transformer model architecture'`
 
 **Performance Metrics:** (unit: Tokens / second)
-
-| Engine                                      | float32      | float16        | int8          | int4          |
-|---------------------------------------------|--------------|----------------|---------------|---------------|
-| [transformers (pytorch)](/bench_pytorch/)   | 37.37 ± 0.45 | 34.42 ± 0.45   | 7.07 ± 0.08   | 18.88 ± 0.08  |
-
-**Performance Metrics:** GPU Memory Consumption (unit: MB)
 
 | Engine                                      | float32      | float16        | int8          | int4          |
 |---------------------------------------------|--------------|----------------|---------------|---------------|
