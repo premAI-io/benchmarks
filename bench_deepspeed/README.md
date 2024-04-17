@@ -7,7 +7,7 @@
 
 ## 🚀 Running the DeepSpeed Benchmark.
 
-We can run the DeepSpeed benchmark for two models: [Llama2](https://huggingface.co/meta-llama/Llama-2-7b) and [Mistral-7B v0.1](https://huggingface.co/mistralai/Mistral-7B-v0.1) Here is how we run benchmark for DeepSpeed.
+We can run the DeepSpeed benchmark for two models: [Llama2 7B Chat](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) and [Mistral-7B v0.1 Instruct](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1) Here is how we run benchmark for DeepSpeed.
 
 ```bash
 ./bench_deepspeed/bench.sh \
@@ -57,7 +57,7 @@ Please note. we consider the outputs from the raw (float32 precision) from Huggi
 
 ## 👀 Some points to note:
 
-1. Running this benchmark requires [HuggingFace Llama2-7B weights](https://huggingface.co/meta-llama/Llama-2-7b). So running this benchmark would assume that you already agreed to the required [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) and got verified to download the weights.
+1. Running this benchmark requires [HuggingFace Llama2-7B Chat weights](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf). So running this benchmark would assume that you already agreed to the required [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) and got verified to download the weights.
 2. DeepSpeed-MII is designed to run on CUDA. So by default it does not support for Metal or CPU devices.
 3. Since we run the benchmark for only LLama2-7B model. And for this implementation, DeepSpeed-MII [only supports](https://github.com/microsoft/DeepSpeed/blob/b81bed69a8db3c1e3263c27f48dcecf12b354931/deepspeed/inference/v2/model_implementations/llama_v2/model.py#L83) Float16 precision.
 4. Current implementation of DeepSpeed-MII [does not support](https://github.com/microsoft/DeepSpeed-MII/issues/255) Quantized models. So INT4/8 benchmarking is not available.
