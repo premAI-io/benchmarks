@@ -34,11 +34,6 @@ Take a first glance of Llama-2-7B Model Performance Metrics Across Different Pre
 
 | Engine                                      | float32      | float16        | int8          | int4          |
 |---------------------------------------------|--------------|----------------|---------------|---------------|
-| [transformers (pytorch)](/bench_pytorch/)   | 37.37 ± 0.45 | 34.42 ± 0.45   | 7.07 ± 0.08   | 18.88 ± 0.08  |
-
-
-| Engine                                      | float32      | float16        | int8          | int4          |
-|---------------------------------------------|--------------|----------------|---------------|---------------|
 | [candle](/bench_candle/)                    |      -       | 36.78 ± 2.17   |      -        |      -        |
 | [llama.cpp](/bench_llamacpp/)               |      -       |      -         | 79.15 ± 1.20  | 100.90 ± 1.46 |
 | [ctranslate](/bench_ctranslate/)            | 35.23 ± 4.01 | 55.72 ± 16.66  | 35.73 ± 10.87 |      -        |
