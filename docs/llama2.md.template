@@ -6,9 +6,6 @@
 - Model: Llama 2 7B Chat
 - CUDA Version: 12.1
 - Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cuda --model llama --prompt 'Write an essay about the transformer model architecture'`
-- Model: Llama 2 7B Chat
-- CUDA Version: 12.1
-- Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cuda --model llama --prompt 'Write an essay about the transformer model architecture'`
 
 **Performance Metrics:** (unit: Tokens / second)
 
@@ -18,6 +15,7 @@
 | [AutoAWQ](/bench_autoawq/)                  |      -       |      -         |      -        | 63.59 ± 1.86  |
 | [AutoGPTQ](/bench_autogptq/)                | 34.36 ± 0.51 | 36.63 ± 0.61   |               |               |
 | [DeepSpeed](/bench_deepspeed/)              |              | 84.60 ± 0.25   |               |               |
+| [ctransformers](/bench_ctransformers/)      |      -       |      -         | 85.50 ± 1.00  | 86.66 ± 1.06  |
 
 
 **Performance Metrics:** GPU Memory Consumption (unit: MB)
@@ -28,7 +26,7 @@
 | [AutoAWQ](/bench_autoawq/)                  |      -   |      -   |      -   | 7149.19  |
 | [AutoGPTQ](/bench_autogptq/)                | 10718.54 | 5706.35  |          |          |
 | [DeepSpeed](/bench_deepspeed/)              |          | 83978.35 |          |          |
-
+| [ctransformers](/bench_ctransformers/)      |      -   |      -   | 9774.83  | 6889.14  |
 
 *(Data updated: `<LAST_UPDATE>`)
 

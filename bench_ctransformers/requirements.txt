@@ -1,1 +1,4 @@
 numpy==1.26.4
+huggingface-hub>=0.17.1
+transformers==4.38.2
+torch==2.2.2
