@@ -2,7 +2,7 @@
 
 ########################################################################################################
 # Script: bench.sh
-# Description: This script runs benchmarks AutoAWQ llama benchmark.
+# Description: This script runs benchmarks CTransformers benchmark.
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
