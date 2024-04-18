@@ -16,6 +16,7 @@
 | [AutoGPTQ](/bench_autogptq/)                | 34.36 ± 0.51 | 36.63 ± 0.61   |               |               |
 | [DeepSpeed](/bench_deepspeed/)              |              | 84.60 ± 0.25   |               |               |
 | [ctransformers](/bench_ctransformers/)      |      -       |      -         | 85.50 ± 1.00  | 86.66 ± 1.06  |
+| [llama.cpp](/bench_llamacpp/)               |      -       |      -         | 89.90 ± 2.26  | 97.35 ± 4.71  |
 
 
 **Performance Metrics:** GPU Memory Consumption (unit: MB)
@@ -27,6 +28,7 @@
 | [AutoGPTQ](/bench_autogptq/)                | 10718.54 | 5706.35  |          |          |
 | [DeepSpeed](/bench_deepspeed/)              |          | 83978.35 |          |          |
 | [ctransformers](/bench_ctransformers/)      |      -   |      -   | 9774.83  | 6889.14  |
+| [llama.cpp](/bench_llamacpp/)               |      -   |      -   | 8797.55  | 5783.95  |
 
 *(Data updated: `<LAST_UPDATE>`)
 
