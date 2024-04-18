@@ -143,6 +143,7 @@ class BaseBenchmarkClass(ABC):
         end_event = torch.cuda.Event(enable_timing=True)
 
         inputs = self.preprocess(prompt=prompt, for_benchmarks=True)
+        temperature = 0.1 if temperature is None else temperature
 
         with self.memory_tracker.track():
             torch.cuda.synchronize()
