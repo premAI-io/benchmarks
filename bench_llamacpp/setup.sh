@@ -71,16 +71,11 @@ clone_and_build_llama() {
     rm -rf "$SCRIPT_DIR"/llama.cpp
 }
 
-# Main script starts here
-
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <DEVICE>"
-    exit 1
-fi
+# CLI Args
+DEVICE="$1"
 
 # Define directory paths
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DEVICE="$1"
 VENV_DIR="$SCRIPT_DIR/venv"
 LIBLLAMA_FILE="$VENV_DIR/libllama_$DEVICE.so"
 
