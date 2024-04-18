@@ -1,105 +1,116 @@
-import argparse
-import logging
+import os
 import sys
-import time
-from collections import defaultdict
 
-import numpy as np
 from llama_cpp import Llama
+from transformers import AutoTokenizer
 
-logging.getLogger("llama_cpp").setLevel(logging.ERROR)
-logging.basicConfig(
-    stream=sys.stdout,
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
+sys.path.append(os.getcwd())
+
+from common.base import BaseBenchmarkClass  # noqa
+from common.utils import launch_cli, make_report  # noqa
 
 
-class LlamaCPPBenchmark:
-    def __init__(self, model_path, device):
-        self.model_path = model_path
-        self.device = device
-        self.results = []
+class LlamaCPPBenchmark(BaseBenchmarkClass):
+    def __init__(
+        self,
+        model_path: str,
+        model_name: str,
+        benchmark_name: str,
+        precision: str,
+        device: str,
+        experiment_name: str,
+    ) -> None:
+        assert precision in ["int8", "int4"], ValueError(
+            "Precision should set either 'int8' or 'int4'"
+        )
+        super().__init__(
+            model_name=model_name,
+            model_path=model_path,
+            benchmark_name=benchmark_name,
+            experiment_name=experiment_name,
+            precision=precision,
+            device=device,
+        )
 
-    def load_model(self):
+        if model_name == "llama":
+            self.tokenizer_folder = os.path.join(
+                os.getcwd(), "models", "llama-2-7b-chat-hf"
+            )
+        else:
+            self.tokenizer_folder = os.path.join(
+                os.getcwd(), "models", "mistral-7b-v0.1-instruct-hf"
+            )
+
+    def load_model_and_tokenizer(self):
         self.model = Llama(
             model_path=self.model_path,
             n_gpu_layers=0 if self.device == "cpu" else -1,
             verbose=True,
         )
+        self.tokenizer = AutoTokenizer.from_pretrained(self.tokenizer_folder)
         return self
 
-    def run_model(self, prompt, max_tokens):
-        start = time.time()
-        output = self.model.create_completion(prompt, max_tokens=max_tokens)
-        tokens = output["usage"]["completion_tokens"]
-        return tokens / (time.time() - start)
-
-    def benchmark(self, prompt, max_tokens, repetitions):
-        for i in range(repetitions):
-            logging.info(
-                f"Running repetition [{str(i+1).zfill(len(str(repetitions)))}/{repetitions}]"
+    def preprocess(
+        self, prompt: str, chat_mode: bool = True, for_benchmarks: bool = True
+    ):
+        if chat_mode:
+            template = self.get_chat_template_with_instruction(
+                prompt=prompt, for_benchmarks=for_benchmarks
             )
-            tokens_per_second = self.run_model(prompt, max_tokens)
-            self.results.append(tokens_per_second)
+            prompt = self.tokenizer.apply_chat_template(template, tokenize=False)
+
+        tokenized_input = self.tokenizer.encode(text=prompt)
+        return {
+            "prompt": prompt,
+            "input_tokens": tokenized_input,
+            "tensor": None,
+            "num_input_tokens": len(tokenized_input),
+        }
+
+    def run_model(
+        self, inputs: dict, max_tokens: int, temperature: float = 0.1
+    ) -> dict:
+        prompt = inputs["prompt"]
+        output = self.model.create_completion(
+            prompt, max_tokens=max_tokens, temperature=temperature
+        )
+
+        output_prompt = output["choices"][0]["text"]
+        num_tokens = output["usage"]["completion_tokens"]
+        return {"output_prompt": output_prompt, "num_output_tokens": num_tokens}
+
+    def postprocess(self, output: dict) -> str:
+        return output["output_prompt"]
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="llama.cpp Benchmark Llama model.")
-    parser.add_argument(
-        "--prompt",
-        type=str,
-        help="The prompt for the model.",
-    )
-    parser.add_argument("--max_tokens", type=int, help="The maximum number of tokens.")
-    parser.add_argument(
-        "--repetitions",
-        type=int,
-        help="The number of repetitions for the benchmark.",
-    )
-    parser.add_argument(
-        "--device",
-        help="Device to use for the benchmark.",
-    )
-    parser.add_argument(
-        "--log_file",
-        type=str,
-        help="Path to the log file for writing logs (in append mode).",
-    )
-    parser.add_argument(
-        "--models_dir",
-        type=str,
-        help="Path to the models directory.",
-    )
+    parser = launch_cli(description="LlamaCPP Benchmark.")
     args = parser.parse_args()
-    logging.info(
-        f"Running benchmark with: max_tokens={args.max_tokens} prompt={args.prompt} "
-        + f"repetitions={args.repetitions} device={args.device}"
-    )
-    report = defaultdict(lambda: defaultdict(float))
-    for quantize in ("Q8_0", "Q4_0"):
-        logging.info(f"Running llama-cpp benchmark with {quantize}")
-        llamacpp_bench = LlamaCPPBenchmark(
-            f"{args.models_dir}/llama-2-7b-gguf/llama-2-7b.{quantize}.gguf",
-            device=args.device,
-        ).load_model()
-        llamacpp_bench.benchmark(
-            max_tokens=args.max_tokens, prompt=args.prompt, repetitions=args.repetitions
-        )
-        q = "int8" if quantize == "Q8_0" else "int4"
-        report["llama.cpp"][q] = {
-            "mean": np.mean(llamacpp_bench.results),
-            "std": np.std(llamacpp_bench.results),
-        }
 
-    logging.info("Benchmark report")
-    with open(args.log_file, "a") as file:
-        for framework, quantizations in report.items():
-            for quantization, stats in quantizations.items():
-                logging.info(
-                    f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}"
-                )
-                print(
-                    f"{framework}, {quantization}: {stats['mean']:.2f} ± {stats['std']:.2f}",
-                    file=file,
-                )
+    model_folder = os.path.join(os.getcwd(), "models")
+    model_name = (
+        f"{args.model_name}-2-7b-chat-gguf/llama-2-7b-chat."
+        if args.model_name == "llama"
+        else f"{args.model_name}-7b-v0.1-instruct-gguf/mistral-7b-instruct-v0.1."
+    )
+
+    runner_dict = {
+        "cuda": [
+            {
+                "precision": "int4",
+                "model_path": os.path.join(model_folder, model_name + "Q4_K_M.gguf"),
+            },
+            {
+                "precision": "int8",
+                "model_path": os.path.join(model_folder, model_name + "Q8_0.gguf"),
+            },
+        ]
+    }
+
+    make_report(
+        args=args,
+        benchmark_class=LlamaCPPBenchmark,
+        runner_dict=runner_dict,
+        benchmark_name="LlamaCPP",
+        is_bench_pytorch=False,
+    )
