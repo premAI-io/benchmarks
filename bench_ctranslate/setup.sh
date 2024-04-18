@@ -10,69 +10,95 @@ set -euo pipefail
 
 CURRENT_DIR="$(pwd)"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+VENV_DIR="$SCRIPT_DIR/venv"
 
-check_docker() {
-    if command -v docker &> /dev/null; then
-        return 0
+check_python() {
+    if command -v python &> /dev/null; then
+        PYTHON_CMD="python"
+    elif command -v python3 &> /dev/null; then
+        PYTHON_CMD="python3"
     else
-        return 1
-    fi
-}
-
-build_docker_image () {
-    if docker image inspect prem-ctranslate2:latest &> /dev/null; then
-        echo "Image prem-ctranslate2 already exists"
-    else
-        docker build -t prem-ctranslate2 "$SCRIPT_DIR/."
-    fi
-}
-
-build_and_compile_model () {
-    set -e  # Exit on error
-    echo "Running and building the model inside Docker..."
-
-    local model_build_path_32="$CURRENT_DIR/models/llama-2-7b-ctranslate2-float32"
-    local model_build_path_16="$CURRENT_DIR/models/llama-2-7b-ctranslate2-float16"
-    local model_build_path_08="$CURRENT_DIR/models/llama-2-7b-ctranslate2-int8"
-
-    if docker image inspect prem-ctranslate2:latest &> /dev/null; then
-        if [ ! -d "$model_build_path_32" ]; then
-            docker run -it --rm \
-                --gpus=all \
-                -v "$CURRENT_DIR"/models:/models \
-                prem-ctranslate2:latest \
-                ct2-transformers-converter --model /models/llama-2-7b-hf --quantization float32 --output_dir /models/llama-2-7b-ctranslate2-float32 --copy_files tokenizer.model --force
-            echo "Model build for FP32 ran successfully ... "
-        fi
-
-        if [ ! -d "$model_build_path_16" ]; then
-            docker run -it --rm \
-                --gpus=all \
-                -v "$CURRENT_DIR"/models:/models \
-                prem-ctranslate2:latest \
-                ct2-transformers-converter --model /models/llama-2-7b-hf --quantization float16 --output_dir /models/llama-2-7b-ctranslate2-float16 --copy_files tokenizer.model --force
-            echo "Model build for FP16 ran successfully ... "
-        fi
-
-        if [ ! -d "$model_build_path_08" ]; then
-            docker run -it --rm \
-                --gpus=all \
-                -v "$CURRENT_DIR"/models:/models \
-                prem-ctranslate2:latest \
-                ct2-transformers-converter --model /models/llama-2-7b-hf --quantization int8 --output_dir /models/llama-2-7b-ctranslate2-int8 --copy_files tokenizer.model --force
-            echo "Model build for INT8 ran successfully ... "
-        fi
-    else
-        echo "Image does not exist locally. Exiting ... "
+        echo "Python is not installed."
         exit 1
     fi
 }
 
 
-if check_docker; then
-    build_docker_image
-    build_and_compile_model
+build_and_compile_model () {
+    local MODEL_NAME="$1"
+    local PRECISION="$2"
+
+    valid_precisions=("float32" "float16" "int8")
+
+    # shellcheck disable=SC2199
+    # shellcheck disable=SC2076
+    if [[ ! " ${valid_precisions[@]} " =~ " $PRECISION " ]]; then
+        echo "Invalid PRECISION value. Supported values are ${valid_precisions[*]}."
+        exit 1
+    fi
+
+    if [[ "$MODEL_NAME" == "llama" ]]; then
+        local model_download_path="$CURRENT_DIR/models/llama-2-7b-chat-ctranslate2-$PRECISION"
+        local model_to_convert="$CURRENT_DIR/models/llama-2-7b-chat-hf"
+
+    elif [[ "$MODEL_NAME" == "mistral" ]]; then
+        local model_download_path="$CURRENT_DIR/models/mistral-7b-v0.1-instruct-ctranslate2-$PRECISION"
+        local model_to_convert="$CURRENT_DIR/models/mistral-7b-v0.1-instruct-hf"
+    else
+        echo "No such model is supported"
+        exit 1
+    fi
+
+
+    if [ ! -d "$model_download_path" ]; then
+        ct2-transformers-converter --model "$model_to_convert" --quantization "$PRECISION" --output_dir "$model_download_path" --copy_files tokenizer.model tokenizer_config.json tokenizer.json special_tokens_map.json --force
+        echo "Model Build for model: $MODEL_NAME and precision: $PRECISION ran successfully"
+    else
+        echo "Download folder already exists"
+    fi
+
+}
+
+
+build_and_compile_models() {
+    local MODEL_NAME="$1"
+    local PRECISIONS=("float32" "float16" "int8")
+
+    for PRECISION in "${PRECISIONS[@]}"; do
+        build_and_compile_model "$MODEL_NAME" "$PRECISION"
+    done
+}
+
+
+MODEL_NAME="${1:-"llama"}"
+
+check_python
+
+if [ ! -d "$VENV_DIR" ]; then
+    "$PYTHON_CMD" -m venv "$VENV_DIR"
+    echo "Virtual environment '$VENV_DIR' created."
+
+    # Activate virtual environment using specified activation scripts
+    if [ -f "$VENV_DIR/bin/activate" ]; then
+        # shellcheck disable=SC1091
+        source "$VENV_DIR/bin/activate"
+    else
+        echo "Error: Unable to find virtual environment activation script."
+        exit 1
+    fi
+
+    "$PYTHON_CMD" -m pip install --upgrade pip > /dev/null
+    "$PYTHON_CMD" -m pip install -r "$SCRIPT_DIR/requirements.txt" --no-cache-dir > /dev/null
 else
-    echo "Docker is not installed or not in the PATH"
-    exit 1
+    # Activate virtual environment using specified activation scripts
+    if [ -f "$VENV_DIR/bin/activate" ]; then
+        # shellcheck disable=SC1091
+        source "$VENV_DIR/bin/activate"
+    else
+        echo "Error: Unable to find virtual environment activation script."
+        exit 1
+    fi
 fi
+
+
+build_and_compile_models "$MODEL_NAME"
