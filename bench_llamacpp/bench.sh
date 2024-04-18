@@ -152,5 +152,5 @@ MAX_TOKENS="${MAX_TOKENS:-512}"
 DEVICE="${DEVICE:-'cuda'}"
 MODEL_NAME="${MODEL_NAME:-"llama"}"
 
-setup "$DEVICE" "$MODEL_NAME"
+setup "$DEVICE"
 run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$MODEL_NAME"
