@@ -7,7 +7,7 @@ The implementation of benchmarking [PyTorch](https://github.com/pytorch/pytorch)
 
 ## 🚀 Running the PyTorch Benchmark.
 
-We can run the PyTorch benchmark for two models: [Llama2](https://huggingface.co/meta-llama/Llama-2-7b) and [Mistral-7B v0.1](https://huggingface.co/mistralai/Mistral-7B-v0.1) Here is how we run benchmark for PyTorch.
+We can run the PyTorch benchmark for two models: [Llama2 7B Chat](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) and [Mistral-7B v0.1 Instruct](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1) Here is how we run benchmark for PyTorch.
 
 ```bash
 ./bench_pytorch/bench.sh \
