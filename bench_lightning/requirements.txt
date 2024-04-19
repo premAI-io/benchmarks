@@ -1,2 +1,2 @@
-scipy
-bitsandbytes
+scipy==1.13.0
+bitsandbytes==0.43.1
