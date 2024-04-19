@@ -11,7 +11,7 @@
 
 | Engine                                      | float32      | float16        | int8          | int4          |
 |---------------------------------------------|--------------|----------------|---------------|---------------|
-| [transformers (pytorch)](/bench_pytorch/)   | 39.27 ± 0.54 | 37.57 ± 0.36   | 5.03 ± 0.08   | 19.70 ± 0.30  |
+| [transformers (pytorch)](/bench_pytorch/)   | 39.61 ± 0.65 | 37.05 ± 0.49   | 5.08 ± 0.01   | 19.58 ± 0.38  |
 | [AutoAWQ](/bench_autoawq/)                  |      -       |      -         |      -        | 63.12 ± 2.19  |
 | [AutoGPTQ](/bench_autogptq/)                | 39.11 ± 0.42 | 42.94 ± 0.80   |               |               |
 | [DeepSpeed](/bench_deepspeed/)              |              | 79.88 ± 0.32   |               |               |
@@ -23,7 +23,7 @@
 
 | Engine                                      | float32  | float16  | int8     | int4     |
 |---------------------------------------------|----------|----------|----------|----------|
-| [transformers (pytorch)](/bench_pytorch/)   | 31069.31 | 46030.39 | 23957.86 | 13935.58 |
+| [transformers (pytorch)](/bench_pytorch/)   | 31071.4  | 15976.1  | 10963.91 | 5681.18  |
 | [AutoGPTQ](/bench_autogptq/)                | 13400.80 | 6633.29  |          |          |
 | [AutoAWQ](/bench_autoawq/)                  |      -   |      -   |      -   | 6572.47  |
 | [DeepSpeed](/bench_deepspeed/)              |          | 80104.34 |          |          |
