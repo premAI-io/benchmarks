@@ -11,7 +11,7 @@
 
 | Engine                                      | float32      | float16        | int8          | int4          |
 |---------------------------------------------|--------------|----------------|---------------|---------------|
-| [transformers (pytorch)](/bench_pytorch/)   | 37.37 ± 0.45 | 34.42 ± 0.45   | 7.07 ± 0.08   | 18.88 ± 0.08  |
+| [transformers (pytorch)](/bench_pytorch/)   | 36.65 ± 0.61 | 34.20 ± 0.51   | 6.91 ± 0.14   | 17.83 ± 0.40  |
 | [AutoAWQ](/bench_autoawq/)                  |      -       |      -         |      -        | 63.59 ± 1.86  |
 | [AutoGPTQ](/bench_autogptq/)                | 34.36 ± 0.51 | 36.63 ± 0.61   |               |               |
 | [DeepSpeed](/bench_deepspeed/)              |              | 84.60 ± 0.25   |               |               |
@@ -19,13 +19,14 @@
 | [llama.cpp](/bench_llamacpp/)               |      -       |      -         | 89.90 ± 2.26  | 97.35 ± 4.71  |
 | [ctranslate](/bench_ctranslate/)            | 46.26 ± 1.59 | 79.41 ± 0.37   | 48.20 ± 0.14  |      -        |
 | [vllm](/bench_vllm/)                        | 89.40 ± 0.22 | 89.43 ± 0.19   |      -        | 115.52 ± 0.49 |
+| [exllamav2](/bench_exllamav2/)              |      -       |      -         | 125.58 ± 1.23 | 159.68 ± 1.85 |
 
 
 **Performance Metrics:** GPU Memory Consumption (unit: MB)
 
 | Engine                                      | float32  | float16  | int8     | int4     |
 |---------------------------------------------|----------|----------|----------|----------|
-| [transformers (pytorch)](/bench_pytorch/)   | 29114.76 | 41324.38 | 21384.66 | 12830.38 |
+| [transformers (pytorch)](/bench_pytorch/)   | 29114.76 | 14931.72 | 8596.23  | 5643.44  |
 | [AutoAWQ](/bench_autoawq/)                  |      -   |      -   |      -   | 7149.19  |
 | [AutoGPTQ](/bench_autogptq/)                | 10718.54 | 5706.35  |          |          |
 | [DeepSpeed](/bench_deepspeed/)              |          | 83978.35 |          |          |
@@ -33,6 +34,7 @@
 | [llama.cpp](/bench_llamacpp/)               |      -   |      -   | 8797.55  | 5783.95  |
 | [ctranslate](/bench_ctranslate/)            | 29951.52 | 16282.29 | 9470.74  |      -   |
 | [vllm](/bench_vllm/)                        | 77928.07 | 77928.07 |      -   | 77768.69 |
+| [exllamav2](/bench_exllamav2/)              |      -   |      -   | 16582.18 | 7201.62  |
 
 *(Data updated: `<LAST_UPDATE>`)
 
