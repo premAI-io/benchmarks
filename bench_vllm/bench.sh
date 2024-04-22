@@ -2,7 +2,7 @@
 
 ########################################################################################################
 # Script: bench.sh
-# Description: This script runs benchmarks vLLM llama benchmark.
+# Description: This script runs benchmarks vLLM benchmark.
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
