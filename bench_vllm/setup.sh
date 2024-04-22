@@ -8,7 +8,13 @@
 
 set -euo pipefail
 
-AWQ_WEIGHTS_FOLDER="${AWQ_WEIGHTS_FOLDER:-"./models/llama-2-7b-awq"}"
+CURRENT_DIR="$(pwd)"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Set default folder paths for AWQ weights
+LLAMA2_AWQ_WEIGHTS_FOLDER="$CURRENT_DIR/models/llama-2-7b-chat-autoawq"
+MISTRAL_AWQ_WEIGHTS_FOLDER="$CURRENT_DIR/models/mistral-7b-v0.1-instruct-autoawq"
+
 
 check_python() {
     if command -v python &> /dev/null; then
@@ -36,7 +42,7 @@ install_vllm_cuda() {
 
    if [ "$CUDA_MAJOR" -ge 12 ] || { [ "$CUDA_MAJOR" -eq 12 ] && [ "$CUDA_MINOR" -ge 0 ]; }; then
         echo "Detected CUDA version >= 12.2"
-        "$PYTHON_CMD" -m pip install vllm
+        "$PYTHON_CMD" -m pip install vllm==0.4.0 transformers==4.39.2
     else
         echo "Detected CUDA version < 12.2"
         PY_VERSION=$(get_python_version)
@@ -48,7 +54,7 @@ install_vllm_cuda() {
         # Download vllm for CUDA 11.8 and specified Python version
         "$PYTHON_CMD" -m pip install https://github.com/vllm-project/vllm/releases/download/v0.2.2/vllm-0.2.2+cu118-"$PY_VERSION"-"$PY_VERSION"-manylinux1_x86_64.whl
         "$PYTHON_CMD" -m pip install torch --upgrade --index-url https://download.pytorch.org/whl/cu118
-        "$PYTHON_CMD" -m pip install huggingface-cli==0.1
+        "$PYTHON_CMD" -m pip install huggingface-cli==0.1 transformers==4.39.2
     fi
 }
 
@@ -96,25 +102,39 @@ install_device_specific_vllm() {
 }
 
 download_awq_weights() {
-    # download the sample file if not exists
-    if [ ! -d "$AWQ_WEIGHTS_FOLDER" ]; then
-        huggingface-cli download TheBloke/Llama-2-7B-AWQ --local-dir ./models/llama-2-7b-autoawq --exclude "*.git*" "*.md" "Notice" "LICENSE"
+    local MODEL_NAME="$1"
+
+    # Set download directory based on MODEL_NAME
+    if [ "$MODEL_NAME" = "llama" ]; then
+        DOWNLOAD_DIR="$LLAMA2_AWQ_WEIGHTS_FOLDER"
+        MODEL_IDENTIFIER="TheBloke/Llama-2-7B-Chat-AWQ"
+    elif [ "$MODEL_NAME" = "mistral" ]; then
+        DOWNLOAD_DIR="$MISTRAL_AWQ_WEIGHTS_FOLDER"
+        MODEL_IDENTIFIER="TheBloke/Mistral-7B-Instruct-v0.1-AWQ"
     else
-        echo "Weights already downloaded!"
+        echo "Invalid MODEL_NAME. Supported values: 'llama', 'mistral'"
+        exit 1
+    fi
+
+    # Check if weights folder exists
+    echo "$DOWNLOAD_DIR"
+
+    if [ ! -d "$DOWNLOAD_DIR" ]; then
+        # Download weights using huggingface-cli
+        echo "Downloading weights to $DOWNLOAD_DIR..."
+        huggingface-cli download "$MODEL_IDENTIFIER" --local-dir "$DOWNLOAD_DIR" --exclude "*.git*" "*.md" "Notice" "LICENSE"
+    else
+        echo "Weights already downloaded"
     fi
 }
 
 
-# Main script starts here.
-
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <DEVICE>"
-    exit 1
-fi
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DEVICE="$1"
 VENV_DIR="$SCRIPT_DIR/venv"
+
+DEVICE="$1"
+MODEL_NAME="$2"
+
 
 # Build and activate the virtual environment.
 
@@ -130,4 +150,4 @@ else
     source "$VENV_DIR/bin/activate"
 fi
 
-download_awq_weights
+download_awq_weights "$MODEL_NAME"

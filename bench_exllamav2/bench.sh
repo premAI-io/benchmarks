@@ -2,7 +2,7 @@
 
 ########################################################################################################
 # Script: bench.sh
-# Description: This script runs benchmarks ExLlamaV2 llama benchmark.
+# Description: This script runs benchmarks HF Nvidia Optimum llama benchmark.
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
