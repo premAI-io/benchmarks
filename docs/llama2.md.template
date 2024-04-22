@@ -18,6 +18,7 @@
 | [ctransformers](/bench_ctransformers/)      |      -       |      -         | 85.50 ± 1.00  | 86.66 ± 1.06  |
 | [llama.cpp](/bench_llamacpp/)               |      -       |      -         | 89.90 ± 2.26  | 97.35 ± 4.71  |
 | [ctranslate](/bench_ctranslate/)            | 46.26 ± 1.59 | 79.41 ± 0.37   | 48.20 ± 0.14  |      -        |
+| [Nvidia TensorRT-LLM](/bench_tensorrtllm/)  |       -      | 191.00 ± 4.60  | 316.77 ± 2.14 | 358.49 ± 2.38 |
 
 
 **Performance Metrics:** GPU Memory Consumption (unit: MB)
@@ -31,6 +32,7 @@
 | [ctransformers](/bench_ctransformers/)      |      -   |      -   | 9774.83  | 6889.14  |
 | [llama.cpp](/bench_llamacpp/)               |      -   |      -   | 8797.55  | 5783.95  |
 | [ctranslate](/bench_ctranslate/)            | 29951.52 | 16282.29 | 9470.74  |      -   |
+| [Nvidia TensorRT-LLM](/bench_tensorrtllm/)  |      -   | 78295.07 | 77642.86 | 77256.98 |
 
 *(Data updated: `<LAST_UPDATE>`)
 
