@@ -18,6 +18,8 @@
 | [ctransformers](/bench_ctransformers/)      |      -       |      -         | 86.14 ± 1.40  | 87.22 ± 1.54  |
 | [llama.cpp](/bench_llamacpp/)               |      -       |      -         | 88.27 ± 0.72  | 95.33 ± 5.54  |
 | [ctranslate](/bench_ctranslate/)            | 43.17 ± 2.97 | 68.03 ± 0.27   | 45.14 ± 0.24  |      -        |
+| [vllm](/bench_vllm/)                        | 84.91 ± 0.27 | 84.89 ± 0.28   |      -        | 106.03 ± 0.53 |
+| [exllamav2](/bench_exllamav2/)              |      -       |      -         | 114.81 ± 1.47 | 126.29 ± 3.05 |
 | [PyTorch Lightning](/bench_lightning/)      | 32.79 ± 2.74 | 43.01 ± 2.90   | 7.75 ± 0.12   |      -        |
 
 **Performance Metrics:** GPU Memory Consumption (unit: MB)
@@ -31,6 +33,8 @@
 | [ctransformers](/bench_ctransformers/)      |      -   |      -   | 10255.07 | 6966.74  |
 | [llama.cpp](/bench_llamacpp/)               |      -   |      -   | 9141.49  | 5880.41  |
 | [ctranslate](/bench_ctranslate/)            | 32602.32 |  17523.8 | 10074.72 |      -   |
+| [vllm](/bench_vllm/)                        | 73568.09 |  73790.39|      -   | 74016.88 |
+| [exllamav2](/bench_exllamav2/)              |      -   |      -   | 21483.23 | 9460.25  |
 | [PyTorch Lightning](/bench_lightning/)      | 48783.95 | 18738.05 | 10680.32 |      -   |
 
 

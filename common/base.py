@@ -213,3 +213,4 @@ class BaseBenchmarkClass(ABC):
                     "expected": expected,
                 }
             )
+        self.on_exit()
