@@ -57,7 +57,6 @@ check_platform() {
     fi
 }
 
-
 setup() {
     local MODEL_NAME="${1:-llama}"
     echo -e "\nSetting up with $SCRIPT_DIR/setup.sh..."

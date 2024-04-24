@@ -88,9 +88,12 @@ build_engine () {
                     --dtype float16
 
         elif [ "$PRECISION" = "float32" ]; then
-            echo "Float32 is not currently support"
-            echo "checkout issue: https://github.com/NVIDIA/TensorRT-LLM/issues/1485"
-            exit 1
+            docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 \
+                -v "$CURRENT_DIR/models":/mnt/models \
+                tensorrt_llm/release:latest \
+                python3 "$CONVERT_CHECKPOINT_PATH" --model_dir "$HF_MODEL_DIR" \
+                    --output_dir "$ENGINE_DIR" \
+                    --dtype float32
 
         elif [ "$PRECISION" = "int8" ]; then
             docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 \
@@ -120,10 +123,18 @@ build_engine () {
         # Now build the engine
         echo "Finally converting to .engine format"
 
-        docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 \
-            -v "$CURRENT_DIR/models":/mnt/models \
-            tensorrt_llm/release:latest \
-            trtllm-build --checkpoint_dir "$ENGINE_DIR" --output_dir "$ENGINE_DIR" --gemm_plugin float16
+        if [ "$PRECISION" = "float16" ] || [ "$PRECISION" = "int4" ] || [ "$PRECISION" = "int8" ]; then
+            docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 \
+                -v "$CURRENT_DIR/models":/mnt/models \
+                tensorrt_llm/release:latest \
+                trtllm-build --checkpoint_dir "$ENGINE_DIR" --output_dir "$ENGINE_DIR" --gemm_plugin float16
+        else
+            docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 \
+                -v "$CURRENT_DIR/models":/mnt/models \
+                tensorrt_llm/release:latest \
+                trtllm-build --checkpoint_dir "$ENGINE_DIR" --output_dir "$ENGINE_DIR" --gemm_plugin float32 --strongly_typed --gpt_attention_plugin float32
+        fi
+
     else
         echo "Engine file already exists"
     fi
@@ -135,6 +146,7 @@ build_and_compile_all_engines () {
         build_engine "$MODEL_NAME" "float16"
         build_engine "$MODEL_NAME" "int8"
         build_engine "$MODEL_NAME" "int4"
+        build_engine "$MODEL_NAME" "float32"
     else
         echo "Docker image does not exist, please build the docker image first ..."
     fi
