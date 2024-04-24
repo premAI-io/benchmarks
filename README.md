@@ -15,11 +15,11 @@
   <summary>Table of Contents</summary>
   <ol>
     <li><a href="#-quick-glance">Quick glance towards performance metrics for Mistral</a></li>
-    <li><a href="#-getting-started">Getting started</a></li>
-    <li><a href="#-usage">Usage</a></li>
+    <li><a href="#-more-benchmarks">More Benchmarks</a></li>
+    <li><a href="#-ml-engines">ML Engines</a></li>
+    <li><a href="#-why-benchmarks">Why Benchmarks</a></li>
+    <li><a href="#-usage-and-workflow">Usage and workflow</a></li>
     <li><a href="#-contribute">Contribute</a></li>
-    <li><a href="#-roadmap">Roadmap</a></li>
-    <li><a href="#-introducing-prem-grant-program">Introducing Prem Grant Program</a></li>
   </ol>
 </details>
 
@@ -112,7 +112,7 @@ This can be a common question. What are the benifits you can expect from this re
 
 3. A fully reproducible and hackable script. Latest benchmarks comes with lot of best practices so that it can be robust enough to run on GPU devices. Also you can reference and extend the implementations to build your own workflows out of it.
 
-## 🚀Usage and workflow
+## 🚀 Usage and workflow
 
 Welcome to our benchmarking repository! This organized structure is designed to simplify benchmark management and execution. Each benchmark is runs an inference engine which provides some sort of optimizations either through just quantization or device specific optimizations like custom cuda kernels.
 
