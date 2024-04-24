@@ -57,6 +57,7 @@ Please note. we consider the outputs from the raw (float32 precision) from Huggi
 ## 👀 Some points to note:
 
 1. This implementation runs Llama-2-7B models. Lit-GPT model implementation requires converting HuggingFace models to lit-gpt formats. The model conversion can be found in the [setup.sh](/bench_lightning/setup.sh) file.
-2. Since, running this benchmark requires [HuggingFace Llama2-7B weights](https://huggingface.co/meta-llama/Llama-2-7b). So we would assume that you already agreed to the required [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) and got verified to download the weights.
+2. Running this benchmark requires [HuggingFace Llama2-7B Chat weights](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf). So running this benchmark would assume that you already agreed to the required [terms and conditions](https://ai.meta.com/resources/models-and-libraries/llama-downloads/) and got verified to download the weights.
 3. When running it on Metal devices, it runs out of memory. Therefore we were not able to do inference on Metal.
 4. For CPU, it is just too much slow (> 1 minute). Hence we skipped the benchmarking for CPUs.
+5. Although LitGPT supports int4, but currently we are facing problems integrating it. More explained in this [issue](https://github.com/Lightning-AI/litgpt/issues/1325)

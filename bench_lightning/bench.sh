@@ -2,7 +2,7 @@
 
 ########################################################################################################
 # Script: bench.sh
-# Description: This script runs benchmarks PyTorch Lightning llama benchmark.
+# Description: This script runs benchmarks PyTorch Lightning benchmark.
 #
 # Usage: ./bench.sh [OPTIONS]
 # OPTIONS:
