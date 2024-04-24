@@ -2,7 +2,6 @@ import json
 import os
 from abc import ABC, abstractmethod
 
-import torch
 from tqdm.auto import tqdm
 
 from common.memory_tracker import MemoryTracker
@@ -18,6 +17,7 @@ class BaseBenchmarkClass(ABC):
         precision: str,
         device: str,
         experiment_name: str,
+        root_folder: str = None,
     ) -> None:
         """Benchmark base class. This class can be extended to other classes so that we can benchmark newer
             engines with minimal lines of code
@@ -50,8 +50,13 @@ class BaseBenchmarkClass(ABC):
         self.device = device
         self.experiment_name = experiment_name
 
+        # Define the root folder
+        self.root_folder = os.getcwd() if root_folder is None else root_folder
+
         # Make an experiment folder for each of the benchmark
-        self.log_folder = os.path.join(os.getcwd(), "logs", model_name, experiment_name)
+        self.log_folder = os.path.join(
+            self.root_folder, "logs", model_name, experiment_name
+        )
         self._log_file_path = os.path.join(self.log_folder, "performance.log")
         if not os.path.isdir(self.log_folder):
             os.makedirs(self.log_folder)
@@ -61,7 +66,7 @@ class BaseBenchmarkClass(ABC):
         )
 
         # Fetch the questions for quality checks
-        self._questions_json_path = os.path.join(os.getcwd(), "questions.json")
+        self._questions_json_path = os.path.join(self.root_folder, "questions.json")
         self.answers_json_path = os.path.join(self.log_folder, "quality_check.json")
         self.questions = json.load(open(self._questions_json_path, "r"))
 
@@ -139,10 +144,13 @@ class BaseBenchmarkClass(ABC):
             return [{"role": "user", "content": prompt}]
 
     def _benchmark_cuda(self, prompt: str, max_tokens: int, temperature: float):
+        import torch
+
         start_event = torch.cuda.Event(enable_timing=True)
         end_event = torch.cuda.Event(enable_timing=True)
 
         inputs = self.preprocess(prompt=prompt, for_benchmarks=True)
+
         temperature = 0.1 if temperature is None else temperature
 
         with self.memory_tracker.track():
@@ -165,7 +173,7 @@ class BaseBenchmarkClass(ABC):
         return (token_per_sec, gpu_mem_consumed)
 
     def benchmark(
-        self, prompt: str, max_tokens: int, repetitions: int, temperature: float
+        self, prompt: str, max_tokens: int, repetitions: int, temperature: float = 0.1
     ) -> None:
         for i in range(repetitions):
             self.logger.info(
@@ -187,7 +195,7 @@ class BaseBenchmarkClass(ABC):
     def get_answers(self):
         try:
             self.model is not None
-        except AttributeError as e:  # noqa
+        except AttributeError as _:  # noqa
             self.load_model_and_tokenizer()
 
         self.logger.info("=> Running quality checks for LLM")
