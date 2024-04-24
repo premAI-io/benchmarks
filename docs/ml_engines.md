@@ -1,23 +1,31 @@
 # 🔧 ML Engines
 
-## Features
+### Model Framework Support Matrix
 
-| Features                    | pytorch | burn | llama.cpp | candle | tinygrad | onnxruntime | CTranslate2 |
-| --------------------------- | ------- | ---- | --------- | ------ | -------- | ----------- | ----------- |
-| Inference support           | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
-| 16-bit quantization support | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
-| 8-bit quantization support  | ✅      | ❌   | ✅        | ✅     | ✅       | ✅          | ✅          |
-| 4-bit quantization support  | ✅      | ❌   | ✅        | ✅     | ❌       | ❌          | ❌          |
-| 2/3bit quantization support | ✅      | ❌   | ✅        | ✅     | ❌       | ❌          | ❌          |
-| CUDA support                | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ✅          |
-| ROCM support                | ✅      | ✅   | ✅        | ✅     | ✅       | ❌          | ❌          |
-| Intel OneAPI/SYCL support   | ✅**    | ✅   | ✅        | ✅     | ✅       | ❌          | ❌          |
-| Mac M1/M2 support           | ✅      | ✅   | ✅        | ⭐     | ✅       | ✅          | ⭐          |
-| BLAS support(CPU)           | ✅      | ✅   | ✅        | ✅     | ❌       | ✅          | ✅          |
-| Model Parallel support      | ✅      | ❌   | ❌        | ✅     | ❌       | ❌          | ✅          |
-| Tensor Parallel support     | ✅      | ❌   | ❌        | ✅     | ❌       | ❌          | ✅          |
-| Onnx Format support         | ✅      | ✅   | ✅        | ✅     | ✅       | ✅          | ❌          |
-| Training support            | ✅      | 🌟   | ❌        | 🌟     | ❌       | ❌          | ❌          |
+| Engine                                     | Float32 | Float16 | Float8 | Int8  | Int4  | CUDA  | ROCM  | Mac M1/M2 | Training |
+| ------------------------------------------ | :-----: | :-----: | :----: | :---: | :---: | :---: | :---: | :-------: | :------: |
+| [candle](/bench_candle/)                   |    ⚠️    |    ✅    |   ❌    |   ⚠️   |   ⚠️   |   ✅   |   ❌   |     ✅     |    ❌     |
+| [llama.cpp](/bench_llamacpp/)              |    ❌    |    ❌    |   ❌    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ❌     |
+| [ctranslate](/bench_ctranslate/)           |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
+| [onnx](/bench_onnxruntime/)                |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
+| [transformers (pytorch)](/bench_pytorch/)  |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
+| [vllm](/bench_vllm/)                       |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
+| [exllamav2](/bench_exllamav2/)             |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
+| [ctransformers](/bench_ctransformers/)     |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
+| [AutoGPTQ](/bench_autogptq/)               |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
+| [AutoAWQ](/bench_autoawq/)                 |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
+| [DeepSpeed](/bench_deepspeed/)             |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
+| [PyTorch Lightning](/bench_lightning/)     |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
+| [Optimum Nvidia](/bench_optimum_nvidia/)   |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
+| [Nvidia TensorRT-LLM](/bench_tensorrtllm/) |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
 
-⭐ = No Metal Support
-🌟 = Partial Support for Training (Finetuning already works, but training from scratch may not work)
+
+### Legend:
+- ✅ Supported
+- ❌ Not Supported
+- ⚠️ Supported but not implemented
+
+
+### Some pointers to note:
+
+1. For candle, Metal backend is supported but it gives terrible performance [even in small models like Phi2](https://github.com/huggingface/candle/issues/1568). For AMD ROCM there is no support as per this [issue](https://github.com/huggingface/candle/issues/346).
