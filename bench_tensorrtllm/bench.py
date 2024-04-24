@@ -23,9 +23,6 @@ class TensorRTLLMBenchmark(BaseBenchmarkClass):
         device: str,
         experiment_name: str,
     ) -> None:
-        assert precision in ["float16", "int8", "int4"], ValueError(
-            "Supported precision: 'float16', 'int8' and 'int4'"
-        )
         super().__init__(
             model_name=model_name,
             model_path=model_path,
@@ -131,6 +128,10 @@ if __name__ == "__main__":
 
     runner_dict = {
         "cuda": [
+            {
+                "precision": "float32",
+                "model_path": os.path.join(model_folder, model_name + "-float32"),
+            },
             {
                 "precision": "float16",
                 "model_path": os.path.join(model_folder, model_name + "-float16"),
