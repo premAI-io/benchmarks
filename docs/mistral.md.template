@@ -19,8 +19,11 @@
 | [llama.cpp](/bench_llamacpp/)               |      -       |      -         | 88.27 ± 0.72  | 95.33 ± 5.54  |
 | [ctranslate](/bench_ctranslate/)            | 43.17 ± 2.97 | 68.03 ± 0.27   | 45.14 ± 0.24  |      -        |
 | [PyTorch Lightning](/bench_lightning/)      | 32.79 ± 2.74 | 43.01 ± 2.90   | 7.75 ± 0.12   |      -        |
+| [Nvidia TensorRT-LLM](/bench_tensorrtllm/)  | 117.04 ± 2.16| 206.59 ± 6.93  | 390.49 ± 4.86 | 427.40 ± 4.84 |
 | [vllm](/bench_vllm/)                        | 84.91 ± 0.27 | 84.89 ± 0.28   |      -        | 106.03 ± 0.53 |
 | [exllamav2](/bench_exllamav2/)              |      -       |      -         | 114.81 ± 1.47 | 126.29 ± 3.05 |
+| [onnx](/bench_onnxruntime/)                 | 15.75 ± 0.15 | 22.39 ± 0.14   |      -        |      -        |
+| [Optimum Nvidia](/bench_optimum_nvidia/)    | 50.77 ± 0.85 | 50.91 ± 0.19   |      -        |      -        |
 
 **Performance Metrics:** GPU Memory Consumption (unit: MB)
 
@@ -34,8 +37,11 @@
 | [llama.cpp](/bench_llamacpp/)               |      -   |      -   | 9141.49  | 5880.41  |
 | [ctranslate](/bench_ctranslate/)            | 32602.32 |  17523.8 | 10074.72 |      -   |
 | [PyTorch Lightning](/bench_lightning/)      | 48783.95 | 18738.05 | 10680.32 |      -   |
+| [Nvidia TensorRT-LLM](/bench_tensorrtllm/)  | 79536.59 | 78341.21 | 77689.0  | 77311.51 |
 | [vllm](/bench_vllm/)                        | 73568.09 |  73790.39|      -   | 74016.88 |
 | [exllamav2](/bench_exllamav2/)              |      -   |      -   | 21483.23 | 9460.25  |
+| [onnx](/bench_onnxruntime/)                 | 33629.93 | 19537.07 |      -   |      -   |
+| [Optimum Nvidia](/bench_optimum_nvidia/)    | 79563.85 | 79496.74 |      -   |      -   |
 
 
 *(Data updated: `<LAST_UPDATE>`)
