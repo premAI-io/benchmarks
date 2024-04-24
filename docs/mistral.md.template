@@ -20,6 +20,7 @@
 | [ctranslate](/bench_ctranslate/)            | 43.17 ± 2.97 | 68.03 ± 0.27   | 45.14 ± 0.24  |      -        |
 | [vllm](/bench_vllm/)                        | 84.91 ± 0.27 | 84.89 ± 0.28   |      -        | 106.03 ± 0.53 |
 | [exllamav2](/bench_exllamav2/)              |      -       |      -         | 114.81 ± 1.47 | 126.29 ± 3.05 |
+| [onnx](/bench_onnxruntime/)                 | 15.75 ± 0.15 | 22.39 ± 0.14   |      -        |      -        |
 
 **Performance Metrics:** GPU Memory Consumption (unit: MB)
 
@@ -34,6 +35,7 @@
 | [ctranslate](/bench_ctranslate/)            | 32602.32 |  17523.8 | 10074.72 |      -   |
 | [vllm](/bench_vllm/)                        | 73568.09 |  73790.39|      -   | 74016.88 |
 | [exllamav2](/bench_exllamav2/)              |      -   |      -   | 21483.23 | 9460.25  |
+| [onnx](/bench_onnxruntime/)                 | 33629.93 | 19537.07 |      -   |      -   |
 
 
 *(Data updated: `<LAST_UPDATE>`)
