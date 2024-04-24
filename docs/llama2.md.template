@@ -45,34 +45,3 @@
 | [Optimum Nvidia](/bench_optimum_nvidia/)    | 79429.63 | 79295.41 |      -   |      -   |
 
 *(Data updated: `<LAST_UPDATE>`)
-
-
-## M2 MAX 32GB Inference Bench:
-
-### CPU
-
-**Environment:**
-- Model: LLAMA-2-7B
-- CUDA Version: NA
-- Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cpu --prompt 'Write an essay about the transformer model architecture'`
-
-**Performance Metrics:** (unit: Tokens / second)
-| Engine                                 | float32      | float16      | int8         | int4         |
-|----------------------------------------|--------------|--------------|--------------|--------------|
-| [candle](/bench_candle/)               |      -       | 3.43 ± 0.02  |      -       |      -       |
-| [llama.cpp](/bench_llamacpp/)          |      -       |      -       | 13.24 ± 0.62 | 21.43 ± 0.47 |
-| [ctranslate](/bench_ctranslate/)       |      -       |      -       | 1.87 ± 0.14  |      -       |
-| [ctransformers](/bench_ctransformers/) |      -       |      -       | 13.50 ± 0.48 | 20.57 ± 2.50 |
-
-
-### GPU (Metal)
-
-**Command:** `./benchmark.sh --repetitions 10 --max_tokens 512 --device metal --prompt 'Write an essay about the transformer model architecture'`
-
-**Performance Metrics:** (unit: Tokens / second)
-| Engine                                  | float32      | float16       | int8         | int4         |
-|-----------------------------------------|--------------|---------------|--------------|--------------|
-| [llama.cpp](/bench_llamacpp/)           |      -       |      -        | 30.11 ± 0.45 | 44.27 ± 0.12 |
-| [ctransformers](/bench_ctransformers/)  |      -       |      -        | 20.75 ± 0.36 | 34.04 ± 2.11 |
-
-*(Data updated: `<LAST_UPDATE>`)
