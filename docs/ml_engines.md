@@ -6,18 +6,18 @@
 | ------------------------------------------ | :-----: | :-----: | :----: | :---: | :---: | :---: | :---: | :-------: | :------: |
 | [candle](/bench_candle/)                   |    ⚠️    |    ✅    |   ❌    |   ⚠️   |   ⚠️   |   ✅   |   ❌   |     ✅     |    ❌     |
 | [llama.cpp](/bench_llamacpp/)              |    ❌    |    ❌    |   ❌    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ❌     |
-| [ctranslate](/bench_ctranslate/)           |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
-| [onnx](/bench_onnxruntime/)                |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
-| [transformers (pytorch)](/bench_pytorch/)  |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
-| [vllm](/bench_vllm/)                       |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
-| [exllamav2](/bench_exllamav2/)             |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
-| [ctransformers](/bench_ctransformers/)     |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
-| [AutoGPTQ](/bench_autogptq/)               |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
-| [AutoAWQ](/bench_autoawq/)                 |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
-| [DeepSpeed](/bench_deepspeed/)             |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
+| [ctranslate](/bench_ctranslate/)           |    ✅    |    ✅    |   ❌    |   ✅   |   ❌   |   ✅   |   ❌   |     ❌     |    ❌     |
+| [onnx](/bench_onnxruntime/)                |    ✅    |    ✅    |   ❌    |   ❌   |   ❌   |   ✅   |   ❌   |     ❌     |    ❌     |
+| [transformers (pytorch)](/bench_pytorch/)  |    ✅    |    ✅    |   ❌    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
+| [vllm](/bench_vllm/)                       |    ✅    |    ✅    |   ❌    |   ❌   |   ✅   |   ✅   |   ✅   |     ❌     |    ❌     |
+| [exllamav2](/bench_exllamav2/)             |    ❌    |    ❌    |   ❌    |   ✅   |   ✅   |   ✅   |   ✅   |     ❌     |    ❌     |
+| [ctransformers](/bench_ctransformers/)     |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ❌     |
+| [AutoGPTQ](/bench_autogptq/)               |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ❌     |
+| [AutoAWQ](/bench_autoawq/)                 |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ❌     |
+| [DeepSpeed](/bench_deepspeed/)             |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ❌     |
 | [PyTorch Lightning](/bench_lightning/)     |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
-| [Optimum Nvidia](/bench_optimum_nvidia/)   |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
-| [Nvidia TensorRT-LLM](/bench_tensorrtllm/) |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ✅     |
+| [Optimum Nvidia](/bench_optimum_nvidia/)   |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |     ✅     |    ❌     |
+| [Nvidia TensorRT-LLM](/bench_tensorrtllm/) |    ✅    |    ✅    |   ✅    |   ✅   |   ✅   |   ✅   |   ❌   |     ❌     |    ❌     |
 
 
 ### Legend:
@@ -29,3 +29,5 @@
 ### Some pointers to note:
 
 1. For candle, Metal backend is supported but it gives terrible performance [even in small models like Phi2](https://github.com/huggingface/candle/issues/1568). For AMD ROCM there is no support as per this [issue](https://github.com/huggingface/candle/issues/346).
+2. For CTranslate2, [ROCM is not supported](https://github.com/OpenNMT/CTranslate2/issues/1072) however works are in progress to have this feature on CTranslate2. [No support for Mac M1/M2](https://github.com/OpenNMT/CTranslate2/issues/1607)
+3.
