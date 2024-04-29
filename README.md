@@ -15,7 +15,6 @@
  <summary>Table of Contents</summary>
  <ol>
  <li><a href="#-quick-glance">Quick glance towards performance metrics for Mistral</a></li>
- <li><a href="#-more-benchmarks">More Benchmarks</a></li>
  <li><a href="#-ml-engines">ML Engines</a></li>
  <li><a href="#-why-benchmarks">Why Benchmarks</a></li>
  <li><a href="#-usage-and-workflow">Usage and workflow</a></li>
