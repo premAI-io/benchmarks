@@ -5,7 +5,7 @@
 **Environment:**
 - Model: Llama 2 7B Chat
 - CUDA Version: 12.1
-- Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cuda --prompt 'Write an essay about the transformer model architecture'`
+- Command: `./benchmark.sh --repetitions 10 --max_tokens 512 --device cuda --model llama --prompt 'Write an essay about the transformer model architecture'`
 
 **Performance Metrics:** (unit: Tokens / second)
 
@@ -27,7 +27,7 @@
 | [Nvidia TensorRT-LLM](/bench_tensorrtllm/) | 55.19 ± 1.03  | 85.03 ± 0.62  | 167.66 ± 2.05 | 235.18 ± 3.20  |
 
 
-*(Data updated: `17th April 2024`)
+*(Data updated: `29th April 2024`)
 
 
 ## M2 MAX 32GB Inference Bench:
@@ -58,4 +58,4 @@
 | [llama.cpp](/bench_llamacpp/)          | -       | -       | 30.11 ± 0.45 | 44.27 ± 0.12 |
 | [ctransformers](/bench_ctransformers/) | -       | -       | 20.75 ± 0.36 | 34.04 ± 2.11 |
 
-*(Data updated: `17th April 2024`)
+*(Data updated: `29th April 2024`)

@@ -22,7 +22,6 @@
  </ol>
 </details>
 
-
 ## 🥽 Quick glance towards performance benchmarks
 
 Take a first glance at [Mistral 7B v0.1 Instruct](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1) and [Llama 2 7B Chat](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) Performance Metrics Across Different Precision and Inference Engines. Here is our run specification that generated this performance benchmark reports.
