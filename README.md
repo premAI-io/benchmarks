@@ -50,7 +50,7 @@ Take a first glance of Llama-2-7B Model Performance Metrics Across Different Pre
 | [Nvidia TensorRT-LLM](/bench_tensorrtllm/)  | 55.19 ± 1.03 | 85.03 ± 0.62   | 167.66 ± 2.05 | 235.18 ± 3.20 |
 
 
-*(Data updated: `17th April 2024`)
+*(Data updated: `29th April 2024`)
 
 
 
