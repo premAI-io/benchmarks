@@ -165,7 +165,7 @@ This can be a common question. What are the benefits you can expect from this re
 
 Welcome to our benchmarking repository! This organized structure is designed to simplify benchmark management and execution. Each benchmark runs an inference engine that provides some sort of optimizations either through just quantization or device-specific optimizations like custom cuda kernels.
 
-To get started you need to download the models first. This will download the following models:[Llama2 7B Chat](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) and [Mistral-7B v0.1 Instruct](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1). You can start download by typing this command:
+To get started you need to download the models first. This will download the following models: [Llama2 7B Chat](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) and [Mistral-7B v0.1 Instruct](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1). You can start download by typing this command:
 
 ```bash
 ./download.sh
