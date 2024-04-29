@@ -126,22 +126,22 @@ Take a first glance at [Mistral 7B v0.1 Instruct](https://huggingface.co/mistral
 
 In the current market, there are several ML Engines. Here is a quick glance at all the engines used for the benchmark and a quick summary of their support matrix. You can find the details about the nuances [here](/docs/ml_engines.md).
 
-| Engine                                     | Float32 | Float16 | Float8 | Int8  | Int4  | CUDA  | ROCM  | Mac M1/M2 | Training |
-| ------------------------------------------ | :-----: | :-----: | :----: | :---: | :---: | :---: | :---: | :-------: | :------: |
-| [candle](/bench_candle/)                   |    ⚠️    |    ✅    |   ❌    |   ⚠️   |   ⚠️   |   ✅   |   ❌   |     🚧     |    ❌     |
-| [llama.cpp](/bench_llamacpp/)              |    ❌    |    ❌    |   ❌    |   ✅   |   ✅   |   ✅   |   🚧   |     🚧     |    ❌     |
-| [ctranslate](/bench_ctranslate/)           |    ✅    |    ✅    |   ❌    |   ✅   |   ❌   |   ✅   |   ❌   |     🚧     |    ❌     |
-| [onnx](/bench_onnxruntime/)                |    ✅    |    ✅    |   ❌    |   ❌   |   ❌   |   ✅   |   ⚠️   |     ❌     |    ❌     |
-| [transformers (pytorch)](/bench_pytorch/)  |    ✅    |    ✅    |   ❌    |   ✅   |   ✅   |   ✅   |   🚧   |     ✅     |    ✅     |
-| [vllm](/bench_vllm/)                       |    ✅    |    ✅    |   ❌    |   ❌   |   ✅   |   ✅   |   🚧   |     ❌     |    ❌     |
-| [exllamav2](/bench_exllamav2/)             |    ❌    |    ❌    |   ❌    |   ✅   |   ✅   |   ✅   |   🚧   |     ❌     |    ❌     |
-| [ctransformers](/bench_ctransformers/)     |    ❌    |    ❌    |   ❌    |   ✅   |   ✅   |   ✅   |   🚧   |     🚧     |    ❌     |
-| [AutoGPTQ](/bench_autogptq/)               |    ✅    |    ✅    |   ❌    |   ⚠️   |   ⚠️   |   ✅   |   ❌   |     ❌     |    ❌     |
-| [AutoAWQ](/bench_autoawq/)                 |    ❌    |    ❌    |   ❌    |   ❌   |   ✅   |   ✅   |   ❌   |     ❌     |    ❌     |
-| [DeepSpeed-MII](/bench_deepspeed/)         |    ❌    |    ✅    |   ❌    |   ❌   |   ❌   |   ✅   |   ❌   |     ❌     |    ⚠️     |
-| [PyTorch Lightning](/bench_lightning/)     |    ✅    |    ✅    |   ❌    |   ✅   |   ✅   |   ✅   |   ⚠️   |     ⚠️     |    ✅     |
-| [Optimum Nvidia](/bench_optimum_nvidia/)   |    ✅    |    ✅    |   🚧    |   ❌   |   ❌   |   ✅   |   ❌   |     ❌     |    ❌     |
-| [Nvidia TensorRT-LLM](/bench_tensorrtllm/) |    ✅    |    ✅    |   🚧    |   ✅   |   ✅   |   ✅   |   ❌   |     ❌     |    ❌     |
+| Engine                                     | Float32 | Float16 | Int8  | Int4  | CUDA  | ROCM  | Mac M1/M2 | Training |
+| ------------------------------------------ | :-----: | :-----: | :---: | :---: | :---: | :---: | :-------: | :------: |
+| [candle](/bench_candle/)                   |    ⚠️    |    ✅    |   ⚠️   |   ⚠️   |   ✅   |   ❌   |     🚧     |    ❌     |
+| [llama.cpp](/bench_llamacpp/)              |    ❌    |    ❌    |   ✅   |   ✅   |   ✅   |   🚧   |     🚧     |    ❌     |
+| [ctranslate](/bench_ctranslate/)           |    ✅    |    ✅    |   ✅   |   ❌   |   ✅   |   ❌   |     🚧     |    ❌     |
+| [onnx](/bench_onnxruntime/)                |    ✅    |    ✅    |   ❌   |   ❌   |   ✅   |   ⚠️   |     ❌     |    ❌     |
+| [transformers (pytorch)](/bench_pytorch/)  |    ✅    |    ✅    |   ✅   |   ✅   |   ✅   |   🚧   |     ✅     |    ✅     |
+| [vllm](/bench_vllm/)                       |    ✅    |    ✅    |   ❌   |   ✅   |   ✅   |   🚧   |     ❌     |    ❌     |
+| [exllamav2](/bench_exllamav2/)             |    ❌    |    ❌    |   ✅   |   ✅   |   ✅   |   🚧   |     ❌     |    ❌     |
+| [ctransformers](/bench_ctransformers/)     |    ❌    |    ❌    |   ✅   |   ✅   |   ✅   |   🚧   |     🚧     |    ❌     |
+| [AutoGPTQ](/bench_autogptq/)               |    ✅    |    ✅    |   ⚠️   |   ⚠️   |   ✅   |   ❌   |     ❌     |    ❌     |
+| [AutoAWQ](/bench_autoawq/)                 |    ❌    |    ❌    |   ❌   |   ✅   |   ✅   |   ❌   |     ❌     |    ❌     |
+| [DeepSpeed-MII](/bench_deepspeed/)         |    ❌    |    ✅    |   ❌   |   ❌   |   ✅   |   ❌   |     ❌     |    ⚠️     |
+| [PyTorch Lightning](/bench_lightning/)     |    ✅    |    ✅    |   ✅   |   ✅   |   ✅   |   ⚠️   |     ⚠️     |    ✅     |
+| [Optimum Nvidia](/bench_optimum_nvidia/)   |    ✅    |    ✅    |   ❌   |   ❌   |   ✅   |   ❌   |     ❌     |    ❌     |
+| [Nvidia TensorRT-LLM](/bench_tensorrtllm/) |    ✅    |    ✅    |   ✅   |   ✅   |   ✅   |   ❌   |     ❌     |    ❌     |
 
 
 ### Legend:
