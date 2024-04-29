@@ -119,7 +119,7 @@ Take a first glance at [Mistral 7B v0.1 Instruct](https://huggingface.co/mistral
 
 *(Data updated: `30th April 2024`)
 
-> **Note:** Our previous version of Benchmarks supported benchmarking on Metal and M1/M2 CPUs. We did the benchmarking on similar environments (including mac devices) on Llama 2 7B model. However this version is more focussed on enterprices. But if you are curious, you can check that out [here](/docs/archive.md). Also please not that the numbers might be a bit outdated.
+> Our latest version benchmarks Llama 2 7B chat and Mistral 7B v0.1 instruct. The latest version only benchmarks on A100 80 GPU. Because our primary focus is enterprises. Our previous versions benchmarked Llama 2 7B on Cuda and Mac (M1/M2) CPU and metal. You can find those in the [archive.md](/docs/archive.md) file. Please note that those numbers are old because all the engines are maintained properly continuously with improvements. So those numbers might be a bit outdated.
 
 ## 🛳 ML Engines
 
