@@ -1,1 +1,4 @@
-llama_cpp_python
+llama_cpp_python==0.2.62
+huggingface_hub==0.22.2
+transformers==4.39.3
+torch==2.2.2

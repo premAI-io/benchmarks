@@ -1,19 +1,15 @@
-# Script is taken LitGPT
-# repo: https://github.com/Lightning-AI/lit-gpt.git
+# Copyright Lightning AI. Licensed under the Apache License 2.0, see LICENSE file.
 
-import sys
-from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
+import lightning as L
+import litgpt.utils as utils
 import torch
 import torch._dynamo.config
 import torch._inductor.config
-
-# support running without installing as a package
-wd = Path(__file__).parent.parent.resolve()
-sys.path.append(str(wd))
-
-from lit_gpt import GPT  # noqa E402
+from lightning.fabric.plugins import BitsandbytesPrecision
+from litgpt import GPT, Config, PromptStyle, Tokenizer
+from litgpt.prompts import has_prompt_style, load_prompt_style
 
 
 def multinomial_num_samples_1(probs: torch.Tensor) -> torch.Tensor:
@@ -49,7 +45,7 @@ def next_token(
 
 
 @torch.inference_mode()
-def generate(
+def _generate(
     model: GPT,
     prompt: torch.Tensor,
     max_returned_tokens: int,
@@ -100,3 +96,102 @@ def generate(
             break
         input_pos = input_pos.add_(1)
     return torch.cat(tokens)
+
+
+@torch.inference_mode()
+def load_model(
+    checkpoint_dir: str,
+    quantize: Optional[
+        Literal["bnb.nf4", "bnb.nf4-dq", "bnb.fp4", "bnb.fp4-dq", "bnb.int8"]
+    ] = None,
+    precision: Optional[str] = None,
+    compile: bool = False,
+):
+    plugins = None
+    precision = precision or utils.get_default_supported_precision(training=False)
+
+    if quantize is not None and quantize.startswith("bnb."):
+        if "mixed" in precision:
+            raise ValueError("Quantization and mixed precision is not supported.")
+        dtype = {
+            "16-true": torch.float16,
+            "bf16-true": torch.bfloat16,
+            "32-true": torch.float32,
+        }[precision]
+        plugins = BitsandbytesPrecision(quantize[4:], dtype)
+        precision = None
+
+    fabric = L.Fabric(devices=1, precision=precision, plugins=plugins)
+    utils.check_valid_checkpoint_dir(checkpoint_dir)
+    config = Config.from_file(checkpoint_dir / "model_config.yaml")
+
+    checkpoint_path = checkpoint_dir / "lit_model.pth"
+
+    tokenizer = Tokenizer(checkpoint_dir)
+    prompt_style = (
+        load_prompt_style(checkpoint_dir)
+        if has_prompt_style(checkpoint_dir)
+        else PromptStyle.from_config(config)
+    )
+
+    with fabric.init_module(empty_init=True):
+        model = GPT(config)
+
+    with fabric.init_tensor():
+        # set the max_seq_length to limit the memory usage to what we need
+        # NOTE: Hardcoding this part only for benchmark
+        model.max_seq_length = 1024
+        # enable the kv cache
+        model.set_kv_cache(batch_size=1)
+    model.eval()
+
+    if compile:
+        torch._dynamo.config.automatic_dynamic_shapes = True
+        torch._inductor.config.triton.unique_kernel_names = True
+        torch._inductor.config.coordinate_descent_tuning = True
+        global next_token
+        next_token = torch.compile(next_token, mode="reduce-overhead")
+
+    model = fabric.setup_module(model)
+    utils.load_checkpoint(fabric, model, checkpoint_path)
+    return model, tokenizer, prompt_style, fabric
+
+
+@torch.inference_mode()
+def generate(
+    model,
+    tokenizer,
+    prompt_style,
+    fabric,
+    prompt: str = "What food do llamas eat?",
+    *,
+    num_samples: int = 1,
+    max_new_tokens: int = 50,
+    top_k: Optional[int] = 50,
+    temperature: float = 0.8,
+) -> None:
+    prompt = prompt_style.apply(prompt)
+    encoded = tokenizer.encode(prompt, device=fabric.device)
+    prompt_length = encoded.size(0)
+    max_returned_tokens = prompt_length + max_new_tokens
+
+    L.seed_everything(1234)
+    for i in range(num_samples):
+        y = _generate(
+            model,
+            encoded,
+            max_returned_tokens,
+            temperature=temperature,
+            top_k=top_k,
+            eos_id=tokenizer.eos_id,
+        )
+
+        for block in model.transformer.h:
+            block.attn.kv_cache.reset_parameters()
+
+    # Now decode here
+
+    output = y.detach().cpu().tolist()
+    output = output[prompt_length:]
+
+    return {"output_tokens": output, "num_output_tokens": len(output)}

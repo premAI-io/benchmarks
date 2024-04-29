@@ -3,11 +3,20 @@
 ################################################################################
 # Script: setup.sh
 # Description: Automates the setup of a virtual environment and installs project
-# requirements.
+# requirements including CTransformers and GGUF weights.
 ################################################################################
 
 set -euo pipefail
 
+# Define constants and paths
+CURRENT_DIR="$(pwd)"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+VENV_DIR="$SCRIPT_DIR/venv"
+MODELS_DIR="$CURRENT_DIR/models"
+LLAMA2_GGUF_WEIGHTS_DIR="$MODELS_DIR/llama-2-7b-chat-gguf"
+MISTRAL_GGUF_WEIGHTS_DIR="$MODELS_DIR/mistral-7b-v0.1-instruct-gguf"
+
+# Check if Python is installed
 check_python() {
     if command -v python &> /dev/null; then
         PYTHON_CMD="python"
@@ -19,7 +28,6 @@ check_python() {
     fi
 }
 
-# Function to install CTransformers with CUDA version check
 install_ctransformers_cuda() {
     CUDA_VERSION=$(nvcc --version | grep "release" | sed -n 's/.*release \(.*\),.*/\1/p')
 
@@ -40,13 +48,9 @@ install_ctransformers_cuda() {
     fi
 }
 
-install_device_specific_ctransformers() {
+# Install CTransformers based on the specified device
+install_ctransformers() {
     local DEVICE="$1"
-
-    if [ "$#" -ne 1 ]; then
-        echo "Usage: $0 <DEVICE>"
-        exit 1
-    fi
 
     case "$DEVICE" in
         cuda)
@@ -64,35 +68,79 @@ install_device_specific_ctransformers() {
             ;;
         *)
             echo "Unsupported DEVICE: $DEVICE"
-            return 1
+            exit 1
             ;;
     esac
 }
 
-# Main script starts here.
+# Download GGUF weights for the specified model
+download_gguf_weights() {
+    local MODEL_NAME="$1"
+    local DOWNLOAD_DIR
 
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <DEVICE>"
+    case "$MODEL_NAME" in
+        llama)
+            DOWNLOAD_DIR="$LLAMA2_GGUF_WEIGHTS_DIR"
+            MODEL_IDENTIFIER="TheBloke/Llama-2-7B-Chat-GGUF"
+            MODEL_FILE_4BIT="llama-2-7b-chat.Q4_K_M.gguf"
+            MODEL_FILE_8BIT="llama-2-7b-chat.Q8_0.gguf"
+            ;;
+        mistral)
+            DOWNLOAD_DIR="$MISTRAL_GGUF_WEIGHTS_DIR"
+            MODEL_IDENTIFIER="TheBloke/Mistral-7B-Instruct-v0.1-GGUF"
+            MODEL_FILE_4BIT="mistral-7b-instruct-v0.1.Q4_K_M.gguf"
+            MODEL_FILE_8BIT="mistral-7b-instruct-v0.1.Q8_0.gguf"
+            ;;
+        *)
+            echo "Invalid MODEL_NAME. Supported values: 'llama', 'mistral'"
+            exit 1
+            ;;
+    esac
+
+    if [ ! -d "$DOWNLOAD_DIR" ]; then
+        huggingface-cli download "$MODEL_IDENTIFIER" "$MODEL_FILE_4BIT" --local-dir "$DOWNLOAD_DIR" --local-dir-use-symlinks False
+        huggingface-cli download "$MODEL_IDENTIFIER" "$MODEL_FILE_8BIT" --local-dir "$DOWNLOAD_DIR" --local-dir-use-symlinks False
+    else
+        echo "Weights for $MODEL_NAME already downloaded."
+    fi
+}
+
+# Main script starts here
+
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 <DEVICE> <MODEL_NAME>"
     exit 1
 fi
 
 check_python
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Define command line arguments
 DEVICE="$1"
-VENV_DIR="$SCRIPT_DIR/venv"
-
-# Build and activate the virtual environment.
+MODEL_NAME="$2"
 
 if [ ! -d "$VENV_DIR" ]; then
     "$PYTHON_CMD" -m venv "$VENV_DIR"
     echo "Virtual environment '$VENV_DIR' created."
-    # shellcheck disable=SC1091
-    source "$VENV_DIR/bin/activate"
-    pip install --upgrade pip > /dev/null
-    pip install -r "$SCRIPT_DIR/requirements.txt" --no-cache-dir > /dev/null
-    install_device_specific_ctransformers "$DEVICE"
+    if [ -f "$VENV_DIR/bin/activate" ]; then
+        # shellcheck disable=SC1091
+        source "$VENV_DIR/bin/activate"
+    else
+        echo "Error: Unable to find virtual environment activation script."
+        exit 1
+    fi
+
+    "$PYTHON_CMD" -m pip install --upgrade pip > /dev/null
+    "$PYTHON_CMD" -m pip install -r "$SCRIPT_DIR/requirements.txt" --no-cache-dir > /dev/null
+    install_ctransformers "$DEVICE"
 else
-    # shellcheck disable=SC1091
-    source "$VENV_DIR/bin/activate"
+    if [ -f "$VENV_DIR/bin/activate" ]; then
+        # shellcheck disable=SC1091
+        source "$VENV_DIR/bin/activate"
+    else
+        echo "Error: Unable to find virtual environment activation script."
+        exit 1
+    fi
 fi
+
+
+download_gguf_weights "$MODEL_NAME"
