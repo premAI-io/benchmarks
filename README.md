@@ -23,8 +23,13 @@
 </details>
 <br>
 
+<div align="center">
+
 ![alt text](image.png)
-<center> Check out our <a href="blog.premai.io/prem-benchmarks/">release blog</a> to know more. </center>
+Check out our [release blog](https://blog.premai.io/prem-benchmarks/) to know more.
+
+</div>
+
 
 ## 🥽 Quick glance towards performance benchmarks
 
