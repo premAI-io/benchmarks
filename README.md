@@ -11,6 +11,15 @@
 [![GitHub issues](https://img.shields.io/github/issues/premAI-io/benchmarks.svg)](https://github.com/premAI-io/benchmarks/issues)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+<br>
+
+<div align="center">
+
+![alt text](image.png)
+Check out our [release blog](https://blog.premai.io/prem-benchmarks/) to know more.
+
+</div>
+
 <details>
  <summary>Table of Contents</summary>
  <ol>
@@ -21,14 +30,6 @@
  <li><a href="#-contribute">Contribute</a></li>
  </ol>
 </details>
-<br>
-
-<div align="center">
-
-![alt text](image.png)
-Check out our [release blog](https://blog.premai.io/prem-benchmarks/) to know more.
-
-</div>
 
 
 ## 🥽 Quick glance towards performance benchmarks
