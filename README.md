@@ -21,6 +21,10 @@
  <li><a href="#-contribute">Contribute</a></li>
  </ol>
 </details>
+<br>
+
+![alt text](image.png)
+<center> Check out our <a href="blog.premai.io/prem-benchmarks/">release blog</a> to know more. </center>
 
 ## 🥽 Quick glance towards performance benchmarks
 
@@ -64,7 +68,7 @@ Take a first glance at [Mistral 7B v0.1 Instruct](https://huggingface.co/mistral
 | [transformers (pytorch)](/bench_pytorch/)  | 31071.4  | 15976.1  | 10963.91 | 5681.18  |
 | [AutoGPTQ](/bench_autogptq/)               | 13400.80 | 6633.29  |          |          |
 | [AutoAWQ](/bench_autoawq/)                 | -        | -        | -        | 6572.47  |
-| [DeepSpeed](/bench_deepspeed/)             |          | 80104.34 |          |          |
+| [DeepSpeed](/bench_deepspeed/)             |          | 80097.34 |          |          |
 | [ctransformers](/bench_ctransformers/)     | -        | -        | 10255.07 | 6966.74  |
 | [llama.cpp](/bench_llamacpp/)              | -        | -        | 9141.49  | 5880.41  |
 | [ctranslate](/bench_ctranslate/)           | 32602.32 | 17523.8  | 10074.72 | -        |
@@ -105,7 +109,7 @@ Take a first glance at [Mistral 7B v0.1 Instruct](https://huggingface.co/mistral
 | [transformers (pytorch)](/bench_pytorch/)  | 29114.76 | 14931.72 | 8596.23  | 5643.44  |
 | [AutoAWQ](/bench_autoawq/)                 | -        | -        | -        | 7149.19  |
 | [AutoGPTQ](/bench_autogptq/)               | 10718.54 | 5706.35  |          |          |
-| [DeepSpeed](/bench_deepspeed/)             |          | 83978.35 |          |          |
+| [DeepSpeed](/bench_deepspeed/)             |          | 80105.13 |          |          |
 | [ctransformers](/bench_ctransformers/)     | -        | -        | 9774.83  | 6889.14  |
 | [llama.cpp](/bench_llamacpp/)              | -        | -        | 8797.55  | 5783.95  |
 | [ctranslate](/bench_ctranslate/)           | 29951.52 | 16282.29 | 9470.74  | -        |
