@@ -144,7 +144,7 @@ fn load_llama_model(
     let cache = model::Cache::new(!no_kv_cache, dtype, &config, device)?;
 
     let vb = unsafe { VarBuilder::from_mmaped_safetensors(&filenames, dtype, device)? };
-    Ok((Llama::load(vb, &cache, &config)?, tokenizer_filename, cache))
+    Ok((Llama::load(vb, &config)?, tokenizer_filename, cache))
 }
 
 fn generate_random_numbers(n: usize) -> Vec<u64> {
@@ -186,7 +186,7 @@ fn main() -> Result<()> {
         let width = repetitions.to_string().len();
         let message = format!("Running repetition [{:0width$}/{}]", r + 1, repetitions);
         info!("{}", message);
-        let (llama, tokenizer_filename, cache) = load_llama_model(
+        let (llama, tokenizer_filename, mut cache) = load_llama_model(
             &args.local_weights,
             args.use_flash_attn,
             args.no_kv_cache,
@@ -212,7 +212,7 @@ fn main() -> Result<()> {
             };
             let ctxt = &tokens[tokens.len().saturating_sub(context_size)..];
             let input = Tensor::new(ctxt, &device)?.unsqueeze(0)?;
-            let logits = llama.forward(&input, index_pos)?;
+            let logits = llama.forward(&input, index_pos, &mut cache)?;
             let logits = logits.squeeze(0)?;
             let logits = if args.repeat_penalty == 1. {
                 logits
