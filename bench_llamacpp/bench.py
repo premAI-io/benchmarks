@@ -95,6 +95,16 @@ if __name__ == "__main__":
     )
 
     runner_dict = {
+        "cpu": [
+            {
+                "precision": "int4",
+                "model_path": os.path.join(model_folder, model_name + "Q4_K_M.gguf"),
+            },
+            {
+                "precision": "int8",
+                "model_path": os.path.join(model_folder, model_name + "Q8_0.gguf"),
+            },
+        ],
         "cuda": [
             {
                 "precision": "int4",
@@ -104,7 +114,7 @@ if __name__ == "__main__":
                 "precision": "int8",
                 "model_path": os.path.join(model_folder, model_name + "Q8_0.gguf"),
             },
-        ]
+        ],
     }
 
     make_report(

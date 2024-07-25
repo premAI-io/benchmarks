@@ -1,7 +1,9 @@
 import json
 import os
+import time
 from abc import ABC, abstractmethod
 
+import psutil
 from tqdm.auto import tqdm
 
 from common.memory_tracker import MemoryTracker
@@ -172,6 +174,27 @@ class BaseBenchmarkClass(ABC):
 
         return (token_per_sec, gpu_mem_consumed)
 
+    def _benchmark_cpu(self, prompt: str, max_tokens: int, temperature: float = 0.1):
+        process = psutil.Process()
+        initial_memory_info = process.memory_info()
+
+        inputs = self.preprocess(prompt=prompt, for_benchmarks=True)
+
+        temperature = 0.1 if temperature is None else temperature
+
+        start_time = time.time()
+        output_dict = self.run_model(inputs, max_tokens, temperature)
+        end_time = time.time()
+
+        final_memory_info = process.memory_info()
+        memory_used = final_memory_info.rss - initial_memory_info.rss
+        elapsed_time = end_time - start_time
+
+        num_output_tokens = output_dict["num_output_tokens"]
+        tokens_per_sec = num_output_tokens / elapsed_time
+
+        return (tokens_per_sec, memory_used)
+
     def benchmark(
         self, prompt: str, max_tokens: int, repetitions: int, temperature: float = 0.1
     ) -> None:
@@ -186,6 +209,13 @@ class BaseBenchmarkClass(ABC):
                 )
                 self.tps_results.append(tok_per_sec)
                 self.memory_usage_results.append(gpu_memory_consumed)
+
+            elif self.device == "cpu":
+                token_per_sec, cpu_memory_used = self._benchmark_cpu(
+                    prompt=prompt, max_tokens=max_tokens, temperature=temperature
+                )
+                self.tps_results.append(token_per_sec)
+                self.memory_usage_results.append(cpu_memory_used)
             else:
                 raise NotImplementedError(
                     "For other device base benchmark is not implemented"
