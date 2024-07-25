@@ -1,11 +1,11 @@
 import json
 import os
-import psutil 
+import time
 from abc import ABC, abstractmethod
 
+import psutil
 from tqdm.auto import tqdm
 
-import time
 from common.memory_tracker import MemoryTracker
 from common.utils import get_logger
 
@@ -173,7 +173,7 @@ class BaseBenchmarkClass(ABC):
         gpu_mem_consumed = round(peak_nvml_mb, 2)
 
         return (token_per_sec, gpu_mem_consumed)
-    
+
     def _benchmark_cpu(self, prompt: str, max_tokens: int, temperature: float = 0.1):
         process = psutil.Process()
         initial_memory_info = process.memory_info()
@@ -195,7 +195,6 @@ class BaseBenchmarkClass(ABC):
 
         return (tokens_per_sec, memory_used)
 
-
     def benchmark(
         self, prompt: str, max_tokens: int, repetitions: int, temperature: float = 0.1
     ) -> None:
@@ -210,11 +209,11 @@ class BaseBenchmarkClass(ABC):
                 )
                 self.tps_results.append(tok_per_sec)
                 self.memory_usage_results.append(gpu_memory_consumed)
-            
+
             elif self.device == "cpu":
                 token_per_sec, cpu_memory_used = self._benchmark_cpu(
                     prompt=prompt, max_tokens=max_tokens, temperature=temperature
-                ) 
+                )
                 self.tps_results.append(token_per_sec)
                 self.memory_usage_results.append(cpu_memory_used)
             else:
