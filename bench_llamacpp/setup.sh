@@ -71,6 +71,8 @@ clone_and_build_llama() {
     fi
 }
 
+
+
 # CLI Args
 DEVICE="$1"
 MODEL_NAME="$2"
@@ -89,11 +91,11 @@ if [ ! -d "$VENV_DIR" ]; then
     pip install --upgrade pip > /dev/null
     clone_and_build_llama "$DEVICE"
     pip install -r "$SCRIPT_DIR/requirements.txt" --no-cache-dir > /dev/null
-    pip install numpy --upgrade 
+    pip install numpy --upgrade
 else
     # shellcheck disable=SC1091
     source "$VENV_DIR/bin/activate"
-    
+
 fi
- 
+
 download_gguf_weights "$MODEL_NAME"
