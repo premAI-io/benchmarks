@@ -143,6 +143,7 @@ done
 check_platform
 check_python
 
+
 # Set default values if not provided
 PROMPT="${PROMPT:-"Write an essay about the transformer model architecture"}"
 REPETITIONS="${REPETITIONS:-10}"
