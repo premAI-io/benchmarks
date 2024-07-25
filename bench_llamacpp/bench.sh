@@ -74,6 +74,7 @@ setup() {
     bash "$SCRIPT_DIR/setup.sh" "$DEVICE" "$MODEL_NAME"
 }
 
+
 run_benchmarks() {
     local PROMPT="$1"
     local REPETITIONS="$2"
@@ -122,9 +123,6 @@ while [ "$#" -gt 0 ]; do
             esac
             if [ "$DEVICE" == "cuda" ]; then
                 check_cuda
-            else
-                echo "Not supported for $DEVICE"
-                exit 1
             fi
             shift 2
             ;;
@@ -152,5 +150,5 @@ MAX_TOKENS="${MAX_TOKENS:-512}"
 DEVICE="${DEVICE:-'cuda'}"
 MODEL_NAME="${MODEL_NAME:-"llama"}"
 
-setup "$DEVICE"
+setup "$DEVICE" "$MODEL_NAME"
 run_benchmarks "$PROMPT" "$REPETITIONS" "$MAX_TOKENS" "$DEVICE" "$MODEL_NAME"
